@@ -11,3 +11,11 @@
 	-webkit-animation: shake 0.65s linear both;
 	animation: shake 0.65s linear both;
 }
+
+html.app-dark .filepond--panel-root {
+    background-color: #737373;
+}
+
+html.app-dark .filepond--drop-label {
+	color: #f4f5f4;
+}
