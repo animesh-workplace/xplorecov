@@ -1,28 +1,28 @@
 <template>
 	<div class="mx-20">
+		<Skeleton width="100%" height="5rem" class="mb-2" />
 		<div v-if="isLoading" class="loader">Loading...</div>
 
 		<div :class="{ hidden: isLoading }">
 			<client-only>
 				<file-pond
 					ref="pond"
+					v-model:files="myFiles"
 					credits="false"
 					allow-multiple="false"
-					v-model:files="myFiles"
-					@init="handleFilePondInit"
-					label-idle="Drop files here..."
-					accepted-file-types="image/jpeg, image/png"
-					labelIdle="
-        <span class='is-family-primary has-text-weight-semibold has-text-grey-dark is-clickable'>
-          Drag & Drop your Metadata or
+					label-idle="
+          <span class='is-family-primary has-text-weight-semibold has-text-grey-dark is-clickable'>
+            Drag & Drop your Metadata or
+          </span>
+          <span
+          class='is-family-primary has-text-weight-semibold has-text-grey-dark is-clickable'
+          style='text-decoration: underline;'
+          >
+          Browse
         </span>
-        <span
-        class='is-family-primary has-text-weight-semibold has-text-grey-dark is-clickable'
-        style='text-decoration: underline;'
-        >
-        Browse
-      </span>
-      "
+        "
+					@init="handleFilePondInit"
+					accepted-file-types="image/jpeg, image/png"
 				/>
 			</client-only>
 		</div>
