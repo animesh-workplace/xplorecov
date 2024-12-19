@@ -23,6 +23,7 @@
     "lodash": "^4.17.21",
     "notivue": "^2.4.5",
     "nuxt": "^3.14.1592",
+    "primeicons": "^7.0.0",
     "primevue": "^4.2.4",
     "topojson-client": "^3.1.0",
     "vue": "latest",
