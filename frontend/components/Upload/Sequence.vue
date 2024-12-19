@@ -6,17 +6,18 @@
 				<file-pond
 					max-files="1"
 					credits="false"
-					:allow-multiple="false"
-					ref="sequence_filepond"
 					@init="RemoveLoader"
 					@addfile="HandleFile"
+					class="cursor-pointer"
+					:allow-multiple="false"
+					ref="sequence_filepond"
 					@removefile="RemoveFile"
 					v-model:files="sequence_file"
 					label-idle="
-                        <span class='is-family-primary has-text-weight-semibold has-text-grey-dark is-clickable'>
+						<span class='cursor-pointer'>
                             Drag & Drop your Multi-Sequence fasta or
                         </span>
-                        <span class='is-family-primary has-text-weight-semibold has-text-grey-dark is-clickable'>
+                        <span class='cursor-pointer underline'>
                             Browse
                         </span>
                     "
