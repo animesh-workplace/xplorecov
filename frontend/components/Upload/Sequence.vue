@@ -28,8 +28,44 @@
 </template>
 
 <script setup>
+/* 
+This component provides a file upload interface tailored for multi-sequence FASTA files. 
+It leverages the Vue FilePond library to enable a drag-and-drop file upload experience with real-time feedback and validation checks.
+
+### Key Features:
+1. **File Upload with Validation:**
+   - Allows only a single file upload (`max-files="1"`, `allow-multiple="false`).
+   - Restricts file types to FASTA files (`fasta`, `fa`, `fna`).
+   - Performs multiple verification checks, including:
+     - File format validation.
+     - File structure verification.
+
+2. **Real-time Feedback:**
+   - Provides detailed error messages if the file type is invalid or if structural issues are detected in the FASTA file.
+
+3. **File Processing Logic:**
+   - Parses and cleans FASTA files using the `biojs-io-fasta` library.
+   - Converts uploaded sequences into a cleaned JSON format by removing unwanted carriage returns (`\r`).
+   - Updates the `sequence_verification` state to track the results of file verification steps.
+
+4. **Error Handling:**
+   - Integrates the `usePondFileError` composable for user-friendly error notifications.
+   - Catches issues related to unsupported file types or invalid FASTA file structures and notifies the user with clear messages.
+
+### Dependencies:
+- **Vue FilePond Plugins:**
+  - `FilePondPluginFileValidateType` for file type validation.
+- **Lodash Functions:** Utilized for cleaning JSON keys and resetting validation states.
+- **biojs-io-fasta Library:** Parses multi-sequence FASTA files into a usable JSON format for validation and processing.
+
+### Event Handlers:
+- `RemoveLoader`: Disables the loading state once the component initializes.
+- `HandleFile`: Processes the uploaded file, validates the file type and structure, and provides error notifications for invalid files.
+- `RemoveFile`: Resets all verification checks when a file is removed.
+*/
+
 import vueFilePond from 'vue-filepond'
-import { forEach, mapValues, mapKeys } from 'lodash'
+import { mapValues, mapKeys } from 'lodash'
 import { usePondFileError } from '@/composables/usePondFileError'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js'
 
@@ -41,12 +77,8 @@ const FilePond = vueFilePond(FilePondPluginFileValidateType)
 const isLoading = ref(true)
 const sequence_file = ref(null)
 const sequence_filepond = ref(null)
+const emit = defineEmits(['verification_status'])
 const { handlePondFileError } = usePondFileError()
-const sequence_verification = ref([
-	{ name: 'Sequence Fasta file format check', verification: false },
-	{ name: 'Sequence Fasta file structure check', verification: false },
-	{ name: 'Sequence Fasta file metadata check', verification: false },
-])
 
 // Methods
 const RemoveLoader = () => {
@@ -69,7 +101,10 @@ const HandleFile = (error, file) => {
 		const { default: Fasta } = await import('biojs-io-fasta')
 		try {
 			sequence_json = cleanJSON(Fasta.parse(sequence))
-			sequence_verification.value[1].verification = true
+			emit('verification_status', {
+				verification: true,
+				data: sequence_json,
+			})
 		} catch (err) {
 			console.log(err)
 			push.error('Invalid fasta file')
@@ -84,7 +119,6 @@ const HandleFile = (error, file) => {
 
 	// First Check: Validation of the file extension and providing proper notification
 	if (file_type_accepted.includes(file.fileExtension)) {
-		sequence_verification.value[0].verification = true
 		fileReader.readAsText(file.file)
 	} else {
 		push.error('File is of invalid type, expects fasta or fa or fna')
@@ -98,7 +132,10 @@ const HandleFile = (error, file) => {
 }
 
 const RemoveFile = () => {
-	forEach(sequence_verification.value, (item) => (item.verification = false))
+	emit('verification_status', {
+		verification: false,
+		data: null,
+	})
 }
 </script>
 
