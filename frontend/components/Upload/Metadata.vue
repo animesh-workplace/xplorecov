@@ -154,7 +154,13 @@ const RemoveFile = () => {
 </script>
 
 <style>
-.filepond--item[data-filepond-item-state='processing-warn'] .filepond--file {
-	background-color: #d97a36;
+[data-filepond-item-state='processing-warn'] .filepond--item-panel {
+	background-color: #d97a37;
+}
+
+[data-filepond-item-state*='processing-warn'] .filepond--panel,
+[data-filepond-item-state*='processing-warn'] .filepond--file-wrapper {
+	-webkit-animation: shake 0.65s linear both;
+	animation: shake 0.65s linear both;
 }
 </style>
