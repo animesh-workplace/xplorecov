@@ -25,7 +25,12 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	compatibilityDate: '2024-11-01',
 	notivue: { position: 'bottom-right' },
-	primevue: { options: { ripple: true, theme: { preset: Aura } } },
-	css: ['@/assets/css/main.css', 'notivue/notification.css', 'notivue/animations.css'],
+	primevue: { options: { ripple: true, theme: { preset: Aura, options: { darkModeSelector: '.app-dark' } } } },
+	css: [
+		'@/assets/css/main.css',
+		'primeicons/primeicons.css',
+		'notivue/notification.css',
+		'notivue/animations.css',
+	],
 	umami: { enabled: false, id: '12d666c0-d0bf-4271-ae3b-2ff52f81be58', host: 'https://research.nibmg.ac.in' },
 })
