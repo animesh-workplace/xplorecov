@@ -1,14 +1,13 @@
 <template>
 	<div>
-		<Button @click="refreshData" rounded size="large" label="Large button" icon="pi pi-check" />
-
-		<div v-if="isLoading" class="loader">Loading Graph...</div>
-
-		<VChart ref="chart" class="test" :option="option" :class="{ hidden: isLoading }" />
-
+		<!-- <Button @click="refreshData" rounded size="large" label="Large button" icon="pi pi-check" /> -->
+		<!-- <div v-if="isLoading" class="loader">Loading Graph...</div> -->
+		<!-- <VChart ref="chart" class="test" :option="option" :class="{ hidden: isLoading }" /> -->
 		<!-- <ReadTable /> -->
-		<div class="mx-8 my-8">
+
+		<div class="mx-8 my-8 grid lg:grid-cols-2 lg:gap-14 grid-cols-1">
 			<UploadMetadata />
+			<UploadSequence />
 		</div>
 	</div>
 </template>
