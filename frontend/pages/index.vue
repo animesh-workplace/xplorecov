@@ -4,7 +4,7 @@
 		<Button
 			rounded
 			severity="secondary"
-			@click="toggleDarkMode"
+			@click="themeStore.toggleTheme"
 			:icon="defaultTheme ? 'pi pi-sun' : 'pi pi-moon'"
 		/>
 		<!-- <div v-if="isLoading" class="loader">Loading Graph...</div> -->
@@ -19,6 +19,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue'
+import { useThemeStore } from '@/stores/theme'
+const themeStore = useThemeStore()
+
 const chart = templateRef('chart')
 
 const defaultTheme = ref(false)
@@ -56,10 +59,10 @@ const all_qc_checks = ref([
 	{ name: 'Already present check', verification: false, data: [], error: null, show: false },
 ])
 
-function toggleDarkMode() {
-	defaultTheme.value = !defaultTheme.value
-	document.documentElement.classList.toggle('app-dark')
-}
+// function toggleDarkMode() {
+// 	defaultTheme.value = !defaultTheme.value
+// 	document.documentElement.classList.toggle('app-dark')
+// }
 
 const verifyMetadata = (metadata) => {
 	all_qc_checks.value[0].verification = metadata.verification
