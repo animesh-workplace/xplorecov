@@ -30,7 +30,7 @@
 import csv2json from 'csvjson-csv2json'
 import vueFilePond from 'vue-filepond'
 import { usePondFileError } from '@/composables/usePondFileError'
-import { forEach, mapValues, mapKeys, difference, join } from 'lodash'
+import { forEach, mapValues, mapKeys, difference, join, filter } from 'lodash'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.esm.js'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js'
 
@@ -59,6 +59,11 @@ const RemoveLoader = () => {
 const cleanJSON = (obj) => {
 	const cleanedKeys = mapKeys(obj, (value, key) => key.replace(/\r/g, '')) // Clean keys
 	return mapValues(cleanedKeys, (value) => (typeof value === 'string' ? value.replace(/\r/g, '') : value))
+}
+
+// Remove the rows which are empty that donot contain any Virus name
+const removeEmptyRows = (obj) => {
+	return filter(obj, (d) => d['Virus name'] != '')
 }
 
 // Checks if the columns contain required columns or not
@@ -111,7 +116,7 @@ const HandleFile = (error, file) => {
 	fileReader.onload = (e) => {
 		const metadata = e.target.result
 		// Converting the file to cleaned json
-		metadata_json = cleanJSON(csv2json(metadata, { parseNumbers: true }))
+		metadata_json = removeEmptyRows(cleanJSON(csv2json(metadata, { parseNumbers: true })))
 
 		// Second Check:  Validation of the columns whether all necessary columns are present or not
 		const checking_columns_result = checkColumns(metadata_json)
