@@ -108,7 +108,7 @@ const HandleFile = (error, file) => {
 	let metadata_json
 	const file_type_accepted = ['text', 'csv', 'tsv', 'txt']
 	const fileReader = new FileReader()
-	fileReader.onload = function (e) {
+	fileReader.onload = (e) => {
 		const metadata = e.target.result
 		// Converting the file to cleaned json
 		metadata_json = cleanJSON(csv2json(metadata, { parseNumbers: true }))
@@ -153,14 +153,4 @@ const RemoveFile = () => {
 }
 </script>
 
-<style>
-[data-filepond-item-state='processing-warn'] .filepond--item-panel {
-	background-color: #d97a37;
-}
-
-[data-filepond-item-state*='processing-warn'] .filepond--panel,
-[data-filepond-item-state*='processing-warn'] .filepond--file-wrapper {
-	-webkit-animation: shake 0.65s linear both;
-	animation: shake 0.65s linear both;
-}
-</style>
+<style></style>
