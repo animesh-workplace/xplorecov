@@ -1,1 +1,1 @@
-# QueryHub
+# XPLORECoV
