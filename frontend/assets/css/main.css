@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Section for Filepond components  */
 [data-filepond-item-state='processing-warn'] .filepond--item-panel {
 	background-color: #d97a37;
 }
