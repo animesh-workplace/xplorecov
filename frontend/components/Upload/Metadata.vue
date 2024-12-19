@@ -65,7 +65,7 @@ It uses the Vue FilePond library for an enhanced file upload experience, support
 import csv2json from 'csvjson-csv2json'
 import vueFilePond from 'vue-filepond'
 import { usePondFileError } from '@/composables/usePondFileError'
-import { forEach, mapValues, mapKeys, difference, join, filter } from 'lodash'
+import { mapValues, mapKeys, difference, join, filter } from 'lodash'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.esm.js'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js'
 
@@ -78,12 +78,8 @@ const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImage
 const isLoading = ref(true)
 const metadata_file = ref(null)
 const metadata_filepond = ref(null)
+const emit = defineEmits(['verification_status'])
 const { handlePondFileError } = usePondFileError()
-const metadata_verification = ref([
-	{ name: 'Metadata format check', verification: false },
-	{ name: 'Metadata structure check', verification: false },
-	{ name: 'Metadata sequence check', verification: false },
-])
 
 // Remove Loader when the page is loaded
 const RemoveLoader = () => {
@@ -156,7 +152,10 @@ const HandleFile = (error, file) => {
 		// Second Check:  Validation of the columns whether all necessary columns are present or not
 		const checking_columns_result = checkColumns(metadata_json)
 		if (checking_columns_result.return_value) {
-			metadata_verification.value[1].verification = true
+			emit('verification_status', {
+				verification: true,
+				data: metadata_json,
+			})
 		} else {
 			const missing_text = join(checking_columns_result.missing, '\n')
 			push.error({
@@ -175,7 +174,6 @@ const HandleFile = (error, file) => {
 
 	// First Check: Validation of the file extension and providing proper notification
 	if (file_type_accepted.includes(file.fileExtension)) {
-		metadata_verification.value[0].verification = true
 		fileReader.readAsText(file.file)
 	} else {
 		push.error('File is of invalid type, expects csv, tsv or text/txt')
@@ -189,7 +187,10 @@ const HandleFile = (error, file) => {
 }
 
 const RemoveFile = () => {
-	forEach(metadata_verification.value, (item) => (item.verification = false))
+	emit('verification_status', {
+		verification: false,
+		data: null,
+	})
 }
 </script>
 
