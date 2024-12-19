@@ -4,6 +4,6 @@
   "useTabs": true,
   "printWidth": 115,
   "singleQuote": true,
-  "trailingComma": all,
-  "htmlWhitespaceSensitivity": "css",
+  "trailingComma": "all",
+  "htmlWhitespaceSensitivity": "css"
 }
