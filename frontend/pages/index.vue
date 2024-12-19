@@ -1,6 +1,12 @@
 <template>
 	<div>
-		<!-- <Button @click="refreshData" rounded size="large" label="Large button" icon="pi pi-check" /> -->
+		<!-- <Button @click="toggleDarkMode" rounded size="large" label="Large button" icon="pi pi-check" /> -->
+		<Button
+			rounded
+			severity="secondary"
+			@click="toggleDarkMode"
+			:icon="defaultTheme ? 'pi pi-sun' : 'pi pi-moon'"
+		/>
 		<!-- <div v-if="isLoading" class="loader">Loading Graph...</div> -->
 		<!-- <VChart ref="chart" class="test" :option="option" :class="{ hidden: isLoading }" /> -->
 
@@ -14,6 +20,13 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue'
 const chart = templateRef('chart')
+
+const defaultTheme = ref(false)
+
+function toggleDarkMode() {
+	defaultTheme.value = !defaultTheme.value
+	document.documentElement.classList.toggle('app-dark')
+}
 
 function random() {
 	return Math.round(300 + Math.random() * 700) / 10
