@@ -1,0 +1,40 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@primevue/themes": "^4.2.4",
+    "biojs-io-fasta": "^0.1.17",
+    "crossws": "^0.3.1",
+    "csvjson-csv2json": "^5.0.6",
+    "csvjson-json2csv": "^1.0.3",
+    "filepond": "^4.32.5",
+    "filepond-plugin-file-validate-type": "^1.2.9",
+    "filepond-plugin-image-preview": "^4.6.12",
+    "jszip": "^3.10.1",
+    "notivue": "^2.4.5",
+    "nuxt": "^3.14.1592",
+    "primevue": "^4.2.4",
+    "vue": "latest",
+    "vue-filepond": "^7.0.4",
+    "vue-router": "latest"
+  },
+  "devDependencies": {
+    "@nuxt/icon": "latest",
+    "@nuxt/image": "latest",
+    "@nuxtjs/tailwindcss": "latest",
+    "@pinia/nuxt": "latest",
+    "@primevue/nuxt-module": "^4.2.4",
+    "@vueuse/nuxt": "latest",
+    "dayjs-nuxt": "latest",
+    "nuxt-echarts": "latest",
+    "nuxt-umami": "latest"
+  }
+}
