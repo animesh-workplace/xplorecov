@@ -28,8 +28,8 @@
 
 <script setup>
 import vueFilePond from 'vue-filepond'
+import { forEach, mapValues, mapKeys } from 'lodash'
 import { usePondFileError } from '@/composables/usePondFileError'
-import { forEach, mapValues, mapKeys, difference, join } from 'lodash'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js'
 
 import 'filepond/dist/filepond.min.css'
