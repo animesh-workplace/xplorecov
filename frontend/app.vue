@@ -3,7 +3,10 @@
 		<Notivue v-slot="item">
 			<Notification :item="item" :theme="materialTheme" />
 		</Notivue>
-		<NuxtPage />
+
+		<NuxtLayout>
+			<NuxtPage />
+		</NuxtLayout>
 	</div>
 </template>
 
