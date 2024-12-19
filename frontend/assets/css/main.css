@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[data-filepond-item-state='processing-warn'] .filepond--item-panel {
+	background-color: #d97a37;
+}
+
+[data-filepond-item-state*='processing-warn'] .filepond--panel,
+[data-filepond-item-state*='processing-warn'] .filepond--file-wrapper {
+	-webkit-animation: shake 0.65s linear both;
+	animation: shake 0.65s linear both;
+}
