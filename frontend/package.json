@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "xplorecov-frontend",
   "private": true,
   "type": "module",
   "scripts": {
@@ -18,23 +18,31 @@
     "filepond": "^4.32.5",
     "filepond-plugin-file-validate-type": "^1.2.9",
     "filepond-plugin-image-preview": "^4.6.12",
+    "fuzzyset": "^1.0.7",
     "jszip": "^3.10.1",
     "notivue": "^2.4.5",
     "nuxt": "^3.14.1592",
     "primevue": "^4.2.4",
+    "topojson-client": "^3.1.0",
     "vue": "latest",
+    "vue-animated-counter": "^0.3.0",
     "vue-filepond": "^7.0.4",
     "vue-router": "latest"
   },
   "devDependencies": {
+    "@nuxt/eslint": "latest",
+    "@nuxt/fonts": "latest",
     "@nuxt/icon": "latest",
     "@nuxt/image": "latest",
+    "@nuxtjs/device": "latest",
     "@nuxtjs/tailwindcss": "latest",
     "@pinia/nuxt": "latest",
     "@primevue/nuxt-module": "^4.2.4",
     "@vueuse/nuxt": "latest",
     "dayjs-nuxt": "latest",
     "nuxt-echarts": "latest",
-    "nuxt-umami": "latest"
+    "nuxt-lodash": "latest",
+    "nuxt-umami": "latest",
+    "prettier": "^3.4.2"
   }
 }
