@@ -6,17 +6,18 @@
 				<file-pond
 					max-files="1"
 					credits="false"
-					:allow-multiple="false"
-					ref="metadata_filepond"
 					@init="RemoveLoader"
 					@addfile="HandleFile"
+					class="cursor-pointer"
+					ref="metadata_filepond"
+					:allow-multiple="false"
 					@removefile="RemoveFile"
 					v-model:files="metadata_file"
 					label-idle="
-                        <span class='is-family-primary has-text-weight-semibold has-text-grey-dark is-clickable'>
+                        <span class='cursor-pointer'>
                             Drag & Drop your Metadata or
                         </span>
-                        <span class='is-family-primary has-text-weight-semibold has-text-grey-dark is-clickable'>
+                        <span class='cursor-pointer underline'>
                             Browse
                         </span>
                     "
@@ -27,6 +28,40 @@
 </template>
 
 <script setup>
+/* 
+This component provides a file upload interface specifically designed for handling metadata files related to SARS-CoV-2 sequences. 
+It uses the Vue FilePond library for an enhanced file upload experience, supporting drag-and-drop functionality and providing visual feedback. 
+
+### Key Features:
+1. **File Upload with Validation:**
+   - Allows only a single file upload (`max-files="1"`, `allow-multiple="false`).
+   - Restricts file types to CSV, TSV, or text files.
+   - Validates the presence of required metadata columns in the uploaded file.
+
+2. **Real-time Feedback:**
+   - Shows detailed error messages if the file type is invalid or required columns are missing.
+
+3. **File Processing Logic:**
+   - Converts the uploaded file to a cleaned JSON format (removes carriage returns and empty rows).
+   - Verifies the metadata structure by checking for the presence of all required columns.
+   - Updates a `metadata_verification` state to track the results of various validation checks.
+
+4. **Error Handling:**
+   - Leverages the `usePondFileError` composable to provide user-friendly error notifications for issues like invalid file types or missing columns.
+
+### Dependencies:
+- **Vue FilePond Plugins:**
+  - `FilePondPluginFileValidateType` for file type validation.
+  - `FilePondPluginImagePreview` for potential image preview capabilities (not actively used here but included).
+- **Lodash Functions:** Used for cleaning JSON keys, filtering data, and checking for missing columns.
+- **CSV Conversion Library (`csvjson-csv2json`):** Converts CSV/TSV files into JSON for further processing.
+
+### Event Handlers:
+- `RemoveLoader`: Disables the loading state once the component initializes.
+- `HandleFile`: Processes the uploaded file, performs validations, and notifies the user of errors or success.
+- `RemoveFile`: Resets all verification checks when the file is removed.
+*/
+
 import csv2json from 'csvjson-csv2json'
 import vueFilePond from 'vue-filepond'
 import { usePondFileError } from '@/composables/usePondFileError'
@@ -50,7 +85,7 @@ const metadata_verification = ref([
 	{ name: 'Metadata sequence check', verification: false },
 ])
 
-// Methods
+// Remove Loader when the page is loaded
 const RemoveLoader = () => {
 	isLoading.value = false
 }
