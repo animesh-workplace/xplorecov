@@ -1,6 +1,7 @@
 import Aura from '@primevue/themes/aura'
 
 export default defineNuxtConfig({
+	app: { head: { title: 'XPLORECoV | National Institute of Biomedical Genomics', meta: [], link: [] } },
 	modules: [
 		'dayjs-nuxt',
 		'nuxt-umami',
@@ -16,8 +17,6 @@ export default defineNuxtConfig({
 		'@nuxtjs/tailwindcss',
 		'@primevue/nuxt-module',
 	],
-	css: ['notivue/notification.css', 'notivue/animations.css'],
-	notivue: { position: 'bottom-right' },
 	echarts: {
 		ssr: true,
 		charts: ['BarChart'],
@@ -25,6 +24,8 @@ export default defineNuxtConfig({
 	},
 	devtools: { enabled: true },
 	compatibilityDate: '2024-11-01',
+	notivue: { position: 'bottom-right' },
+	css: ['notivue/notification.css', 'notivue/animations.css'],
 	primevue: { options: { ripple: true, theme: { preset: Aura } } },
 	umami: { enabled: false, id: '12d666c0-d0bf-4271-ae3b-2ff52f81be58', host: 'https://research.nibmg.ac.in' },
 })
