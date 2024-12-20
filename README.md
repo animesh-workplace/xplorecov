@@ -1,1 +1,3 @@
 # XPLORECoV
+
+XPLORECoV is your gateway to advanced SARS-CoV-2 genomic analysis. Combining cutting-edge bioinformatics workflows with AI-driven intelligence, this free, no-login-required platform transforms raw genomic data into actionable epidemiological insights. Say goodbye to outdated filters! XPLORECoV’s powerful AI capabilities handle complex, multifactorial questions with ease, delivering intuitive results on mutation patterns, lineage trends, and spatiotemporal epidemiology. Whether you're an academic, a researcher, or a public health expert, XPLORECoV empowers you to dive deeper with high-throughput pipelines, global datasets, and detailed visual reports
