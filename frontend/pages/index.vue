@@ -22,7 +22,7 @@ import { ref, onMounted, nextTick } from 'vue'
 import { useThemeStore } from '@/stores/theme'
 const themeStore = useThemeStore()
 
-const chart = templateRef('chart')
+// const chart = templateRef('chart')
 
 const defaultTheme = ref(false)
 const all_qc_checks = ref([
