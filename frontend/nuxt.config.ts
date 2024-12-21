@@ -33,4 +33,5 @@ export default defineNuxtConfig({
 		'notivue/animations.css',
 	],
 	umami: { enabled: false, id: '12d666c0-d0bf-4271-ae3b-2ff52f81be58', host: 'https://research.nibmg.ac.in' },
+	dayjs: { plugins: ['customParseFormat'] },
 })
