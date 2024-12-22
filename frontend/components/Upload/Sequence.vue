@@ -28,8 +28,8 @@
 </template>
 
 <script setup>
-/* 
-This component provides a file upload interface tailored for multi-sequence FASTA files. 
+/*
+This component provides a file upload interface tailored for multi-sequence FASTA files.
 It leverages the Vue FilePond library to enable a drag-and-drop file upload experience with real-time feedback and validation checks.
 
 ### Key Features:
@@ -65,7 +65,7 @@ It leverages the Vue FilePond library to enable a drag-and-drop file upload expe
 */
 
 import vueFilePond from 'vue-filepond'
-import { mapValues, mapKeys } from 'lodash'
+import { map, cloneDeepWith, isString } from 'lodash'
 import { usePondFileError } from '@/composables/usePondFileError'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js'
 
@@ -86,9 +86,14 @@ const RemoveLoader = () => {
 }
 
 // Removes \r from text
-const cleanJSON = (obj) => {
-	const cleanedKeys = mapKeys(obj, (value, key) => key.replace(/\r/g, '')) // Clean keys
-	return mapValues(cleanedKeys, (value) => (typeof value === 'string' ? value.replace(/\r/g, '') : value))
+const cleanJSON = (array) => {
+	return map(array, (obj) =>
+		cloneDeepWith(obj, (value) => {
+			if (isString(value)) {
+				return value.replace(/\r/g, '')
+			}
+		}),
+	)
 }
 
 const HandleFile = (error, file) => {
