@@ -28,9 +28,9 @@
 </template>
 
 <script setup>
-/* 
-This component provides a file upload interface specifically designed for handling metadata files related to SARS-CoV-2 sequences. 
-It uses the Vue FilePond library for an enhanced file upload experience, supporting drag-and-drop functionality and providing visual feedback. 
+/*
+This component provides a file upload interface specifically designed for handling metadata files related to SARS-CoV-2 sequences.
+It uses the Vue FilePond library for an enhanced file upload experience, supporting drag-and-drop functionality and providing visual feedback.
 
 ### Key Features:
 1. **File Upload with Validation:**
@@ -65,7 +65,7 @@ It uses the Vue FilePond library for an enhanced file upload experience, support
 import csv2json from 'csvjson-csv2json'
 import vueFilePond from 'vue-filepond'
 import { usePondFileError } from '@/composables/usePondFileError'
-import { mapValues, mapKeys, difference, join, filter } from 'lodash'
+import { map, cloneDeepWith, isString, difference, join, filter } from 'lodash'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.esm.js'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js'
 
@@ -87,9 +87,14 @@ const RemoveLoader = () => {
 }
 
 // Removes \r from text
-const cleanJSON = (obj) => {
-	const cleanedKeys = mapKeys(obj, (value, key) => key.replace(/\r/g, '')) // Clean keys
-	return mapValues(cleanedKeys, (value) => (typeof value === 'string' ? value.replace(/\r/g, '') : value))
+const cleanJSON = (array) => {
+	return map(array, (obj) =>
+		cloneDeepWith(obj, (value) => {
+			if (isString(value)) {
+				return value.replace(/\r/g, '')
+			}
+		}),
+	)
 }
 
 // Remove the rows which are empty that donot contain any Virus name
