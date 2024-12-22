@@ -20,10 +20,12 @@
 		<div class="mx-8 my-8" v-if="!enable_verify && show_qc_check_result">
 			<Accordion :value="accordion_open_index" expandIcon="pi pi-chevron-down" multiple>
 				<AccordionPanel
-					:value="index"
-					v-for="(qc_check, index) in all_qc_checks"
 					:key="index"
+					:value="index"
 					:disabled="!qc_check.data.length"
+					v-for="(qc_check, index) in all_qc_checks"
+					:style="{ animationDelay: `${index * 250}ms` }"
+					class="opacity-0 translate-y-4 transition-all duration-500 ease-in-out animate-fadein"
 				>
 					<AccordionHeader>
 						<span class="flex items-center gap-2 w-full">
@@ -76,7 +78,8 @@
 </template>
 
 <script setup>
-import { forEach, groupBy, filter, map, difference, keys } from 'lodash'
+import { forEach, groupBy, filter, map, difference, keys, flatten, uniq } from 'lodash'
+
 const dayjs = useDayjs()
 const metadata = ref(null)
 const sequence = ref(null)
@@ -148,6 +151,8 @@ const RunChecks = () => {
 	match_metadata_with_sequence()
 
 	show_qc_check_result.value = true
+	const uniq_errors = uniq(flatten(map(all_qc_checks.value, (d) => d.data)))
+	console.log('🚀 ~ RunChecks ~ uniq_errors:', uniq_errors)
 }
 
 const check_collection_date = () => {
@@ -251,7 +256,6 @@ const match_metadata_with_sequence = () => {
 
 	// Sixth Metadata Verification - Matching all metadata with the sequence, so for every metadata there must be a sequence
 	const missing_sequences = difference(metadata_virus_name, sequence_virus_name)
-	console.log('🚀 ~ missing_sequences:', missing_sequences)
 	all_qc_checks.value.push({
 		show: false,
 		data: missing_sequences,
@@ -261,7 +265,6 @@ const match_metadata_with_sequence = () => {
 	})
 	// Second Sequence Verification - Matching all sequence with the metadata, so for every sequence there must be a metadata
 	const missing_metadata = difference(sequence_virus_name, metadata_virus_name)
-	console.log('🚀 ~ missing_metadata:', missing_metadata)
 	all_qc_checks.value.push({
 		show: false,
 		data: missing_metadata,
