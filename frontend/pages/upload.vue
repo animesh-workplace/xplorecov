@@ -6,49 +6,125 @@
 		</div>
 
 		<div class="flex justify-center">
-			<Button raised rounded class="!px-10" severity="success" label="Verify Data" @click="RunChecks" />
+			<Button
+				raised
+				rounded
+				class="!px-10"
+				severity="success"
+				@click="RunChecks"
+				label="Verify Data"
+				:disabled="enable_verify"
+			/>
+		</div>
+
+		<div class="mx-8 my-8" v-if="!enable_verify && show_qc_check_result">
+			<Accordion :value="accordion_open_index" expandIcon="pi pi-chevron-down" multiple>
+				<AccordionPanel
+					:value="index"
+					v-for="(qc_check, index) in all_qc_checks"
+					:key="index"
+					:disabled="!qc_check.data.length"
+				>
+					<AccordionHeader>
+						<span class="flex items-center gap-2 w-full">
+							<span class="font-bold whitespace-nowrap">{{ qc_check.name }}</span>
+							<div class="ml-auto mr-2">
+								<Badge
+									severity="warn"
+									class="ml-auto mr-2"
+									:value="qc_check.error"
+									v-if="!qc_check.verification"
+								/>
+								<span
+									v-if="qc_check.verification"
+									class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded-full dark:bg-green-900 dark:text-green-300"
+								>
+									<i class="pi pi-check text-xs" /> Passed
+								</span>
+
+								<span
+									v-else
+									class="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full dark:bg-red-900 dark:text-red-300"
+								>
+									<i class="pi pi-times text-xs" /> Failed
+								</span>
+							</div>
+						</span>
+					</AccordionHeader>
+
+					<AccordionContent v-if="qc_check.data.length">
+						<ul
+							class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+						>
+							<li
+								:key="index"
+								v-for="(item, index) in qc_check.data"
+								:class="{
+									'rounded-t-lg': index == 0,
+									'rounded-b-lg border-b-0': index == qc_check.data.length - 1,
+								}"
+								class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 hover:bg-gray-100 hover:text-gray-950"
+							>
+								{{ item }}
+							</li>
+						</ul>
+					</AccordionContent>
+				</AccordionPanel>
+			</Accordion>
 		</div>
 	</section>
 </template>
 
 <script setup>
-import { forEach, groupBy, filter, map, difference } from 'lodash'
+import { forEach, groupBy, filter, map, difference, keys } from 'lodash'
 const dayjs = useDayjs()
-const metadata = ref([])
-const sequence = ref([])
+const metadata = ref(null)
+const sequence = ref(null)
+const show_qc_check_result = ref(false)
+const accordion_open_index = computed(() => map(all_qc_checks.value, (d, i) => i))
+const enable_verify = computed(() => {
+	const metadataLength = metadata.value ? metadata.value.length : 0
+	const sequenceLength = sequence.value ? keys(sequence.value).length : 0
+
+	const return_value = !(metadataLength > 0 && sequenceLength > 0)
+
+	if (return_value) {
+		show_qc_check_result.value = false
+		all_qc_checks.value = all_qc_checks.value.slice(0, 4)
+	}
+
+	return return_value
+})
 
 const all_qc_checks = ref([
 	{
+		data: [],
+		error: null,
+		show: false,
+		verification: false,
 		name: 'Metadata file format check',
-		verification: false,
+	},
+	{
 		data: [],
 		error: null,
 		show: false,
-	},
-	{
+		verification: false,
 		name: 'Metadata file structure check',
-		verification: false,
+	},
+	{
 		data: [],
 		error: null,
 		show: false,
-	},
-	{
+		verification: false,
 		name: 'Sequence file format check',
-		verification: false,
-		data: [],
-		error: null,
-		show: false,
 	},
 	{
-		name: 'Sequence file structure check',
-		verification: false,
 		data: [],
 		error: null,
 		show: false,
+		verification: false,
+		name: 'Sequence file structure check',
 	},
-	// { name: 'Missing Metadata/Sequence check', verification: false, data: [], error: null, show: false },
-	// { name: 'Duplicate check', verification: false, data: [], error: null, show: false },
-	// { name: 'Already present check', verification: false, data: [], error: null, show: false },
 ])
 
 const verifyMetadata = (data) => {
@@ -70,6 +146,8 @@ const RunChecks = () => {
 	// Sequence based checks
 	find_duplicate_sequence()
 	match_metadata_with_sequence()
+
+	show_qc_check_result.value = true
 }
 
 const check_collection_date = () => {
@@ -173,6 +251,7 @@ const match_metadata_with_sequence = () => {
 
 	// Sixth Metadata Verification - Matching all metadata with the sequence, so for every metadata there must be a sequence
 	const missing_sequences = difference(metadata_virus_name, sequence_virus_name)
+	console.log('🚀 ~ missing_sequences:', missing_sequences)
 	all_qc_checks.value.push({
 		show: false,
 		data: missing_sequences,
@@ -182,6 +261,7 @@ const match_metadata_with_sequence = () => {
 	})
 	// Second Sequence Verification - Matching all sequence with the metadata, so for every sequence there must be a metadata
 	const missing_metadata = difference(sequence_virus_name, metadata_virus_name)
+	console.log('🚀 ~ missing_metadata:', missing_metadata)
 	all_qc_checks.value.push({
 		show: false,
 		data: missing_metadata,
