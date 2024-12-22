@@ -40,6 +40,7 @@
     "@nuxtjs/tailwindcss": "latest",
     "@pinia/nuxt": "latest",
     "@primevue/nuxt-module": "^4.2.4",
+    "@types/lodash": "^4.17.13",
     "@vueuse/nuxt": "latest",
     "dayjs-nuxt": "latest",
     "nuxt-echarts": "latest",
