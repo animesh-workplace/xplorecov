@@ -5,7 +5,15 @@
 			<UploadSequence @verification_status="verifySequence" />
 		</div>
 
-		<div class="flex justify-center">
+		<div class="mx-8 flex justify-center gap-12">
+			<Button
+				raised
+				rounded
+				class="!px-10"
+				severity="warn"
+				v-if="show_qc_check_result"
+				:label="`Download QC Failed Data (${uniq_errors.length})`"
+			/>
 			<Button
 				raised
 				rounded
@@ -14,6 +22,15 @@
 				@click="RunChecks"
 				label="Verify Data"
 				:disabled="enable_verify"
+				v-if="!show_qc_check_result"
+			/>
+			<Button
+				raised
+				rounded
+				class="!px-10"
+				severity="success"
+				v-if="show_qc_check_result"
+				:label="`Upload QC Passed Data (${cleared_data.length})`"
 			/>
 		</div>
 
@@ -98,7 +115,8 @@ const enable_verify = computed(() => {
 
 	return return_value
 })
-
+const uniq_errors = ref(0)
+const cleared_data = ref(0)
 const all_qc_checks = ref([
 	{
 		data: [],
@@ -151,8 +169,9 @@ const RunChecks = () => {
 	match_metadata_with_sequence()
 
 	show_qc_check_result.value = true
-	const uniq_errors = uniq(flatten(map(all_qc_checks.value, (d) => d.data)))
-	console.log('🚀 ~ RunChecks ~ uniq_errors:', uniq_errors)
+	uniq_errors.value = uniq(flatten(map(all_qc_checks.value, (d) => d.data)))
+	cleared_data.value = difference(uniq(map(metadata.value, (d) => d['Virus name'])), uniq_errors.value)
+	console.log('🚀 ~ RunChecks ~ uniq_errors:', uniq_errors, cleared_data)
 }
 
 const check_collection_date = () => {
