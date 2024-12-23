@@ -11,6 +11,7 @@
 				rounded
 				class="!px-10"
 				severity="warn"
+				@click="download_data"
 				v-if="show_qc_check_result"
 				:label="`Download QC Failed Data (${uniq_errors.length})`"
 			/>
@@ -95,6 +96,9 @@
 </template>
 
 <script setup>
+import JSZip from 'jszip'
+const { default: Fasta } = await import('biojs-io-fasta')
+import { json2csv } from 'json-2-csv'
 import { forEach, groupBy, filter, map, difference, keys, flatten, uniq } from 'lodash'
 
 const dayjs = useDayjs()
@@ -115,8 +119,8 @@ const enable_verify = computed(() => {
 
 	return return_value
 })
-const uniq_errors = ref(0)
-const cleared_data = ref(0)
+const uniq_errors = ref([])
+const cleared_data = ref([])
 const all_qc_checks = ref([
 	{
 		data: [],
@@ -291,5 +295,41 @@ const match_metadata_with_sequence = () => {
 		error: missing_metadata.length,
 		verification: !missing_metadata.length,
 	})
+}
+
+const download_blob = (blob, filename) => {
+	const link = document.createElement('a')
+	link.href = URL.createObjectURL(blob)
+	link.download = filename
+	document.body.appendChild(link)
+	link.click()
+	document.body.removeChild(link)
+}
+
+const download_data = async () => {
+	try {
+		const zip = new JSZip()
+
+		const qcFailedData = filter(metadata.value, (d) => uniq_errors.value.includes(d['Virus name']))
+		const qcFailedSequences = filter(sequence.value, (d) => uniq_errors.value.includes(d['name']))
+
+		// Add files to ZIP
+		zip.file('qc_failed_metadata.tsv', json2csv(qcFailedData, { delimiter: { field: '\t' } }))
+		zip.file('qc_failed_sequences.fasta', Fasta.write(qcFailedSequences))
+
+		// Show loader
+		// loader.value = true;
+
+		// Generate ZIP and download
+		const blob = await zip.generateAsync({
+			type: 'blob',
+			compression: 'DEFLATE',
+			compressionOptions: { level: 5 },
+		})
+
+		download_blob(blob, 'qc_failed_metadata.zip')
+	} catch (error) {
+		console.error('Error downloading data:', error)
+	}
 }
 </script>
