@@ -14,7 +14,6 @@
     "biojs-io-fasta": "^0.1.17",
     "crossws": "^0.3.1",
     "csvjson-csv2json": "^5.0.6",
-    "csvjson-json2csv": "^1.0.3",
     "filepond": "^4.32.5",
     "filepond-plugin-file-validate-type": "^1.2.9",
     "filepond-plugin-image-preview": "^4.6.12",
