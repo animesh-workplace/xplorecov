@@ -46,7 +46,7 @@
 				class="relative w-64 p-4 overflow-hidden bg-white shadow-lg rounded-xl"
 			>
 				<img
-					alt="moto"
+					alt="image"
 					src="https://www.tailwind-kit.com/images/object/1.png"
 					class="absolute w-40 h-40 mb-4 -right-16 -bottom-16"
 				/>
@@ -59,16 +59,18 @@
 
 		<div class="px-6 py-8 md:px-12 lg:px-20">
 			<DataTable
-				v-model:filters="filters"
-				:value="customers"
 				paginator
-				showGridlines
-				:rows="10"
+				:rows="5"
 				dataKey="id"
-				filterDisplay="menu"
+				showGridlines
+				striped-rows
+				removableSort
+				:value="customers"
 				:loading="loading"
-				:globalFilterFields="['name', 'country.name', 'representative.name', 'balance', 'status']"
 				class="!rounded-lg"
+				filterDisplay="menu"
+				v-model:filters="filters"
+				:globalFilterFields="['name', 'country.name', 'representative.name', 'balance', 'status']"
 			>
 				<template #header>
 					<div class="flex justify-between">
@@ -87,8 +89,8 @@
 						</IconField>
 					</div>
 				</template>
-				<template #empty> No customers found. </template>
-				<template #loading> Loading customers data. Please wait. </template>
+				<!-- <template #empty> No customers found. </template> -->
+				<!-- <template #loading> Loading customers data. Please wait. </template> -->
 				<Column field="name" header="Name" style="min-width: 12rem">
 					<template #body="{ data }">
 						{{ data.name }}
@@ -97,6 +99,7 @@
 						<InputText v-model="filterModel.value" type="text" placeholder="Search by name" />
 					</template>
 				</Column>
+
 				<Column header="Country" filterField="country.name" style="min-width: 12rem">
 					<template #body="{ data }">
 						<div class="flex items-center gap-2">
@@ -132,12 +135,13 @@
 						<div class="px-4 pt-0 pb-4 text-center">Customized Buttons</div>
 					</template>
 				</Column>
+
 				<Column
 					header="Agent"
+					style="min-width: 14rem"
 					filterField="representative"
 					:showFilterMatchModes="false"
 					:filterMenuStyle="{ width: '14rem' }"
-					style="min-width: 14rem"
 				>
 					<template #body="{ data }">
 						<div class="flex items-center gap-2">
@@ -169,6 +173,7 @@
 						</MultiSelect>
 					</template>
 				</Column>
+
 				<Column header="Date" filterField="date" dataType="date" style="min-width: 10rem">
 					<template #body="{ data }">
 						{{ formatDate(data.date) }}
@@ -177,6 +182,7 @@
 						<DatePicker v-model="filterModel.value" dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" />
 					</template>
 				</Column>
+
 				<Column header="Balance" filterField="balance" dataType="numeric" style="min-width: 10rem">
 					<template #body="{ data }">
 						{{ formatCurrency(data.balance) }}
@@ -185,6 +191,7 @@
 						<InputNumber v-model="filterModel.value" mode="currency" currency="USD" locale="en-US" />
 					</template>
 				</Column>
+
 				<Column
 					header="Status"
 					field="status"
@@ -202,6 +209,7 @@
 						</Select>
 					</template>
 				</Column>
+
 				<Column field="activity" header="Activity" :showFilterMatchModes="false" style="min-width: 12rem">
 					<template #body="{ data }">
 						<ProgressBar :value="data.activity" :showValue="false" style="height: 6px"></ProgressBar>
@@ -214,6 +222,7 @@
 						</div>
 					</template>
 				</Column>
+
 				<Column
 					field="verified"
 					header="Verified"
@@ -355,7 +364,7 @@ onMounted(() => {
 			activity: 19,
 			representative: {
 				name: 'Brad Jackson',
-				image: 'bradjackson.png',
+				image: 'asiyajavayant.png',
 			},
 			balance: 61200,
 		},
@@ -427,7 +436,7 @@ onMounted(() => {
 			activity: 76,
 			representative: {
 				name: 'Brad Jackson',
-				image: 'bradjackson.png',
+				image: 'xuxuefeng.png',
 			},
 			balance: 30000,
 		},
