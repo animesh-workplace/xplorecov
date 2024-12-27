@@ -14,10 +14,10 @@
 					@removefile="RemoveFile"
 					v-model:files="sequence_file"
 					label-idle="
-						<span class='cursor-pointer'>
+						<span class='cursor-pointer font-bold'>
                             Drag & Drop your Multi-Sequence fasta or
                         </span>
-                        <span class='cursor-pointer underline'>
+                        <span class='cursor-pointer underline font-bold'>
                             Browse
                         </span>
                     "
