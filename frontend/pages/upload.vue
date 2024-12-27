@@ -1,20 +1,20 @@
 <template>
 	<section class="overflow-hidden">
 		<div class="has-background-design z-0 overflow-clip">
-			<Tabs value="0" class="max-w-screen-lg">
+			<Tabs value="0" class="max-w-screen-lg min-w-[1024px]">
 				<TabList pt:tabList="!rounded-t-md" pt:activeBar="!bg-white h-0.5">
-					<Tab value="0" class="flex items-center gap-2 grow">
+					<Tab value="0" class="flex items-center gap-2 grow" pt:root="text-white">
 						<i class="pi pi-plus-circle pt-1" />
 						<span class="font-bold whitespace-nowrap">Metadata Requirement</span>
 					</Tab>
-					<Tab value="1" class="flex items-center gap-2 grow">
+					<Tab value="1" class="flex items-center gap-2 grow" pt:root="text-white">
 						<i class="pi pi-plus-circle pt-1" />
 						<span class="font-bold whitespace-nowrap">Sequence Requirement</span>
 					</Tab>
 				</TabList>
 
 				<TabPanels>
-					<TabPanel value="0" class="m-0 max-h-80 overflow-y-scroll">
+					<TabPanel value="0" class="m-0 max-h-96 overflow-y-scroll">
 						<div class="flex justify-center my-4">
 							<h3 class="text-lg font-semibold mr-3">Supported file formats:</h3>
 
@@ -43,58 +43,79 @@
 
 						<DataTable :value="metadata_requirements" class="mb-32 mr-4">
 							<Column field="name" header="Header" />
-							<Column field="required" header="Mandatory" />
+							<Column field="required" header="Mandatory">
+								<template #body="slotProps">
+									<span
+										v-if="slotProps.data.required"
+										class="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full dark:bg-red-900 dark:text-red-300"
+									>
+										mandatory
+									</span>
+									<span
+										v-else
+										class="bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded-full dark:bg-gray-700 dark:text-gray-300"
+									>
+										optional
+									</span>
+								</template>
+							</Column>
 							<Column field="description" header="Description" />
 						</DataTable>
 					</TabPanel>
 
-					<TabPanel value="1" class="m-0 max-h-80 overflow-y-scroll w-screen">
-						<div class="flex justify-center">
-							<h3 class="is-size-4 has-text-weight-semibold is-inline-block mr-3">
-								Supported file formats:
-							</h3>
-							<span
-								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
-								>fa</span
-							>
-							<span
-								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
-								>fasta</span
-							>
-							<span
-								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
-								>fna</span
-							>
+					<TabPanel value="1" class="m-0 max-h-96 overflow-y-scroll">
+						<div class="mb-20">
+							<div class="flex justify-center my-4">
+								<h3 class="text-lg font-semibold mr-3">Supported file formats:</h3>
+								<span
+									class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
+								>
+									fa
+								</span>
+								<span
+									class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
+								>
+									fasta
+								</span>
+								<span
+									class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
+								>
+									fna
+								</span>
+							</div>
+
+							<div class="flex justify-center">
+								<h3 class="text-xl font-semibold mb-2">
+									Mandatory requirements for the sequence are mentioned below:
+								</h3>
+							</div>
+
+							<div class="flex flex-col items-center">
+								<h6>
+									- Metadata-Sequence Header Matching: The strain column in your metadata file
+									must exactly match the corresponding sequence headers in the FASTA file. Any
+									discrepancies may result in errors or incomplete processing of your data.
+								</h6>
+								<h6>
+									- The sequence data must be submitted as a multi-FASTA file. Ensure that all
+									sequence headers in the FASTA file are unique and correspond directly to the
+									strain names listed in the metadata. Each sequence should be represented in the
+									following format:
+								</h6>
+							</div>
+
+							<div class="pt-2 pb-7 pl-1">
+								>sequence1<br />
+								NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
+								>sequence2<br />
+								NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
+								>sequence3<br />
+								NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
+								...<br />
+								>sequence300<br />
+								NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
+							</div>
 						</div>
-
-						<h3 class="is-size-4 has-text-weight-semibold mb-2">
-							Mandatory requirements for the sequence are mentioned below:
-						</h3>
-
-						<!-- <List class="pl-4"> -->
-						<!-- <ListItem> -->
-						<h6 class="has-text-weight-normal">
-							The strain column in metadata must match the fasta sequence header.
-						</h6>
-						<!-- </ListItem> -->
-						<!-- <ListItem> -->
-						<h6 class="has-text-weight-normal">
-							The sequence fasta file must be a multi fasta file in the following format:
-						</h6>
-						<!-- </ListItem> -->
-						<!-- </List> -->
-
-						<p class="pt-4 pl-4 pb-7">
-							>sequence1<br />
-							NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
-							>sequence2<br />
-							NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
-							>sequence3<br />
-							NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
-							...<br />
-							>sequence300<br />
-							NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
-						</p>
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
@@ -137,7 +158,7 @@
 			</div>
 		</div>
 
-		<div class="mx-8 my-8" v-if="!enable_verify && show_qc_check_result">
+		<div class="mx-8 mt-16 mb-8" v-if="!enable_verify && show_qc_check_result">
 			<Accordion :value="accordion_open_index" expandIcon="pi pi-chevron-down" multiple>
 				<AccordionPanel
 					:key="index"
