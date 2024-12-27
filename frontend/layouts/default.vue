@@ -1,6 +1,9 @@
 <template>
 	<div>
-		<slot />
+		<NavBar />
+		<div class="mt-16">
+			<slot />
+		</div>
 	</div>
 </template>
 
