@@ -1,38 +1,140 @@
 <template>
-	<section>
-		<div class="mx-8 mt-8 mb-4 grid lg:grid-cols-2 lg:gap-14 grid-cols-1">
-			<UploadMetadata @verification_status="verifyMetadata" />
-			<UploadSequence @verification_status="verifySequence" />
+	<section class="overflow-hidden">
+		<div class="has-background-design z-0 overflow-clip">
+			<Tabs value="0" class="max-w-screen-lg">
+				<TabList pt:tabList="!rounded-t-md" pt:activeBar="!bg-white h-0.5">
+					<Tab value="0" class="flex items-center gap-2 grow">
+						<i class="pi pi-plus-circle pt-1" />
+						<span class="font-bold whitespace-nowrap">Metadata Requirement</span>
+					</Tab>
+					<Tab value="1" class="flex items-center gap-2 grow">
+						<i class="pi pi-plus-circle pt-1" />
+						<span class="font-bold whitespace-nowrap">Sequence Requirement</span>
+					</Tab>
+				</TabList>
+
+				<TabPanels>
+					<TabPanel value="0" class="m-0 max-h-80 overflow-y-scroll">
+						<div class="flex justify-center my-4">
+							<h3 class="text-lg font-semibold mr-3">Supported file formats:</h3>
+
+							<span
+								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
+							>
+								tsv
+							</span>
+							<span
+								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
+							>
+								csv
+							</span>
+							<span
+								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
+							>
+								txt
+							</span>
+						</div>
+
+						<div class="flex justify-center">
+							<h3 class="text-xl font-semibold mb-2">
+								Mandatory/Optional headers for the metadata are mentioned below:
+							</h3>
+						</div>
+
+						<DataTable :value="metadata_requirements" class="mb-32 mr-4">
+							<Column field="name" header="Header" />
+							<Column field="required" header="Mandatory" />
+							<Column field="description" header="Description" />
+						</DataTable>
+					</TabPanel>
+
+					<TabPanel value="1" class="m-0 max-h-80 overflow-y-scroll w-screen">
+						<div class="flex justify-center">
+							<h3 class="is-size-4 has-text-weight-semibold is-inline-block mr-3">
+								Supported file formats:
+							</h3>
+							<span
+								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
+								>fa</span
+							>
+							<span
+								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
+								>fasta</span
+							>
+							<span
+								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
+								>fna</span
+							>
+						</div>
+
+						<h3 class="is-size-4 has-text-weight-semibold mb-2">
+							Mandatory requirements for the sequence are mentioned below:
+						</h3>
+
+						<!-- <List class="pl-4"> -->
+						<!-- <ListItem> -->
+						<h6 class="has-text-weight-normal">
+							The strain column in metadata must match the fasta sequence header.
+						</h6>
+						<!-- </ListItem> -->
+						<!-- <ListItem> -->
+						<h6 class="has-text-weight-normal">
+							The sequence fasta file must be a multi fasta file in the following format:
+						</h6>
+						<!-- </ListItem> -->
+						<!-- </List> -->
+
+						<p class="pt-4 pl-4 pb-7">
+							>sequence1<br />
+							NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
+							>sequence2<br />
+							NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
+							>sequence3<br />
+							NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
+							...<br />
+							>sequence300<br />
+							NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
+						</p>
+					</TabPanel>
+				</TabPanels>
+			</Tabs>
 		</div>
 
-		<div class="mx-8 flex justify-center gap-12">
-			<Button
-				raised
-				rounded
-				class="!px-10"
-				severity="warn"
-				@click="download_data"
-				v-if="show_qc_check_result"
-				:label="`Download QC Failed Data (${uniq_errors.length})`"
-			/>
-			<Button
-				raised
-				rounded
-				class="!px-10"
-				severity="success"
-				@click="RunChecks"
-				label="Verify Data"
-				:disabled="enable_verify"
-				v-if="!show_qc_check_result"
-			/>
-			<Button
-				raised
-				rounded
-				class="!px-10"
-				severity="success"
-				v-if="show_qc_check_result"
-				:label="`Upload QC Passed Data (${cleared_data.length})`"
-			/>
+		<div class="shadow-md rounded-md bg-[#393939] z-40 -mt-24 relative pt-4 mx-48">
+			<div class="mx-4 grid lg:grid-cols-2 lg:gap-4 grid-cols-1">
+				<UploadMetadata @verification_status="verifyMetadata" />
+				<UploadSequence @verification_status="verifySequence" />
+			</div>
+
+			<div class="flex justify-center gap-12 py-4">
+				<Button
+					raised
+					rounded
+					class="!px-10"
+					severity="warn"
+					@click="download_data"
+					v-if="show_qc_check_result"
+					:label="`Download QC Failed Data (${uniq_errors.length})`"
+				/>
+				<Button
+					raised
+					rounded
+					class="!px-10"
+					severity="success"
+					@click="RunChecks"
+					label="Verify Data"
+					:disabled="enable_verify"
+					v-if="!show_qc_check_result"
+				/>
+				<Button
+					raised
+					rounded
+					class="!px-10"
+					severity="success"
+					v-if="show_qc_check_result"
+					:label="`Upload QC Passed Data (${cleared_data.length})`"
+				/>
+			</div>
 		</div>
 
 		<div class="mx-8 my-8" v-if="!enable_verify && show_qc_check_result">
@@ -119,6 +221,153 @@ const enable_verify = computed(() => {
 
 	return return_value
 })
+const metadata_requirements = ref([
+	{
+		name: 'Virus name',
+		required: true,
+		description: 'e.g. hCoV-19/India/1234/2021 (Must be FASTA-Header from the FASTA file)',
+	},
+	{
+		name: 'Type',
+		required: true,
+		description: 'default must remain betacoronavirus',
+	},
+	{
+		name: 'Passage details/history',
+		required: true,
+		description: 'e.g. Original, Vero',
+	},
+	{
+		name: 'Collection date',
+		required: true,
+		description: 'Format [ DD-MM-YYYY, DD/MM/YYYY, YYYY-MM-DD, YYYY/MM/DD ]',
+	},
+	{
+		name: 'Continent',
+		required: true,
+		description: 'Sample collected from which continent',
+	},
+	{
+		name: 'Country',
+		required: true,
+		description: 'Sample collected from which country',
+	},
+	{
+		name: 'State',
+		required: true,
+		description: 'Sample collected from which state',
+	},
+	{
+		name: 'District',
+		required: true,
+		description: 'Sample collected from which district',
+	},
+	{
+		name: 'Additional location information',
+		required: false,
+		description: 'e.g. Cruise Ship, Convention, Live animal market',
+	},
+	{
+		name: 'Host',
+		required: true,
+		description: 'e.g. Human, Environment, Canine, Manis javanica, Rhinolophus affinis, etc',
+	},
+	{
+		name: 'Additional host information',
+		required: false,
+		description: 'e.g. Patient infected while traveling in …',
+	},
+	{
+		name: 'Sampling Strategy',
+		required: false,
+		description: 'e.g. Sentinel surveillance (ILI, ARI, SARI), Non-sentinel-surveillance',
+	},
+	{
+		name: 'Gender',
+		required: true,
+		description: 'Male, Female, or unknown',
+	},
+	{
+		name: 'Patient age',
+		required: true,
+		description: 'e.g. 65 or 7 months, or unknown',
+	},
+	{
+		name: 'Patient status',
+		required: true,
+		description: 'e.g. Hospitalized, Released, Live, Deceased, or unknown',
+	},
+	{
+		name: 'Specimen source',
+		required: false,
+		description: 'e.g. Sputum, Oro-pharyngeal swab, Blood, Tracheal swab, Other',
+	},
+	{
+		name: 'Outbreak',
+		required: false,
+		description: 'Date, Location e.g. type of gathering, Family cluster, etc.',
+	},
+	{
+		name: 'Last vaccinated',
+		required: false,
+		description: 'provide details if applicable',
+	},
+	{
+		name: 'Treatment',
+		required: false,
+		description: 'Include drug name, dosage',
+	},
+	{
+		name: 'Sequencing technology',
+		required: true,
+		description: 'e.g.	Illumina Miseq, Sanger, Nanopore MinION, Ion Torrent, etc.',
+	},
+	{
+		name: 'Assembly method',
+		required: false,
+		description: 'e.g. CLC Genomics Workbench 12, SPAdes/MEGAHIT v1.2.9, etc.',
+	},
+	{
+		name: 'Coverage',
+		required: false,
+		description: 'e.g. 70x, 1000x, 10000x',
+	},
+	{
+		name: 'Originating lab',
+		required: true,
+		description: 'Where the clinical specimen or virus isolate was first obtained',
+	},
+	{
+		name: 'Originating lab address',
+		required: true,
+		description: '',
+	},
+	{
+		name: 'Sample ID given by the originating lab',
+		required: false,
+		description: '',
+	},
+	{
+		name: 'Submitting lab',
+		required: true,
+		description: 'Where sequence data have been generated and submitted to GISAID',
+	},
+	{
+		name: 'Submitting lab address',
+		required: true,
+		description: '',
+	},
+	{
+		name: 'Sample ID given by the submitting lab',
+		required: false,
+		description: '',
+	},
+	{
+		name: 'Authors',
+		required: true,
+		description: 'a comma separated list of Authors with First followed by Last Name',
+	},
+])
 const uniq_errors = ref([])
 const cleared_data = ref([])
 const all_qc_checks = ref([
@@ -333,3 +582,19 @@ const download_data = async () => {
 	}
 }
 </script>
+
+<style>
+.has-background-design {
+	width: 120vw;
+	display: flex;
+	min-height: 60vh;
+	margin-left: -10vw;
+	position: relative;
+	align-items: center;
+	flex-direction: column;
+	justify-content: flex-end;
+	border-radius: 0 0 50% 50%;
+	/*background-image: linear-gradient(0deg,#bfeaff,#80caff);*/
+	background-image: linear-gradient(0deg, rgb(0, 60, 89), rgb(0, 74, 127));
+}
+</style>
