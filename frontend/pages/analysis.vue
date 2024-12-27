@@ -58,6 +58,45 @@
 		</div>
 
 		<div class="px-6 py-8 md:px-12 lg:px-20">
+			<div class="w-full bg-white shadow-lg rounded-2xl dark:bg-gray-700">
+				<p class="p-4 font-bold text-black text-md dark:text-white">My Tasks</p>
+				<ul>
+					<li
+						:key="index"
+						v-for="(step, index) in analysis_steps"
+						class="flex items-center justify-between py-3 text-gray-600 border-gray-100 dark:text-gray-200 dark:border-gray-800"
+						:class="{ 'border-b-2': step.index != 6, 'border-t-2': step.index == 1 }"
+					>
+						<div class="flex items-center justify-start text-sm">
+							<span class="mx-4"> {{ step.index }} </span>
+							<span> {{ step.name }} </span>
+						</div>
+						<i
+							v-if="step.status == 'pending'"
+							class="pi pi-pause-circle mx-4 text-gray-400 dark:text-gray-300"
+						/>
+						<i
+							v-if="step.status == 'completed'"
+							class="pi pi-check-circle mx-4 text-green-400 dark:text-green-500"
+						/>
+						<svg
+							width="17"
+							height="17"
+							viewBox="0 0 24 24"
+							v-if="step.status == 'loading'"
+							xmlns="http://www.w3.org/2000/svg"
+							class="mx-4 text-gray-400 dark:text-gray-300 stroke-yellow-700"
+						>
+							<g class="spinner">
+								<circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" />
+							</g>
+						</svg>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="px-6 py-8 md:px-12 lg:px-20">
 			<DataTable
 				paginator
 				:rows="5"
@@ -70,6 +109,7 @@
 				class="!rounded-lg"
 				filterDisplay="menu"
 				v-model:filters="filters"
+				v-model:expandedRows="expandedRows"
 				:globalFilterFields="['name', 'country.name', 'representative.name', 'balance', 'status']"
 			>
 				<template #header>
@@ -275,6 +315,16 @@ const representatives = ref([
 ])
 const statuses = ref(['unqualified', 'qualified', 'new', 'negotiation', 'renewal', 'proposal'])
 const loading = ref(true)
+const expandedRows = ref({})
+const analysis_steps = ref({
+	// Status - Pending, Loading, Completed
+	step1: { index: 1, name: 'Analysis Queued', status: 'pending' },
+	step2: { index: 2, name: 'Runnning QC Checks', status: 'pending' },
+	step3: { index: 3, name: 'Updating Tools', status: 'pending' },
+	step4: { index: 4, name: 'Runnning Nextclade Analysis', status: 'pending' },
+	step5: { index: 5, name: 'Running Pangolin Analysis', status: 'loading' },
+	step6: { index: 6, name: 'Summarizing Results', status: 'completed' },
+})
 
 onMounted(() => {
 	customers.value = [
@@ -531,3 +581,5 @@ const getSeverity = (status) => {
 	}
 }
 </script>
+
+<style scoped></style>
