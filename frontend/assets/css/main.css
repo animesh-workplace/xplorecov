@@ -13,8 +13,39 @@
 	}
 }
 
+@keyframes spinner_1 {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+@keyframes spinner_2 {
+	0% {
+		stroke-dasharray: 0 150;
+		stroke-dashoffset: 0;
+	}
+	47.5% {
+		stroke-dasharray: 42 150;
+		stroke-dashoffset: -16;
+	}
+	95%,
+	100% {
+		stroke-dasharray: 42 150;
+		stroke-dashoffset: -59;
+	}
+}
+
 .animate-fadein {
 	animation: fadein 0.5s ease-in-out forwards;
+}
+
+.spinner {
+	transform-origin: center;
+	animation: spinner_1 2s linear infinite;
+}
+
+.spinner circle {
+	stroke-linecap: round;
+	animation: spinner_2 1.5s ease-in-out infinite;
 }
 
 /* Section for Filepond components  */
@@ -29,9 +60,9 @@
 }
 
 html.app-dark .filepond--panel-root {
-	background-color: #737373;
+	background-color: #525252;
 }
 
 html.app-dark .filepond--drop-label {
-	color: #f4f5f4;
+	color: #c6c6c6;
 }
