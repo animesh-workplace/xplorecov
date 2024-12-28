@@ -15,107 +15,11 @@
 
 				<TabPanels>
 					<TabPanel value="0" class="m-0 max-h-96 overflow-y-scroll">
-						<div class="flex justify-center my-4">
-							<h3 class="text-lg font-semibold mr-3">Supported file formats:</h3>
-
-							<span
-								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
-							>
-								tsv
-							</span>
-							<span
-								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
-							>
-								csv
-							</span>
-							<span
-								class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
-							>
-								txt
-							</span>
-						</div>
-
-						<div class="flex justify-center">
-							<h3 class="text-xl font-semibold mb-2">
-								Mandatory/Optional headers for the metadata are mentioned below:
-							</h3>
-						</div>
-
-						<DataTable :value="metadata_requirements" class="mb-32 mr-4">
-							<Column field="name" header="Header" />
-							<Column field="required" header="Mandatory">
-								<template #body="slotProps">
-									<span
-										v-if="slotProps.data.required"
-										class="bg-red-100 text-red-800 text-xs font-medium px-2 py-1 rounded-full dark:bg-red-900 dark:text-red-300"
-									>
-										mandatory
-									</span>
-									<span
-										v-else
-										class="bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded-full dark:bg-gray-700 dark:text-gray-300"
-									>
-										optional
-									</span>
-								</template>
-							</Column>
-							<Column field="description" header="Description" />
-						</DataTable>
+						<MetadataRequirement />
 					</TabPanel>
 
 					<TabPanel value="1" class="m-0 max-h-96 overflow-y-scroll">
-						<div class="mb-20">
-							<div class="flex justify-center my-4">
-								<h3 class="text-lg font-semibold mr-3">Supported file formats:</h3>
-								<span
-									class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
-								>
-									fa
-								</span>
-								<span
-									class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
-								>
-									fasta
-								</span>
-								<span
-									class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2 pt-1 rounded dark:bg-blue-900 dark:text-blue-300"
-								>
-									fna
-								</span>
-							</div>
-
-							<div class="flex justify-center">
-								<h3 class="text-xl font-semibold mb-2">
-									Mandatory requirements for the sequence are mentioned below:
-								</h3>
-							</div>
-
-							<div class="flex flex-col items-center">
-								<h6>
-									- Metadata-Sequence Header Matching: The strain column in your metadata file
-									must exactly match the corresponding sequence headers in the FASTA file. Any
-									discrepancies may result in errors or incomplete processing of your data.
-								</h6>
-								<h6>
-									- The sequence data must be submitted as a multi-FASTA file. Ensure that all
-									sequence headers in the FASTA file are unique and correspond directly to the
-									strain names listed in the metadata. Each sequence should be represented in the
-									following format:
-								</h6>
-							</div>
-
-							<div class="pt-2 pb-7 pl-1">
-								>sequence1<br />
-								NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
-								>sequence2<br />
-								NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
-								>sequence3<br />
-								NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
-								...<br />
-								>sequence300<br />
-								NTAAAGGTTTATACCTTCCCAGGTAACAAACC......<br />
-							</div>
-						</div>
+						<SequenceRequirement />
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
@@ -125,8 +29,8 @@
 			class="shadow-md rounded-md bg-white dark:bg-[#393939] z-40 -mt-24 relative pt-4 mx-4 md:mx-12 lg:mx-24 xl:mx-48"
 		>
 			<div class="mx-4 grid lg:grid-cols-2 md:grid-cols-2 md:gap-4 lg:gap-4 grid-cols-1">
-				<UploadMetadata @verification_status="verifyMetadata" />
-				<UploadSequence @verification_status="verifySequence" />
+				<MetadataUpload @verification_status="verifyMetadata" />
+				<SequenceUpload @verification_status="verifySequence" />
 			</div>
 
 			<div class="flex justify-center gap-12 py-4">
@@ -244,153 +148,6 @@ const enable_verify = computed(() => {
 
 	return return_value
 })
-const metadata_requirements = ref([
-	{
-		name: 'Virus name',
-		required: true,
-		description: 'e.g. hCoV-19/India/1234/2021 (Must be FASTA-Header from the FASTA file)',
-	},
-	{
-		name: 'Type',
-		required: true,
-		description: 'default must remain betacoronavirus',
-	},
-	{
-		name: 'Passage details/history',
-		required: true,
-		description: 'e.g. Original, Vero',
-	},
-	{
-		name: 'Collection date',
-		required: true,
-		description: 'Format [ DD-MM-YYYY, DD/MM/YYYY, YYYY-MM-DD, YYYY/MM/DD ]',
-	},
-	{
-		name: 'Continent',
-		required: true,
-		description: 'Sample collected from which continent',
-	},
-	{
-		name: 'Country',
-		required: true,
-		description: 'Sample collected from which country',
-	},
-	{
-		name: 'State',
-		required: true,
-		description: 'Sample collected from which state',
-	},
-	{
-		name: 'District',
-		required: true,
-		description: 'Sample collected from which district',
-	},
-	{
-		name: 'Additional location information',
-		required: false,
-		description: 'e.g. Cruise Ship, Convention, Live animal market',
-	},
-	{
-		name: 'Host',
-		required: true,
-		description: 'e.g. Human, Environment, Canine, Manis javanica, Rhinolophus affinis, etc',
-	},
-	{
-		name: 'Additional host information',
-		required: false,
-		description: 'e.g. Patient infected while traveling in …',
-	},
-	{
-		name: 'Sampling Strategy',
-		required: false,
-		description: 'e.g. Sentinel surveillance (ILI, ARI, SARI), Non-sentinel-surveillance',
-	},
-	{
-		name: 'Gender',
-		required: true,
-		description: 'Male, Female, or unknown',
-	},
-	{
-		name: 'Patient age',
-		required: true,
-		description: 'e.g. 65 or 7 months, or unknown',
-	},
-	{
-		name: 'Patient status',
-		required: true,
-		description: 'e.g. Hospitalized, Released, Live, Deceased, or unknown',
-	},
-	{
-		name: 'Specimen source',
-		required: false,
-		description: 'e.g. Sputum, Oro-pharyngeal swab, Blood, Tracheal swab, Other',
-	},
-	{
-		name: 'Outbreak',
-		required: false,
-		description: 'Date, Location e.g. type of gathering, Family cluster, etc.',
-	},
-	{
-		name: 'Last vaccinated',
-		required: false,
-		description: 'provide details if applicable',
-	},
-	{
-		name: 'Treatment',
-		required: false,
-		description: 'Include drug name, dosage',
-	},
-	{
-		name: 'Sequencing technology',
-		required: true,
-		description: 'e.g.	Illumina Miseq, Sanger, Nanopore MinION, Ion Torrent, etc.',
-	},
-	{
-		name: 'Assembly method',
-		required: false,
-		description: 'e.g. CLC Genomics Workbench 12, SPAdes/MEGAHIT v1.2.9, etc.',
-	},
-	{
-		name: 'Coverage',
-		required: false,
-		description: 'e.g. 70x, 1000x, 10000x',
-	},
-	{
-		name: 'Originating lab',
-		required: true,
-		description: 'Where the clinical specimen or virus isolate was first obtained',
-	},
-	{
-		name: 'Originating lab address',
-		required: true,
-		description: '',
-	},
-	{
-		name: 'Sample ID given by the originating lab',
-		required: false,
-		description: '',
-	},
-	{
-		name: 'Submitting lab',
-		required: true,
-		description: 'Where sequence data have been generated and submitted to GISAID',
-	},
-	{
-		name: 'Submitting lab address',
-		required: true,
-		description: '',
-	},
-	{
-		name: 'Sample ID given by the submitting lab',
-		required: false,
-		description: '',
-	},
-	{
-		name: 'Authors',
-		required: true,
-		description: 'a comma separated list of Authors with First followed by Last Name',
-	},
-])
 const uniq_errors = ref([])
 const cleared_data = ref([])
 const all_qc_checks = ref([
@@ -447,7 +204,6 @@ const RunChecks = () => {
 	show_qc_check_result.value = true
 	uniq_errors.value = uniq(flatten(map(all_qc_checks.value, (d) => d.data)))
 	cleared_data.value = difference(uniq(map(metadata.value, (d) => d['Virus name'])), uniq_errors.value)
-	console.log('🚀 ~ RunChecks ~ uniq_errors:', uniq_errors, cleared_data)
 }
 
 const check_collection_date = () => {
