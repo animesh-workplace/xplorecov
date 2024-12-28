@@ -5,6 +5,7 @@ fontFamily['sans'] = ['Averta', 'system-ui']
 
 module.exports = {
 	theme: {},
+	// darkMode: ['class', 'app-dark'],
 	content: [
 		'./pages/**/*.vue',
 		'./layouts/**/*.vue',
