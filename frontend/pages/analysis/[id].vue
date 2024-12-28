@@ -96,7 +96,7 @@
 			</div>
 		</div>
 
-		<div class="px-6 py-8 md:px-12 lg:px-20">
+		<!-- <div class="px-6 py-8 md:px-12 lg:px-20">
 			<DataTable
 				paginator
 				:rows="5"
@@ -129,8 +129,6 @@
 						</IconField>
 					</div>
 				</template>
-				<!-- <template #empty> No customers found. </template> -->
-				<!-- <template #loading> Loading customers data. Please wait. </template> -->
 				<Column field="name" header="Name" style="min-width: 12rem">
 					<template #body="{ data }">
 						{{ data.name }}
@@ -290,7 +288,7 @@
 					</template>
 				</Column>
 			</DataTable>
-		</div>
+		</div> -->
 	</section>
 </template>
 
