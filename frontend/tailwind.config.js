@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-// const defaultTheme = require('tailwindcss/defaultTheme')
-// const fontFamily = defaultTheme.fontFamily
-// fontFamily['sans'] = ['Lexend Deca', 'system-ui']
+const defaultTheme = require('tailwindcss/defaultTheme')
+const fontFamily = defaultTheme.fontFamily
+fontFamily['sans'] = ['Averta', 'system-ui']
 
 module.exports = {
 	theme: {},
