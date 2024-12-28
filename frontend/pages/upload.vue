@@ -1,6 +1,6 @@
 <template>
 	<section class="overflow-hidden">
-		<div class="has-background-design z-0 overflow-clip">
+		<div class="has-background-design z-0 overflow-clip pt-10">
 			<Tabs value="0" class="max-w-screen-lg min-w-[1024px]">
 				<TabList pt:tabList="!rounded-t-md" pt:activeBar="!bg-white h-0.5">
 					<Tab value="0" class="flex items-center gap-2 grow" pt:root="text-white">
