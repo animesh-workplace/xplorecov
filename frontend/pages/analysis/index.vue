@@ -17,25 +17,33 @@
 		</div>
 
 		<div class="px-6 py-8 md:px-12 lg:px-20">
-			<DataTable rowHover showGridlines :value="products">
+			<DataTable
+				rowHover
+				paginator
+				:rows="5"
+				size="small"
+				:value="products"
+				:rowsPerPageOptions="[5, 10, 20, 50]"
+				:pt="{ pcPaginator: { root: '!rounded-b-lg' } }"
+			>
 				<Column
 					field="index"
 					header="Sl. No"
 					class="!text-center"
-					:pt="{ columnHeaderContent: '!justify-center', headerCell: '!rounded-tl-lg' }"
-				></Column>
+					:pt="{ columnHeaderContent: '!justify-center', headerCell: '!rounded-tl-lg !p-4' }"
+				/>
 				<Column
 					field="date"
 					header="Submission Date"
 					class="!text-center"
 					:pt="{ columnHeaderContent: '!justify-center' }"
-				></Column>
+				/>
 				<Column
 					field="total_seq"
 					header="Total Sequences"
 					class="!text-center"
 					:pt="{ columnHeaderContent: '!justify-center' }"
-				></Column>
+				/>
 				<Column
 					header="Status"
 					field="status"
@@ -46,7 +54,7 @@
 						<Tag :value="data.status" severity="danger" />
 					</template>
 				</Column>
-				<Column class="w-44 !text-end" :pt="{ headerCell: '!rounded-tr-lg' }">
+				<Column class="w-44 !text-center" :pt="{ headerCell: '!rounded-tr-lg' }">
 					<template #body="{ data }">
 						<NuxtLink :to="`/analysis/${data.id}`">
 							<Button
