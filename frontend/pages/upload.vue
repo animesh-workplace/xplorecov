@@ -121,7 +121,7 @@
 			</Tabs>
 		</div>
 
-		<div class="shadow-md rounded-md bg-[#393939] z-40 -mt-24 relative pt-4 mx-48">
+		<div class="shadow-md rounded-md bg-white dark:bg-[#393939] z-40 -mt-24 relative pt-4 mx-48">
 			<div class="mx-4 grid lg:grid-cols-2 lg:gap-4 grid-cols-1">
 				<UploadMetadata @verification_status="verifyMetadata" />
 				<UploadSequence @verification_status="verifySequence" />
