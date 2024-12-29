@@ -35,4 +35,5 @@ export default defineNuxtConfig({
 		'@/assets/css/main.css',
 		'@/assets/css/fonts.css',
 	],
+	// build: { transpile: ['lodash'] },
 })
