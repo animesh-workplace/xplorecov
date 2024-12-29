@@ -26,6 +26,7 @@
     "primeicons": "^7.0.0",
     "primevue": "^4.2.4",
     "topojson-client": "^3.1.0",
+    "uuid": "^11.0.3",
     "vue": "latest",
     "vue-animated-counter": "^0.3.0",
     "vue-filepond": "^7.0.4",
