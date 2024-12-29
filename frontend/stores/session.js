@@ -11,7 +11,6 @@ export const useSessionStore = defineStore('session', {
 		},
 		getSessionInfo() {
 			const session_cookie = useCookie('session')
-			console.log('🚀 ~ getSessionInfo ~ session_cookie:', session_cookie.value)
 			if (session_cookie.value) {
 				this.session = session_cookie.value
 			} else {
