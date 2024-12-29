@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="min-h-screen">
 		<Notivue v-slot="item">
 			<Notification :item="item" :theme="materialTheme" />
 		</Notivue>
