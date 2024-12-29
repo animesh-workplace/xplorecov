@@ -25,15 +25,12 @@
     "nuxt": "^3.14.1592",
     "primeicons": "^7.0.0",
     "primevue": "^4.2.4",
-    "simplebar-vue": "^2.4.0",
     "topojson-client": "^3.1.0",
     "uuid": "^11.0.3",
     "vue": "latest",
     "vue-animated-counter": "^0.3.0",
-    "vue-custom-scrollbar": "^1.4.4",
     "vue-filepond": "^7.0.4",
-    "vue-router": "latest",
-    "vue3-perfect-scrollbar": "^2.0.0"
+    "vue-router": "latest"
   },
   "devDependencies": {
     "@nuxt/eslint": "latest",
