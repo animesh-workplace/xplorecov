@@ -20,7 +20,7 @@ export const useThemeStore = defineStore('theme', {
 			this.applyTheme()
 		},
 		applyTheme() {
-			const themeClass = 'app-dark'
+			const themeClass = 'dark'
 			if (this.isDarkMode) {
 				document.documentElement.classList.add(themeClass)
 			} else {
