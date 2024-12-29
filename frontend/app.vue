@@ -13,11 +13,13 @@
 <script setup>
 import { materialTheme } from 'notivue'
 import { useThemeStore } from '@/stores/theme'
+import { useSessionStore } from '@/stores/session'
 
 const themeStore = useThemeStore()
+const sessionStore = useSessionStore()
+
 onMounted(() => {
-	nextTick(() => {
-		themeStore.loadTheme()
-	})
+	themeStore.loadTheme()
+	sessionStore.getSessionInfo()
 })
 </script>
