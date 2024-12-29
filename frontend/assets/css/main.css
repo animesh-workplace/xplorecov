@@ -59,11 +59,11 @@
 	animation: shake 0.65s linear both;
 }
 
-html.app-dark .filepond--panel-root {
+html.dark .filepond--panel-root {
 	background-color: #525252;
 }
 
-html.app-dark .filepond--drop-label {
+html.dark .filepond--drop-label {
 	color: #c6c6c6;
 }
 
