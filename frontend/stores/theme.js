@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { useStorage } from '@vueuse/core'
 
 export const useThemeStore = defineStore('theme', {
 	state: () => ({ isDarkMode: false }),
@@ -8,18 +7,17 @@ export const useThemeStore = defineStore('theme', {
 		toggleTheme() {
 			this.isDarkMode = !this.isDarkMode
 			this.applyTheme()
-			if (import.meta.client) {
-				useStorage('theme', this.isDarkMode ? 'dark' : 'light')
-			}
+			const theme = useCookie('theme')
+			theme.value = this.isDarkMode ? 'dark' : 'light'
 		},
 		loadTheme() {
-			if (import.meta.client) {
-				const savedTheme = useStorage('theme')
-				if (savedTheme.value) {
-					this.isDarkMode = savedTheme.value === 'dark'
-				}
-				this.applyTheme()
+			const savedTheme = useCookie('theme')
+			if (savedTheme.value) {
+				this.isDarkMode = savedTheme.value === 'dark'
+			} else {
+				savedTheme.value = 'light'
 			}
+			this.applyTheme()
 		},
 		applyTheme() {
 			const themeClass = 'app-dark'
