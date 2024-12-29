@@ -5,7 +5,7 @@ fontFamily['sans'] = ['Averta', 'system-ui']
 
 module.exports = {
 	theme: {},
-	// darkMode: ['class', 'app-dark'],
+	darkMode: ['class'],
 	content: [
 		'./pages/**/*.vue',
 		'./layouts/**/*.vue',
@@ -14,5 +14,5 @@ module.exports = {
 		'./components/**/*.{js,vue,ts}',
 		'./node_modules/flowbite.{js,ts}',
 	],
-	plugins: [],
+	plugins: [require('tailwind-scrollbar')],
 }
