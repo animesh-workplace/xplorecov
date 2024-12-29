@@ -68,12 +68,23 @@
 							>Analysis</NuxtLink
 						>
 					</li>
+					<li>
+						<Button
+							rounded
+							severity="secondary"
+							@click="themeStore.toggleTheme"
+							:icon="themeStore.isDarkMode ? 'pi pi-sun' : 'pi pi-moon'"
+						/>
+					</li>
 				</ul>
 			</div>
 		</div>
 	</nav>
 </template>
 
-<script setup></script>
+<script setup>
+import { useThemeStore } from '@/stores/theme'
+const themeStore = useThemeStore()
+</script>
 
 <style scoped></style>
