@@ -199,6 +199,7 @@ celerybeat-schedule
 env/
 venv/
 ENV/
+.workflow-venv/
 
 # Spyder project settings
 .spyderproject
