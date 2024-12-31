@@ -17,9 +17,10 @@ log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 print("Started Nextclade")
 shell(
     """
-        time nextclade run -D {snakemake.input.dataset} -j {snakemake.threads} \
-        --output-tsv {snakemake.output.clade_report} --output-all {snakemake.output.clade_folder} \
-        {snakemake.input.sequences} {log}
+    time micromamba run -p "~/micromamba-env/.workflow-venv/envs/nibmg_tool" nextclade run \
+    -D "{snakemake.input.dataset}" -j {snakemake.threads} \
+    --output-tsv "{snakemake.output.clade_report}" --output-all "{snakemake.output.clade_folder}" \
+    "{snakemake.input.sequences}" {log}
     """
 )
 print("Finished Nextclade")
