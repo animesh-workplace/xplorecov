@@ -1,14 +1,42 @@
+import requests
+from datetime import datetime
+
+
 rule pangolin_usher:
     input:
-        sequences = config["OutputDir"] / "uploaded" / "sequences.fasta",
+        sequences=f'{config["OutputDir"]}/uploaded/sequences.fasta',
     output:
-        lineage_report = config["OutputDir"] / "result" / "pangolin-usher" / "lineage.tsv",
+        lineage_report=f"{config['OutputDir']}/result/pangolin-usher/lineage.tsv",
     resources:
-        tempdir = str(config["OutputDir"] / "result" / "pangolin-usher" / "temp")
+        tempdir=f"{config['OutputDir']}/result/pangolin-usher/temp",
     log:
-        config["OutputDir"] / "log" / "pangolin-usher.log"
-    conda:
-        config["UpdateDir"] / "envs" / "tool.yaml"
-    threads: 24
-    wrapper:
-        "file:wrappers/pangolin-usher.wrapper.py"
+        f'{config["OutputDir"]}/log/pangolin-usher.log',
+    threads: 10
+    run:
+        print("Started Pangolin: Usher")
+        shell(
+            """
+                time micromamba run -p "~/micromamba-env/.workflow-venv/envs/nibmg_tool" pangolin {input.sequences} --outfile {output.lineage_report} -t {threads} > {log} 2>&1
+            """
+        )
+        print("Finished Pangolin: Usher")
+        # requests.post(
+        #     "http://localhost:5000/print",
+        #     data={
+        #         "task": "Qualimap BamQC",
+        #         "status": "Started",
+        #         "time": str(datetime.now()),
+        #         "db_loc": snakemake.config["db_loc"],
+        #         "sample": f"{snakemake.wildcards.sample}",
+        #     },
+        # )
+        # requests.post(
+        #     "http://localhost:5000/print",
+        #     data={
+        #         "task": "Qualimap BamQC",
+        #         "status": "Finished",
+        #         "time": str(datetime.now()),
+        #         "db_loc": snakemake.config["db_loc"],
+        #         "sample": f"{snakemake.wildcards.sample}",
+        #     },
+        # )
