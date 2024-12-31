@@ -1,3 +1,9 @@
+import requests
+from datetime import datetime
+
+shell.executable("bash")
+
+
 rule nextclade:
     input:
         dataset="workflow/resources/nextclade/data",
@@ -8,7 +14,35 @@ rule nextclade:
     log:
         f'{config["OutputDir"]}/log/nextclade.log',
     threads: 10
-    conda:
-        "~/micromamba-env/.workflow-venv/envs/nibmg_tool"
-    wrapper:
-        "file:workflow/wrappers/nextclade.wrapper.py"
+    run:
+        print("Started Nextclade")
+        shell(
+            """
+            time micromamba run -p "~/micromamba-env/.workflow-venv/envs/nibmg_tool" nextclade run \
+            -D "{input.dataset}" -j {threads} \
+            --output-tsv "{output.clade_report}" --output-all "{output.clade_folder}" \
+            "{input.sequences}" > {log} 2>&1
+            """
+        )
+        print("Finished Nextclade")
+        # requests.post(
+        #     "http://localhost:5000/print",
+        #     data={
+        #         "task": "Qualimap BamQC",
+        #         "status": "Started",
+        #         "time": str(datetime.now()),
+        #         "db_loc": snakemake.config["db_loc"],
+        #         "sample": f"{snakemake.wildcards.sample}",
+        #     },
+        # )
+        # requests.post(
+        #     "http://localhost:5000/print",
+        #     data={
+        #         "task": "Qualimap BamQC",
+        #         "status": "Finished",
+        #         "time": str(datetime.now()),
+        #         "db_loc": snakemake.config["db_loc"],
+        #         "sample": f"{snakemake.wildcards.sample}",
+        #     },
+        # )
+
