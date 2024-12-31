@@ -1,8 +1,6 @@
 import requests
 from datetime import datetime
 
-shell.executable("bash")
-
 
 rule nextclade:
     input:
