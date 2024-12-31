@@ -1,14 +1,14 @@
 rule nextclade:
     input:
-        dataset = "resources/nextclade/data",
-        sequences = config["OutputDir"] / "uploaded" / "sequences.fasta",
+        dataset="workflow/resources/nextclade/data",
+        sequences=f'{config["OutputDir"]}/uploaded/sequences.fasta',
     output:
-        clade_report = config["OutputDir"] / "result" / "nextclade" / "clade_report.tsv",
-        clade_folder = directory(config["OutputDir"] / "result" / "nextclade" / "others"),
+        clade_report=f"{config['OutputDir']}/result/nextclade/clade_report.tsv",
+        clade_folder=directory(f'{config["OutputDir"]}/result/nextclade/others'),
     log:
-        config["OutputDir"] / "log" / "nextclade.log"
-    conda:
-        config["UpdateDir"] / "envs" / "tool.yaml"
+        f'{config["OutputDir"]}/log/nextclade.log',
     threads: 10
-    wrapper: 
-        "file:wrappers/nextclade.wrapper.py"
+    conda:
+        "~/micromamba-env/.workflow-venv/envs/nibmg_tool"
+    wrapper:
+        "file:workflow/wrappers/nextclade.wrapper.py"
