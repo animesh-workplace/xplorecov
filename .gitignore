@@ -228,3 +228,4 @@ rclone.config
 
 # Dependencies folder
 deps/
+datalake/
