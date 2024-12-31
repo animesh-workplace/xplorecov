@@ -126,6 +126,7 @@
 
 <script setup>
 import JSZip from 'jszip'
+import { nanoid } from 'nanoid'
 const { default: Fasta } = await import('biojs-io-fasta')
 import { json2csv } from 'json-2-csv'
 import { forEach, groupBy, filter, map, difference, keys, flatten, uniq } from 'lodash'
