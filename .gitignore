@@ -229,3 +229,4 @@ rclone.config
 # Dependencies folder
 deps/
 datalake/
+.workflow-venv/
