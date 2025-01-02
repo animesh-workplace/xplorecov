@@ -16,7 +16,7 @@ rule nextclade:
         print("Started Nextclade")
         shell(
             """
-            time micromamba run -p "~/micromamba-env/.workflow-venv/envs/nibmg_tool" nextclade run \
+            time micromamba run -p "/home/nsm/Desktop/All_Development/Manuscript_Work/xplorecov/backend/.workflow-venv/envs/xplorecov" nextclade run \
             -D "{input.dataset}" -j {threads} \
             --output-tsv "{output.clade_report}" --output-all "{output.clade_folder}" \
             "{input.sequences}" > {log} 2>&1
