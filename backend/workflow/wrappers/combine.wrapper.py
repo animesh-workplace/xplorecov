@@ -4,17 +4,8 @@ from functools import reduce
 log = snakemake.log_fmt_shell(stdout=True, stderr=True)
 
 print("Started Combined")
-usher = pandas.read_csv(
-    snakemake.input.usher, delimiter="\t", encoding="utf-8", low_memory=False
-)
 nextclade = pandas.read_csv(
     snakemake.input.nextclade, delimiter="\t", encoding="utf-8", low_memory=False
-)
-pangolearn = pandas.read_csv(
-    snakemake.input.pangolin_pangolearn,
-    delimiter=",",
-    encoding="utf-8",
-    low_memory=False,
 )
 pangousher = pandas.read_csv(
     snakemake.input.pangolin_usher, delimiter="\t", encoding="utf-8", low_memory=False
@@ -30,14 +21,7 @@ nextclade.rename(
     },
     inplace=True,
 )
-pangolearn.rename(
-    columns={
-        "taxon": "Name",
-        "lineage": "Pangolearn-Lineage",
-        "qc_status": "Pangolearn-QC-Status",
-    },
-    inplace=True,
-)
+
 pangousher.rename(
     columns={
         "taxon": "Name",
@@ -57,9 +41,7 @@ combined_list = [
             "Nextclade-QC-Status",
         ]
     ],
-    pangolearn[["Name", "Pangolearn-Lineage", "Pangolearn-QC-Status"]],
     pangousher[["Name", "Pangousher-Lineage", "Pangousher-QC-Status"]],
-    usher[["Name", "Usher-Clade", "Usher-Lineage"]],
 ]
 
 combined_report = reduce(
