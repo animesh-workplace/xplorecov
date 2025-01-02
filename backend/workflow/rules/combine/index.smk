@@ -1,15 +1,68 @@
+import pandas
+from functools import reduce
+
+
 rule combine:
     input:
-        usher = rules.usher.output.usher_report,
-        nextclade = rules.nextclade.output.clade_report,
-        pangolin_usher = rules.pangolin_usher.output.lineage_report,
-        pangolin_pangolearn = rules.pangolin_pangolearn.output.lineage_report,
-    output: 
-        report = config["OutputDir"] / "result" / "combined_report.tsv"
+        nextclade=rules.nextclade.output.clade_report,
+        pangolin_usher=rules.pangolin_usher.output.lineage_report,
+    output:
+        report=f'{config["OutputDir"]}/result/combined_report.tsv',
     log:
-        config["OutputDir"] / "log" / "combined.log"        
-    conda:
-        config["UpdateDir"] / "envs" / "tool.yaml"
+        f'{config["OutputDir"]}/log/combined.log',
     threads: 1
-    wrapper: 
-        "file:wrappers/combine.wrapper.py"
+    run:
+        print("Started Combined")
+        nextclade = pandas.read_csv(
+            input.nextclade,
+            delimiter="\t",
+            encoding="utf-8",
+            low_memory=False,
+        )
+        pangousher = pandas.read_csv(
+            input.pangolin_usher,
+            delimiter=",",
+            encoding="utf-8",
+            low_memory=False,
+        )
+
+        nextclade.rename(
+            columns={
+                "seqName": "Name",
+                "clade": "Nextclade-Clade",
+                "Nextclade_pango": "Nextclade-Lineage",
+                "qc.overallScore": "Nextclade-QC-Score",
+                "qc.overallStatus": "Nextclade-QC-Status",
+            },
+            inplace=True,
+        )
+        print(nextclade)
+        pangousher.rename(
+            columns={
+                "taxon": "Name",
+                "lineage": "Pangousher-Lineage",
+                "qc_status": "Pangousher-QC-Status",
+            },
+            inplace=True,
+        )
+        print(pangousher)
+
+        combined_list = [
+            nextclade[
+                [
+                    "Name",
+                    "Nextclade-Clade",
+                    "Nextclade-Lineage",
+                    "Nextclade-QC-Score",
+                    "Nextclade-QC-Status",
+                ]
+            ],
+            pangousher[["Name", "Pangousher-Lineage", "Pangousher-QC-Status"]],
+        ]
+
+        combined_report = reduce(
+            lambda left, right: pandas.merge(left, right, on="Name", how="inner"),
+            combined_list,
+        )
+        combined_report.to_csv(output.report, sep="\t", index=False)
+        print("Finished Combined")
