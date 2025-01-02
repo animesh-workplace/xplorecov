@@ -16,7 +16,7 @@ rule pangolin_usher:
         print("Started Pangolin: Usher")
         shell(
             """
-                time micromamba run -p "~/micromamba-env/.workflow-venv/envs/nibmg_tool" pangolin {input.sequences} --outfile {output.lineage_report} -t {threads} > {log} 2>&1
+                time micromamba run -p ".workflow-venv/envs/xplorecov" pangolin {input.sequences} --outfile {output.lineage_report} -t {threads} > {log} 2>&1
             """
         )
         print("Finished Pangolin: Usher")
