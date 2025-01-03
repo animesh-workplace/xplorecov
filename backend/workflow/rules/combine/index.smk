@@ -13,6 +13,7 @@ rule combine:
     threads: 1
     run:
         print("Started Combined")
+        run_websocket_message("start")
         nextclade = pandas.read_csv(
             input.nextclade,
             delimiter="\t",
@@ -36,7 +37,6 @@ rule combine:
             },
             inplace=True,
         )
-        print(nextclade)
         pangousher.rename(
             columns={
                 "taxon": "Name",
@@ -45,7 +45,6 @@ rule combine:
             },
             inplace=True,
         )
-        print(pangousher)
 
         combined_list = [
             nextclade[
@@ -65,4 +64,5 @@ rule combine:
             combined_list,
         )
         combined_report.to_csv(output.report, sep="\t", index=False)
+        run_websocket_message("end")
         print("Finished Combined")
