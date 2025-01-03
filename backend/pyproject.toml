@@ -26,6 +26,10 @@ huggingface-hub = "^0.26.2"
 mpire = "^2.10.2"
 snakemake = "^8.26.0"
 psycopg2 = "^2.9.10"
+uvicorn = "^0.34.0"
+uvicorn-worker = "^0.3.0"
+python-dotenv = "^1.0.1"
+websockets = "^14.1"
 
 
 [build-system]
