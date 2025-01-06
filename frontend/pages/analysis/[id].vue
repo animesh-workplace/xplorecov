@@ -57,7 +57,7 @@
 			</div>
 		</div>
 
-		<div class="px-6 py-8 md:px-12 lg:px-20">
+		<div class="px-6 py-8 md:px-12 lg:px-20 lg:max-w-screen-md">
 			<div class="w-full bg-white shadow-lg rounded-2xl dark:bg-gray-700">
 				<p class="p-4 font-bold text-black text-md dark:text-white">My Tasks</p>
 				<ul>
