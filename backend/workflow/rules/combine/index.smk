@@ -1,4 +1,4 @@
-import pandas
+import pandas, time
 from functools import reduce
 
 
@@ -13,7 +13,8 @@ rule combine:
     threads: 1
     run:
         print("Started Combined")
-        run_websocket_message("start")
+        time.sleep(10)
+        run_websocket_message("combine", "start")
         nextclade = pandas.read_csv(
             input.nextclade,
             delimiter="\t",
@@ -64,5 +65,6 @@ rule combine:
             combined_list,
         )
         combined_report.to_csv(output.report, sep="\t", index=False)
-        run_websocket_message("end")
+        run_websocket_message("combine", "end")
+        time.sleep(10)
         print("Finished Combined")

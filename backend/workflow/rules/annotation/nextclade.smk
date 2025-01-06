@@ -1,4 +1,4 @@
-import requests
+import requests, time
 from datetime import datetime
 
 
@@ -14,7 +14,8 @@ rule nextclade:
     threads: 10
     run:
         print("Started Nextclade")
-        run_websocket_message("start")
+        run_websocket_message("nextclade-rule", "start")
+        time.sleep(10)
         shell(
             """
             time micromamba run -p "/home/nsm/Desktop/All_Development/Manuscript_Work/xplorecov/backend/.workflow-venv/envs/xplorecov" nextclade run \
@@ -23,7 +24,8 @@ rule nextclade:
             "{input.sequences}" > {log} 2>&1
             """
         )
-        run_websocket_message("end")
+        run_websocket_message("nextclade-rule", "end")
+        time.sleep(10)
         print("Finished Nextclade")
         # requests.post(
         #     "http://localhost:5000/print",

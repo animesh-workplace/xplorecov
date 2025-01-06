@@ -1,4 +1,4 @@
-import requests
+import requests, time
 from datetime import datetime
 
 
@@ -14,13 +14,15 @@ rule pangolin_usher:
     threads: 10
     run:
         print("Started Pangolin: Usher")
-        run_websocket_message("start")
+        run_websocket_message("pangolin-usher", "start")
+        time.sleep(10)
         shell(
             """
                 time micromamba run -p ".workflow-venv/envs/xplorecov" pangolin {input.sequences} --outfile {output.lineage_report} -t {threads} > {log} 2>&1
             """
         )
-        run_websocket_message("end")
+        time.sleep(10)
+        run_websocket_message("pangolin-usher", "end")
         print("Finished Pangolin: Usher")
         # requests.post(
         #     "http://localhost:5000/print",
