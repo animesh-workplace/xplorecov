@@ -13,7 +13,6 @@ rule combine:
     threads: 1
     run:
         print("Started Combined")
-        time.sleep(10)
         run_websocket_message("combine", "start")
         nextclade = pandas.read_csv(
             input.nextclade,
@@ -66,5 +65,4 @@ rule combine:
         )
         combined_report.to_csv(output.report, sep="\t", index=False)
         run_websocket_message("combine", "end")
-        time.sleep(10)
         print("Finished Combined")

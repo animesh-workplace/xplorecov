@@ -6,18 +6,11 @@ async def connect_and_send(rule_name, status="update"):
 
     try:
         async with websockets.connect(uri) as websocket:
-            print(f"Connected to WebSocket server - {status}")
 
             response = await websocket.recv()
-            print(f"Received: {response}")
-
             message = {"type": rule_name, "status": status}
             await websocket.send(json.dumps(message))
-            print(f"Sent status: {status}")
-
-            # Close connection
             await websocket.close()
-            print("Connection closed")
 
     except Exception as e:
         print(f"WebSocket error: {str(e)}")
@@ -36,8 +29,6 @@ def run_websocket_message(rule_name, status="update"):
 
 rule all:
     input:
-        # f"{config['OutputDir']}/result/nextclade/clade_report.tsv",
-        # f"{config['OutputDir']}/result/pangolin-usher/lineage.tsv",
         f'{config["OutputDir"]}/result/combined_report.tsv',
 
 
