@@ -15,7 +15,6 @@ rule nextclade:
     run:
         print("Started Nextclade")
         run_websocket_message("nextclade-rule", "start")
-        time.sleep(10)
         shell(
             """
             time micromamba run -p "/home/nsm/Desktop/All_Development/Manuscript_Work/xplorecov/backend/.workflow-venv/envs/xplorecov" nextclade run \
@@ -25,7 +24,6 @@ rule nextclade:
             """
         )
         run_websocket_message("nextclade-rule", "end")
-        time.sleep(10)
         print("Finished Nextclade")
         # requests.post(
         #     "http://localhost:5000/print",

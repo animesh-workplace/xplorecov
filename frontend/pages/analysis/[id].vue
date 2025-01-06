@@ -297,6 +297,9 @@ import { ref, onMounted } from 'vue'
 // import { CustomerService } from '@/service/CustomerService'
 import { FilterMatchMode, FilterOperator } from '@primevue/core/api'
 
+const wsUrl = 'ws://localhost:8009/xplorecov/wsa/backend/'
+const { messages, analysis_steps } = useWebSocket(wsUrl)
+
 const customers = ref()
 const filters = ref()
 const representatives = ref([
@@ -314,15 +317,15 @@ const representatives = ref([
 const statuses = ref(['unqualified', 'qualified', 'new', 'negotiation', 'renewal', 'proposal'])
 const loading = ref(true)
 const expandedRows = ref({})
-const analysis_steps = ref({
-	// Status - Pending, Loading, Completed
-	step1: { index: 1, name: 'Analysis Queued', status: 'pending' },
-	step2: { index: 2, name: 'Runnning QC Checks', status: 'pending' },
-	step3: { index: 3, name: 'Updating Tools', status: 'pending' },
-	step4: { index: 4, name: 'Runnning Nextclade Analysis', status: 'pending' },
-	step5: { index: 5, name: 'Running Pangolin Analysis', status: 'loading' },
-	step6: { index: 6, name: 'Summarizing Results', status: 'completed' },
-})
+// const analysis_steps = ref({
+// 	// Status - Pending, Loading, Completed
+// 	step1: { index: 1, name: 'Analysis Queued', status: 'pending' },
+// 	step2: { index: 2, name: 'Runnning QC Checks', status: 'pending' },
+// 	step3: { index: 3, name: 'Updating Tools', status: 'pending' },
+// 	step4: { index: 4, name: 'Runnning Nextclade Analysis', status: 'pending' },
+// 	step5: { index: 5, name: 'Running Pangolin Analysis', status: 'pending' },
+// 	step6: { index: 6, name: 'Summarizing Results', status: 'pending' },
+// })
 
 onMounted(() => {
 	customers.value = [
