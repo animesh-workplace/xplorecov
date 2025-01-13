@@ -294,6 +294,10 @@
 
 <script setup>
 import { useSessionStore } from '@/stores/session'
+const { session } = useSessionStore()
+const route = useRoute()
+const wsUrl = `ws://localhost:8009/xplorecov/analysis/${useCookie('session').value}/${route.params.id}/`
+const { messages, analysis_steps } = useWebSocket(wsUrl)
 // import { CustomerService } from '@/service/CustomerService'
 // import { FilterMatchMode, FilterOperator } from '@primevue/core/api'
 
@@ -325,11 +329,6 @@ import { useSessionStore } from '@/stores/session'
 // })
 
 onMounted(() => {
-	const { session } = useSessionStore()
-	const route = useRoute()
-	const wsUrl = `ws://localhost:8009/xplorecov/analysis/${session}/${route.params.id}`
-	const { messages, analysis_steps } = useWebSocket(wsUrl)
-
 	// customers.value = [
 	// 	{
 	// 		id: 1000,
@@ -512,7 +511,6 @@ onMounted(() => {
 	// 		balance: 78000,
 	// 	},
 	// ]
-
 	// CustomerService.getCustomersMedium().then((data) => {
 	// 	customers.value = getCustomers(data)
 	// loading.value = false
