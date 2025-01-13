@@ -237,7 +237,7 @@ const UploadData = async () => {
 			title: 'Successfully Uploaded',
 			message: 'Starting Analysis',
 		})
-		// await navigateTo(`/analysis/${analysis_id}`)
+		await navigateTo(`/analysis/${analysis_id}`)
 	} catch (err) {
 		console.log(err)
 	}
