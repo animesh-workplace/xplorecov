@@ -11,11 +11,10 @@ def run_analysis_workflow(output_dir, user_id, analysis_id):
             "workflow/Main.Snakefile",
             "--config",
             f"UserID={user_id}",
-            "--config",
             f"OutputDir={output_dir}",
-            "--config",
             f"AnalysisID={analysis_id}",
         ]
+        print(cmd)
         result = subprocess.run(cmd, capture_output=True, text=True)
         return {
             "success": result.returncode == 0,
