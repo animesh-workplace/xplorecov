@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import UserAnalysisSerializer
-from .tasks.run_main_workflow import run_snakemake
+from .tasks.run_main_workflow import run_analysis_workflow
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
@@ -24,7 +24,7 @@ class SnakemakeView(APIView):
         output_dir = f"datalake/{user_id}/{analysis_id}"
 
         # Trigger Celery task
-        task = run_snakemake.delay(output_dir)
+        task = run_analysis_workflow.delay(output_dir)
 
         return Response(
             {
@@ -56,7 +56,7 @@ class UserAnalysisView(APIView):
             output_dir = f"datalake/{user_id}/{analysis_id}"
 
             # Trigger Celery task
-            task = run_snakemake.delay(output_dir)
+            task = run_analysis_workflow.delay(output_dir, user_id, analysis_id)
 
             return Response(
                 {"message": "Analysis submitted successfully.", "id": analysis.id},
