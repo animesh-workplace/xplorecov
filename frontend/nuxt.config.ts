@@ -25,14 +25,11 @@ const Xaura = definePreset(Aura, {
 })
 
 export default defineNuxtConfig({
-<<<<<<< HEAD
-=======
 	runtimeConfig: {
 		public: {
 			API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:8009/api',
 		},
 	},
->>>>>>> main#1
 	app: {
 		head: {
 			title: 'XPLORECoV | National Institute of Biomedical Genomics',
