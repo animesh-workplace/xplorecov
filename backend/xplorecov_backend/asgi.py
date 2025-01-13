@@ -20,8 +20,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "xplorecov_backend.settings")
 asgi_app = get_asgi_application()
 
 
+from django.urls import path
 from dotenv import load_dotenv
-from django.urls import re_path
 from django.conf import settings
 from channels.auth import AuthMiddlewareStack
 from channels.security.websocket import AllowedHostsOriginValidator
@@ -36,12 +36,12 @@ application = ProtocolTypeRouter(
             AuthMiddlewareStack(
                 URLRouter(
                     [
-                        re_path(
+                        path(
                             os.getenv("BASE_URL"),
                             URLRouter(
                                 [
-                                    re_path(
-                                        r"^wsa/backend/$",
+                                    path(
+                                        "analysis/<user_id>/<analysis_id>/",
                                         TestConsumer.as_asgi(),
                                         name="backend-consumer",
                                     ),
