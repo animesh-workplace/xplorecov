@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import requests
-=======
 import requests, time
->>>>>>> main#1
 from datetime import datetime
 
 
@@ -18,19 +14,13 @@ rule pangolin_usher:
     threads: 10
     run:
         print("Started Pangolin: Usher")
-<<<<<<< HEAD
-=======
         run_websocket_message("pangolin-usher", "start")
->>>>>>> main#1
         shell(
             """
                 time micromamba run -p ".workflow-venv/envs/xplorecov" pangolin {input.sequences} --outfile {output.lineage_report} -t {threads} > {log} 2>&1
             """
         )
-<<<<<<< HEAD
-=======
         run_websocket_message("pangolin-usher", "end")
->>>>>>> main#1
         print("Finished Pangolin: Usher")
         # requests.post(
         #     "http://localhost:5000/print",
