@@ -293,30 +293,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { useSessionStore } from '@/stores/session'
 // import { CustomerService } from '@/service/CustomerService'
-import { FilterMatchMode, FilterOperator } from '@primevue/core/api'
+// import { FilterMatchMode, FilterOperator } from '@primevue/core/api'
 
-const wsUrl = 'ws://localhost:8009/xplorecov/wsa/backend/'
-const { messages, analysis_steps } = useWebSocket(wsUrl)
-
-const customers = ref()
-const filters = ref()
-const representatives = ref([
-	{ name: 'Amy Elsner', image: 'amyelsner.png' },
-	{ name: 'Anna Fali', image: 'annafali.png' },
-	{ name: 'Asiya Javayant', image: 'asiyajavayant.png' },
-	{ name: 'Bernardo Dominic', image: 'bernardodominic.png' },
-	{ name: 'Elwin Sharvill', image: 'elwinsharvill.png' },
-	{ name: 'Ioni Bowcher', image: 'ionibowcher.png' },
-	{ name: 'Ivan Magalhaes', image: 'ivanmagalhaes.png' },
-	{ name: 'Onyama Limba', image: 'onyamalimba.png' },
-	{ name: 'Stephen Shaw', image: 'stephenshaw.png' },
-	{ name: 'XuXue Feng', image: 'xuxuefeng.png' },
-])
-const statuses = ref(['unqualified', 'qualified', 'new', 'negotiation', 'renewal', 'proposal'])
-const loading = ref(true)
-const expandedRows = ref({})
+// const customers = ref()
+// const filters = ref()
+// const representatives = ref([
+// 	{ name: 'Amy Elsner', image: 'amyelsner.png' },
+// 	{ name: 'Anna Fali', image: 'annafali.png' },
+// 	{ name: 'Asiya Javayant', image: 'asiyajavayant.png' },
+// 	{ name: 'Bernardo Dominic', image: 'bernardodominic.png' },
+// 	{ name: 'Elwin Sharvill', image: 'elwinsharvill.png' },
+// 	{ name: 'Ioni Bowcher', image: 'ionibowcher.png' },
+// 	{ name: 'Ivan Magalhaes', image: 'ivanmagalhaes.png' },
+// 	{ name: 'Onyama Limba', image: 'onyamalimba.png' },
+// 	{ name: 'Stephen Shaw', image: 'stephenshaw.png' },
+// 	{ name: 'XuXue Feng', image: 'xuxuefeng.png' },
+// ])
+// const statuses = ref(['unqualified', 'qualified', 'new', 'negotiation', 'renewal', 'proposal'])
+// const loading = ref(true)
+// const expandedRows = ref({})
 // const analysis_steps = ref({
 // 	// Status - Pending, Loading, Completed
 // 	step1: { index: 1, name: 'Analysis Queued', status: 'pending' },
@@ -328,259 +325,264 @@ const expandedRows = ref({})
 // })
 
 onMounted(() => {
-	customers.value = [
-		{
-			id: 1000,
-			name: 'James Butt',
-			country: {
-				name: 'Algeria',
-				code: 'dz',
-			},
-			company: 'Benton, John B Jr',
-			date: '2018-06-15',
-			status: 'unqualified',
-			verified: true,
-			activity: 45,
-			representative: {
-				name: 'Ioni Bowcher',
-				image: 'ionibowcher.png',
-			},
-			balance: 70663,
-		},
-		{
-			id: 1001,
-			name: 'Jane Doe',
-			country: {
-				name: 'United States',
-				code: 'us',
-			},
-			company: 'Wayne Enterprises',
-			date: '2020-12-11',
-			status: 'qualified',
-			verified: false,
-			activity: 78,
-			representative: {
-				name: 'Amy Elsner',
-				image: 'amyelsner.png',
-			},
-			balance: 92038,
-		},
-		{
-			id: 1002,
-			name: 'Chris Evans',
-			country: {
-				name: 'Brazil',
-				code: 'br',
-			},
-			company: 'Stark Industries',
-			date: '2019-03-25',
-			status: 'new',
-			verified: true,
-			activity: 62,
-			representative: {
-				name: 'Anna Fali',
-				image: 'annafali.png',
-			},
-			balance: 56022,
-		},
-		{
-			id: 1003,
-			name: 'Scarlett Johansson',
-			country: {
-				name: 'France',
-				code: 'fr',
-			},
-			company: 'Oscorp',
-			date: '2021-08-19',
-			status: 'renewal',
-			verified: false,
-			activity: 34,
-			representative: {
-				name: 'Asiya Javayant',
-				image: 'asiyajavayant.png',
-			},
-			balance: 48200,
-		},
-		{
-			id: 1004,
-			name: 'Tom Holland',
-			country: {
-				name: 'India',
-				code: 'in',
-			},
-			company: 'Daily Bugle',
-			date: '2023-01-05',
-			status: 'negotiation',
-			verified: true,
-			activity: 19,
-			representative: {
-				name: 'Brad Jackson',
-				image: 'asiyajavayant.png',
-			},
-			balance: 61200,
-		},
-		{
-			id: 1005,
-			name: 'Natalie Portman',
-			country: {
-				name: 'Canada',
-				code: 'ca',
-			},
-			company: 'Acme Corp',
-			date: '2016-07-22',
-			status: 'unqualified',
-			verified: true,
-			activity: 82,
-			representative: {
-				name: 'Amy Elsner',
-				image: 'amyelsner.png',
-			},
-			balance: 73500,
-		},
-		{
-			id: 1006,
-			name: 'Robert Downey Jr.',
-			country: {
-				name: 'Germany',
-				code: 'de',
-			},
-			company: 'Hydra',
-			date: '2017-11-09',
-			status: 'qualified',
-			verified: false,
-			activity: 47,
-			representative: {
-				name: 'Anna Fali',
-				image: 'annafali.png',
-			},
-			balance: 88400,
-		},
-		{
-			id: 1007,
-			name: 'Mark Ruffalo',
-			country: {
-				name: 'China',
-				code: 'cn',
-			},
-			company: 'Pym Technologies',
-			date: '2022-05-14',
-			status: 'new',
-			verified: true,
-			activity: 51,
-			representative: {
-				name: 'Ioni Bowcher',
-				image: 'ionibowcher.png',
-			},
-			balance: 49200,
-		},
-		{
-			id: 1008,
-			name: 'Zendaya',
-			country: {
-				name: 'Australia',
-				code: 'au',
-			},
-			company: 'SHIELD',
-			date: '2020-02-03',
-			status: 'renewal',
-			verified: false,
-			activity: 76,
-			representative: {
-				name: 'Brad Jackson',
-				image: 'xuxuefeng.png',
-			},
-			balance: 30000,
-		},
-		{
-			id: 1009,
-			name: 'John Smith',
-			country: {
-				name: 'Argentina',
-				code: 'ar',
-			},
-			company: 'Parker Industries',
-			date: '2015-09-13',
-			status: 'negotiation',
-			verified: true,
-			activity: 29,
-			representative: {
-				name: 'Asiya Javayant',
-				image: 'asiyajavayant.png',
-			},
-			balance: 78000,
-		},
-	]
+	const { session } = useSessionStore()
+	const route = useRoute()
+	const wsUrl = `ws://localhost:8009/xplorecov/analysis/${session}/${route.params.id}`
+	const { messages, analysis_steps } = useWebSocket(wsUrl)
+
+	// customers.value = [
+	// 	{
+	// 		id: 1000,
+	// 		name: 'James Butt',
+	// 		country: {
+	// 			name: 'Algeria',
+	// 			code: 'dz',
+	// 		},
+	// 		company: 'Benton, John B Jr',
+	// 		date: '2018-06-15',
+	// 		status: 'unqualified',
+	// 		verified: true,
+	// 		activity: 45,
+	// 		representative: {
+	// 			name: 'Ioni Bowcher',
+	// 			image: 'ionibowcher.png',
+	// 		},
+	// 		balance: 70663,
+	// 	},
+	// 	{
+	// 		id: 1001,
+	// 		name: 'Jane Doe',
+	// 		country: {
+	// 			name: 'United States',
+	// 			code: 'us',
+	// 		},
+	// 		company: 'Wayne Enterprises',
+	// 		date: '2020-12-11',
+	// 		status: 'qualified',
+	// 		verified: false,
+	// 		activity: 78,
+	// 		representative: {
+	// 			name: 'Amy Elsner',
+	// 			image: 'amyelsner.png',
+	// 		},
+	// 		balance: 92038,
+	// 	},
+	// 	{
+	// 		id: 1002,
+	// 		name: 'Chris Evans',
+	// 		country: {
+	// 			name: 'Brazil',
+	// 			code: 'br',
+	// 		},
+	// 		company: 'Stark Industries',
+	// 		date: '2019-03-25',
+	// 		status: 'new',
+	// 		verified: true,
+	// 		activity: 62,
+	// 		representative: {
+	// 			name: 'Anna Fali',
+	// 			image: 'annafali.png',
+	// 		},
+	// 		balance: 56022,
+	// 	},
+	// 	{
+	// 		id: 1003,
+	// 		name: 'Scarlett Johansson',
+	// 		country: {
+	// 			name: 'France',
+	// 			code: 'fr',
+	// 		},
+	// 		company: 'Oscorp',
+	// 		date: '2021-08-19',
+	// 		status: 'renewal',
+	// 		verified: false,
+	// 		activity: 34,
+	// 		representative: {
+	// 			name: 'Asiya Javayant',
+	// 			image: 'asiyajavayant.png',
+	// 		},
+	// 		balance: 48200,
+	// 	},
+	// 	{
+	// 		id: 1004,
+	// 		name: 'Tom Holland',
+	// 		country: {
+	// 			name: 'India',
+	// 			code: 'in',
+	// 		},
+	// 		company: 'Daily Bugle',
+	// 		date: '2023-01-05',
+	// 		status: 'negotiation',
+	// 		verified: true,
+	// 		activity: 19,
+	// 		representative: {
+	// 			name: 'Brad Jackson',
+	// 			image: 'asiyajavayant.png',
+	// 		},
+	// 		balance: 61200,
+	// 	},
+	// 	{
+	// 		id: 1005,
+	// 		name: 'Natalie Portman',
+	// 		country: {
+	// 			name: 'Canada',
+	// 			code: 'ca',
+	// 		},
+	// 		company: 'Acme Corp',
+	// 		date: '2016-07-22',
+	// 		status: 'unqualified',
+	// 		verified: true,
+	// 		activity: 82,
+	// 		representative: {
+	// 			name: 'Amy Elsner',
+	// 			image: 'amyelsner.png',
+	// 		},
+	// 		balance: 73500,
+	// 	},
+	// 	{
+	// 		id: 1006,
+	// 		name: 'Robert Downey Jr.',
+	// 		country: {
+	// 			name: 'Germany',
+	// 			code: 'de',
+	// 		},
+	// 		company: 'Hydra',
+	// 		date: '2017-11-09',
+	// 		status: 'qualified',
+	// 		verified: false,
+	// 		activity: 47,
+	// 		representative: {
+	// 			name: 'Anna Fali',
+	// 			image: 'annafali.png',
+	// 		},
+	// 		balance: 88400,
+	// 	},
+	// 	{
+	// 		id: 1007,
+	// 		name: 'Mark Ruffalo',
+	// 		country: {
+	// 			name: 'China',
+	// 			code: 'cn',
+	// 		},
+	// 		company: 'Pym Technologies',
+	// 		date: '2022-05-14',
+	// 		status: 'new',
+	// 		verified: true,
+	// 		activity: 51,
+	// 		representative: {
+	// 			name: 'Ioni Bowcher',
+	// 			image: 'ionibowcher.png',
+	// 		},
+	// 		balance: 49200,
+	// 	},
+	// 	{
+	// 		id: 1008,
+	// 		name: 'Zendaya',
+	// 		country: {
+	// 			name: 'Australia',
+	// 			code: 'au',
+	// 		},
+	// 		company: 'SHIELD',
+	// 		date: '2020-02-03',
+	// 		status: 'renewal',
+	// 		verified: false,
+	// 		activity: 76,
+	// 		representative: {
+	// 			name: 'Brad Jackson',
+	// 			image: 'xuxuefeng.png',
+	// 		},
+	// 		balance: 30000,
+	// 	},
+	// 	{
+	// 		id: 1009,
+	// 		name: 'John Smith',
+	// 		country: {
+	// 			name: 'Argentina',
+	// 			code: 'ar',
+	// 		},
+	// 		company: 'Parker Industries',
+	// 		date: '2015-09-13',
+	// 		status: 'negotiation',
+	// 		verified: true,
+	// 		activity: 29,
+	// 		representative: {
+	// 			name: 'Asiya Javayant',
+	// 			image: 'asiyajavayant.png',
+	// 		},
+	// 		balance: 78000,
+	// 	},
+	// ]
 
 	// CustomerService.getCustomersMedium().then((data) => {
 	// 	customers.value = getCustomers(data)
-	loading.value = false
+	// loading.value = false
 	// })
 })
 
-const initFilters = () => {
-	filters.value = {
-		global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-		name: {
-			operator: FilterOperator.AND,
-			constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-		},
-		'country.name': {
-			operator: FilterOperator.AND,
-			constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
-		},
-		representative: { value: null, matchMode: FilterMatchMode.IN },
-		date: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
-		balance: {
-			operator: FilterOperator.AND,
-			constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
-		},
-		status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
-		activity: { value: [0, 100], matchMode: FilterMatchMode.BETWEEN },
-		verified: { value: null, matchMode: FilterMatchMode.EQUALS },
-	}
-}
+// const initFilters = () => {
+// 	filters.value = {
+// 		global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+// 		name: {
+// 			operator: FilterOperator.AND,
+// 			constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+// 		},
+// 		'country.name': {
+// 			operator: FilterOperator.AND,
+// 			constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+// 		},
+// 		representative: { value: null, matchMode: FilterMatchMode.IN },
+// 		date: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+// 		balance: {
+// 			operator: FilterOperator.AND,
+// 			constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }],
+// 		},
+// 		status: { operator: FilterOperator.OR, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+// 		activity: { value: [0, 100], matchMode: FilterMatchMode.BETWEEN },
+// 		verified: { value: null, matchMode: FilterMatchMode.EQUALS },
+// 	}
+// }
 
-initFilters()
+// initFilters()
 
-const formatDate = (value) => {
-	return value
-	return value.toLocaleDateString('en-US', {
-		day: '2-digit',
-		month: '2-digit',
-		year: 'numeric',
-	})
-}
-const formatCurrency = (value) => {
-	return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
-}
-const clearFilter = () => {
-	initFilters()
-}
-const getCustomers = (data) => {
-	return [...(data || [])].map((d) => {
-		d.date = new Date(d.date)
+// const formatDate = (value) => {
+// 	return value
+// 	return value.toLocaleDateString('en-US', {
+// 		day: '2-digit',
+// 		month: '2-digit',
+// 		year: 'numeric',
+// 	})
+// }
+// const formatCurrency = (value) => {
+// 	return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+// }
+// const clearFilter = () => {
+// 	initFilters()
+// }
+// const getCustomers = (data) => {
+// 	return [...(data || [])].map((d) => {
+// 		d.date = new Date(d.date)
 
-		return d
-	})
-}
-const getSeverity = (status) => {
-	switch (status) {
-		case 'unqualified':
-			return 'danger'
+// 		return d
+// 	})
+// }
+// const getSeverity = (status) => {
+// 	switch (status) {
+// 		case 'unqualified':
+// 			return 'danger'
 
-		case 'qualified':
-			return 'success'
+// 		case 'qualified':
+// 			return 'success'
 
-		case 'new':
-			return 'info'
+// 		case 'new':
+// 			return 'info'
 
-		case 'negotiation':
-			return 'warn'
+// 		case 'negotiation':
+// 			return 'warn'
 
-		case 'renewal':
-			return null
-	}
-}
+// 		case 'renewal':
+// 			return null
+// 	}
+// }
 </script>
 
 <style scoped></style>
