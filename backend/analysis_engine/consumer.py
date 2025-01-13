@@ -42,6 +42,7 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
         query_string = self.scope.get("query_string", b"").decode("utf-8")
         query_params = parse_qs(query_string)
         BACKEND_WEBSOCKET_UUID = query_params.get("BACKEND_WEBSOCKET_UUID", [None])[0]
+        print(BACKEND_WEBSOCKET_UUID)
 
         if not BACKEND_WEBSOCKET_UUID:
             # Reject the connection if the UUID is missing
