@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-rule all:
-    input:
-        # f"{config['OutputDir']}/result/nextclade/clade_report.tsv",
-        # f"{config['OutputDir']}/result/pangolin-usher/lineage.tsv",
-=======
 import websockets, asyncio, json
 
 
@@ -35,15 +29,12 @@ def run_websocket_message(rule_name, status="update"):
 
 rule all:
     input:
->>>>>>> main#1
         f'{config["OutputDir"]}/result/combined_report.tsv',
 
 
 include: "rules/annotation/nextclade.smk"
 include: "rules/annotation/pangolin-usher.smk"
 include: "rules/combine/index.smk"
-<<<<<<< HEAD
-=======
 
 
 onstart:
@@ -56,4 +47,3 @@ onsuccess:
 
 onerror:
     run_websocket_message("WORKFLOW", "Cancelled Workflow")
->>>>>>> main#1
