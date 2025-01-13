@@ -104,9 +104,9 @@ export const useWebSocket = (url) => {
 		}
 	}
 
-	onMounted(() => {
-		connect()
-	})
+	// onMounted(() => {
+	// 	connect()
+	// })
 
 	onUnmounted(() => {
 		disconnect()
