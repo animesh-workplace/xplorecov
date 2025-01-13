@@ -24,8 +24,8 @@ from django.urls import path
 from dotenv import load_dotenv
 from django.conf import settings
 from channels.auth import AuthMiddlewareStack
+from analysis_engine.consumer import AnalysisConsumer
 from channels.security.websocket import AllowedHostsOriginValidator
-from analysis_engine.consumer import TestConsumer
 
 load_dotenv(settings.BASE_DIR / ".env")
 
@@ -42,8 +42,8 @@ application = ProtocolTypeRouter(
                                 [
                                     path(
                                         "analysis/<user_id>/<analysis_id>/",
-                                        TestConsumer.as_asgi(),
-                                        name="backend-consumer",
+                                        AnalysisConsumer.as_asgi(),
+                                        name="analysis-consumer",
                                     ),
                                     # re_path(r'^wsa/frontend/$', FrontendConsumer.as_asgi(), name='frontend-consumer'),
                                 ]
