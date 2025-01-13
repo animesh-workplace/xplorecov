@@ -28,3 +28,11 @@ class UserAnalysis(models.Model):
 
     def __str__(self):
         return f"Analysis {self.analysis_id} by User {self.user_id}"
+
+
+class WebSocketBackendUUID(models.Model):
+    uuid = models.UUIDField(unique=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.uuid)
