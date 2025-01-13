@@ -3,14 +3,18 @@ from celery import shared_task
 
 
 @shared_task
-def run_snakemake(output_dir):
+def run_analysis_workflow(output_dir, user_id, analysis_id):
     try:
         cmd = [
             "snakemake",
             "--snakefile",
             "workflow/Main.Snakefile",
             "--config",
+            f"UserID={user_id}",
+            "--config",
             f"OutputDir={output_dir}",
+            "--config",
+            f"AnalysisID={analysis_id}",
         ]
         result = subprocess.run(cmd, capture_output=True, text=True)
         return {
