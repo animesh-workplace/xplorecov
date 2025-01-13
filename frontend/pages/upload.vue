@@ -58,10 +58,7 @@
 					rounded
 					class="!px-10"
 					severity="success"
-<<<<<<< HEAD
-=======
 					@click="UploadData"
->>>>>>> main#1
 					v-if="show_qc_check_result"
 					:label="`Upload QC Passed Data (${cleared_data.length})`"
 				/>
@@ -131,25 +128,17 @@
 <script setup>
 import JSZip from 'jszip'
 import { nanoid } from 'nanoid'
-<<<<<<< HEAD
-const { default: Fasta } = await import('biojs-io-fasta')
-import { json2csv } from 'json-2-csv'
-=======
 import { json2csv } from 'json-2-csv'
 import { useUserAnalysis } from '@/api/analysis'
 import { useSessionStore } from '@/stores/session'
->>>>>>> main#1
 import { forEach, groupBy, filter, map, difference, keys, flatten, uniq } from 'lodash'
 
 const dayjs = useDayjs()
 const metadata = ref(null)
 const sequence = ref(null)
 const show_qc_check_result = ref(false)
-<<<<<<< HEAD
-=======
 
 const { default: Fasta } = await import('biojs-io-fasta')
->>>>>>> main#1
 const accordion_open_index = computed(() => map(all_qc_checks.value, (d, i) => i))
 const enable_verify = computed(() => {
 	const metadataLength = metadata.value ? metadata.value.length : 0
@@ -222,8 +211,6 @@ const RunChecks = () => {
 	cleared_data.value = difference(uniq(map(metadata.value, (d) => d['Virus name'])), uniq_errors.value)
 }
 
-<<<<<<< HEAD
-=======
 const UploadData = async () => {
 	const analysis_id = nanoid()
 	const { session } = useSessionStore()
@@ -256,7 +243,6 @@ const UploadData = async () => {
 	}
 }
 
->>>>>>> main#1
 const check_collection_date = () => {
 	const collection_date_error = []
 	const collection_date_early = []
