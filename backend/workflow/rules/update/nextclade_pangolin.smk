@@ -1,6 +1,6 @@
 rule update_nextclade_pangolin:
     output:
-        resources=directory("resources/nextclade/data"),
+        resources=directory("workflow/resources/nextclade/data"),
     threads: 1
     log:
         pangolin=f'{config["UpdateDir"]}/update_log/{config["Date"]}/update_pangolin.log',
