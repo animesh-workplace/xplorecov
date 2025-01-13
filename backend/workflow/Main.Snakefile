@@ -2,7 +2,7 @@ import websockets, asyncio, json
 
 
 async def connect_and_send(rule_name, status="update"):
-    uri = "ws://localhost:8009/xplorecov/wsa/backend/"
+    uri = f"ws://localhost:8009/xplorecov/analysis/{config["UserID"]}/{config["AnalysisID"]}"
 
     try:
         async with websockets.connect(uri) as websocket:
