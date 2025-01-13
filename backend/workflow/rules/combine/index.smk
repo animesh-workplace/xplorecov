@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import pandas
+=======
+import pandas, time
+>>>>>>> main#1
 from functools import reduce
 
 
@@ -13,6 +17,10 @@ rule combine:
     threads: 1
     run:
         print("Started Combined")
+<<<<<<< HEAD
+=======
+        run_websocket_message("combine", "start")
+>>>>>>> main#1
         nextclade = pandas.read_csv(
             input.nextclade,
             delimiter="\t",
@@ -36,7 +44,10 @@ rule combine:
             },
             inplace=True,
         )
+<<<<<<< HEAD
         print(nextclade)
+=======
+>>>>>>> main#1
         pangousher.rename(
             columns={
                 "taxon": "Name",
@@ -45,7 +56,10 @@ rule combine:
             },
             inplace=True,
         )
+<<<<<<< HEAD
         print(pangousher)
+=======
+>>>>>>> main#1
 
         combined_list = [
             nextclade[
@@ -65,4 +79,8 @@ rule combine:
             combined_list,
         )
         combined_report.to_csv(output.report, sep="\t", index=False)
+<<<<<<< HEAD
+=======
+        run_websocket_message("combine", "end")
+>>>>>>> main#1
         print("Finished Combined")

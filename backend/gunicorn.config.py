@@ -1,6 +1,10 @@
 import os
 from dotenv import load_dotenv
+<<<<<<< HEAD
 from settings.__init__ import __version__
+=======
+from xplorecov_backend.__init__ import __version__
+>>>>>>> main#1
 
 load_dotenv(".env")
 bind = f"{os.getenv('BASE_HOST')}:{os.getenv('BASE_PORT')}"

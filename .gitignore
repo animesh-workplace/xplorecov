@@ -228,5 +228,11 @@ rclone.config
 
 # Dependencies folder
 deps/
+<<<<<<< HEAD
 datalake/
 .workflow-venv/
+=======
+
+# Media Folder
+datalake/
+>>>>>>> main#1

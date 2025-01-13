@@ -12,7 +12,10 @@
   "dependencies": {
     "@primevue/themes": "^4.2.4",
     "biojs-io-fasta": "^0.1.17",
+<<<<<<< HEAD
     "crossws": "^0.3.1",
+=======
+>>>>>>> main#1
     "csvjson-csv2json": "^5.0.6",
     "filepond": "^4.32.5",
     "filepond-plugin-file-validate-type": "^1.2.9",

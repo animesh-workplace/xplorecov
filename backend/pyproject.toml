@@ -6,7 +6,11 @@ authors = ["Animesh Kumar Singh <animesh.workplace@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
+<<<<<<< HEAD
 python = "^3.11"
+=======
+python = ">=3.11,<3.13"
+>>>>>>> main#1
 django = "^5.1.2"
 gunicorn = "^23.0.0"
 djangorestframework = "^3.15.2"
@@ -26,6 +30,15 @@ huggingface-hub = "^0.26.2"
 mpire = "^2.10.2"
 snakemake = "^8.26.0"
 psycopg2 = "^2.9.10"
+<<<<<<< HEAD
+=======
+uvicorn = "^0.34.0"
+uvicorn-worker = "^0.3.0"
+python-dotenv = "^1.0.1"
+websockets = "^14.1"
+fireducks = "^1.1.5"
+django-cors-headers = "^4.6.0"
+>>>>>>> main#1
 
 
 [build-system]
