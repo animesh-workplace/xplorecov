@@ -8,7 +8,7 @@ if Path("resources").is_dir():
 
 rule all:
     input:
-        "resources/nextclade/data",
+        "workflow/resources/nextclade/data",
 
 
 include: "rules/update/nextclade_pangolin.smk"
