@@ -8,14 +8,6 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
 """
 
 import os
-<<<<<<< HEAD
-
-from django.core.asgi import get_asgi_application
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'xplorecov_backend.settings')
-
-application = get_asgi_application()
-=======
 from channels.routing import (
     URLRouter,
     ProtocolTypeRouter,
@@ -63,4 +55,3 @@ application = ProtocolTypeRouter(
         ),
     }
 )
->>>>>>> main#1
