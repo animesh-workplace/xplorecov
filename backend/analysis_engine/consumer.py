@@ -33,6 +33,7 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
         user_id = self.scope["url_route"]["kwargs"]["user_id"]
         analysis_id = self.scope["url_route"]["kwargs"]["analysis_id"]
         status_update = json.loads(event["text"])
+        task_id = f"{user_id}.{analysis_id}"
 
         if not user_id or not analysis_id or not status_update:
             print("Missing required fields in the message")
@@ -42,7 +43,7 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
         await self.update_analysis_status(user_id, analysis_id, status_update)
 
         await self.channel_layer.group_send(
-            "Workshop", {"type": "task_message", "message": json.loads(event["text"])}
+            task_id, {"type": "task_message", "message": json.loads(event["text"])}
         )
 
     async def task_message(self, event):
