@@ -8,6 +8,7 @@ load_dotenv(BASE_DIR / ".env")
 
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
+CORS_ALLOW_ALL_ORIGINS = True
 SECRET_KEY = "django-insecure-(b185(z0v7ur4j8(bw-9p8#pyumb5t&5b$w(3$iqt0&7d&rmxo"
 
 # Application definition
@@ -19,7 +20,12 @@ DEFAULT_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
-THIRD_PARTY_APPS = ["rest_framework", "django_celery_results", "channels"]
+THIRD_PARTY_APPS = [
+    "rest_framework",
+    "django_celery_results",
+    "channels",
+    "corsheaders",
+]
 
 SELF_APPS = ["query_engine", "analysis_engine", "report_engine"]
 
@@ -30,6 +36,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -102,3 +109,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Celery Config
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True

@@ -58,6 +58,7 @@
 					rounded
 					class="!px-10"
 					severity="success"
+					@click="UploadData"
 					v-if="show_qc_check_result"
 					:label="`Upload QC Passed Data (${cleared_data.length})`"
 				/>
@@ -127,14 +128,17 @@
 <script setup>
 import JSZip from 'jszip'
 import { nanoid } from 'nanoid'
-const { default: Fasta } = await import('biojs-io-fasta')
 import { json2csv } from 'json-2-csv'
+import { useUserAnalysis } from '@/api/analysis'
+import { useSessionStore } from '@/stores/session'
 import { forEach, groupBy, filter, map, difference, keys, flatten, uniq } from 'lodash'
 
 const dayjs = useDayjs()
 const metadata = ref(null)
 const sequence = ref(null)
 const show_qc_check_result = ref(false)
+
+const { default: Fasta } = await import('biojs-io-fasta')
 const accordion_open_index = computed(() => map(all_qc_checks.value, (d, i) => i))
 const enable_verify = computed(() => {
 	const metadataLength = metadata.value ? metadata.value.length : 0
@@ -205,6 +209,38 @@ const RunChecks = () => {
 	show_qc_check_result.value = true
 	uniq_errors.value = uniq(flatten(map(all_qc_checks.value, (d) => d.data)))
 	cleared_data.value = difference(uniq(map(metadata.value, (d) => d['Virus name'])), uniq_errors.value)
+}
+
+const UploadData = async () => {
+	const analysis_id = nanoid()
+	const { session } = useSessionStore()
+	const { uploadAnalysis } = useUserAnalysis()
+
+	const qcPassedMetadata = filter(metadata.value, (d) => !uniq_errors.value.includes(d['Virus name']))
+	const qcPassedSequences = filter(sequence.value, (d) => !uniq_errors.value.includes(d['name']))
+
+	const qcPassedMetadataBlob = new Blob([json2csv(qcPassedMetadata, { delimiter: { field: '\t' } })], {
+		type: 'text/tab-separated-values',
+	})
+	const qcPassedSequencesBlob = new Blob([Fasta.write(qcPassedSequences)], { type: 'application/fasta' })
+
+	const form = new FormData()
+	form.append('user_id', session)
+	form.append('analysis_id', analysis_id)
+	form.append('metadata', qcPassedMetadataBlob, 'metadata.tsv')
+	form.append('sequence', qcPassedSequencesBlob, 'sequences.fasta')
+
+	try {
+		const response = await uploadAnalysis(form)
+		console.log(response)
+		push.success({
+			title: 'Successfully Uploaded',
+			message: 'Starting Analysis',
+		})
+		await navigateTo(`/analysis/${analysis_id}`)
+	} catch (err) {
+		console.log(err)
+	}
 }
 
 const check_collection_date = () => {
