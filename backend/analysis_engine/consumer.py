@@ -4,11 +4,11 @@
 import json
 from urllib.parse import parse_qs
 from asgiref.sync import sync_to_async
-from .models import WebSocketBackendUUID
+from .models import WebSocketBackendUUID, UserAnalysis
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 
-class TestConsumer(AsyncJsonWebsocketConsumer):
+class AnalysisConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
         # Get user_id and analysis_id from the URL parameters
         user_id = self.scope["url_route"]["kwargs"]["user_id"]
@@ -18,23 +18,21 @@ class TestConsumer(AsyncJsonWebsocketConsumer):
         try:
             await self.accept()
             await self.channel_layer.group_add(task_id, self.channel_name)
-            data = {"message": "You have connected to TestConsumer"}
+            data = {"message": "You have connected to Analysis Real Time Updates"}
             await self.send_json(data)
         except Exception as e:
             raise
 
     async def websocket_receive(self, event):
-        # This section is authenticated zone as updates to the database are done here
+        # This section is authenticated zone as updates to the database are done here``
         is_authenticated = await self.authenticate_backend_service()
         if not is_authenticated:
             return  # Connection closed during authentication
+
         print(f"Received message: {event}")
         await self.channel_layer.group_send(
             "Workshop", {"type": "task_message", "message": json.loads(event["text"])}
         )
-
-    async def disconnect(self, close_code):
-        print(f"Disconnect received with code: {close_code}")
 
     async def task_message(self, event):
         data = {"message": event["message"]}
