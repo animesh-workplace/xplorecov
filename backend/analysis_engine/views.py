@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-from django.shortcuts import render
-
-# Create your views here.
-=======
 import os
 from django.conf import settings
 from rest_framework import status
@@ -68,4 +63,3 @@ class UserAnalysisView(APIView):
                 status=status.HTTP_201_CREATED,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
->>>>>>> main#1
