@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-from django.db import models
-
-# Create your models here.
-=======
 import os
 from django.db import models
 
@@ -33,4 +28,3 @@ class UserAnalysis(models.Model):
 
     def __str__(self):
         return f"Analysis {self.analysis_id} by User {self.user_id}"
->>>>>>> main#1
