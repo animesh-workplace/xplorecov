@@ -4,9 +4,12 @@ export function useUserAnalysis() {
 
 	const uploadAnalysis = async (formData) => {
 		try {
+			const csrfToken = useCookie('csrftoken')
+
 			const { data, error } = await useFetch(`${BASEURL}/job/run-main-workflow/`, {
 				method: 'POST',
 				body: formData,
+				headers: { 'X-CSRFToken': csrfToken.value },
 			})
 
 			if (error.value) {
