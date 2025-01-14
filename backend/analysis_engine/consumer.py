@@ -1,9 +1,7 @@
-# from .tasks import *
-# from channels.consumer import AsyncConsumer
-# from channels.exceptions import StopConsumer
 import json
 from urllib.parse import parse_qs
 from asgiref.sync import sync_to_async
+from django.forms.models import model_to_dict
 from .models import WebSocketBackendUUID, UserAnalysis
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
@@ -20,7 +18,7 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
         try:
             await self.accept()
             await self.channel_layer.group_add(task_id, self.channel_name)
-            data = {"message": "You have connected to Analysis Real Time Updates", "current_status": existing_status}
+            data = {"message": "You have connected to Analysis Real Time Updates", **existing_status}
             await self.send_json(data)
         except Exception as e:
             raise
@@ -56,7 +54,10 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
     def get_analysis_status(self, user_id, analysis_id):
         try:
             analysis = UserAnalysis.objects.get(user_id=user_id, analysis_id=analysis_id)
-            return analysis.analysis_status
+            return {"current_status": analysis.analysis_status, "tools_used": {
+                "tools": model_to_dict(analysis.tool_version, exclude=['id']),
+                'updated_at': analysis.tool_version.created_at.strftime('%d-%m-%Y %I:%M %p')
+            }}
         except UserAnalysis.DoesNotExist:
             return None
 
@@ -65,7 +66,6 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
     def update_analysis_status(self, user_id, analysis_id, status_update):
         try:
             analysis = UserAnalysis.objects.get(user_id=user_id, analysis_id=analysis_id)
-
 
             if not isinstance(analysis.analysis_status, list):
                 analysis.analysis_status = [status_update]
