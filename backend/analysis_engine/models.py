@@ -35,3 +35,17 @@ class WebSocketBackendUUID(models.Model):
 
     def __str__(self):
         return str(self.uuid)
+
+class ToolVersion(models.Model):
+    nextclade_version = models.CharField(max_length=255, null=True, blank=True)
+    pangolin_version = models.CharField(max_length=255, null=True, blank=True)
+    constellations_version = models.CharField(max_length=255, null=True, blank=True)
+    scorpio_version = models.CharField(max_length=255, null=True, blank=True)
+    usher_version = models.CharField(max_length=255, null=True, blank=True)
+    gofasta_version = models.CharField(max_length=255, null=True, blank=True)
+    minimap2_version = models.CharField(max_length=255, null=True, blank=True)
+    faToVcf_version = models.CharField(max_length=255, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Tool Versions - {self.created_at}'
