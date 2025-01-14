@@ -41,7 +41,7 @@ application = ProtocolTypeRouter(
                             URLRouter(
                                 [
                                     path(
-                                        "analysis/<user_id>/<analysis_id>/",
+                                        "ws/analysis/<user_id>/<analysis_id>/",
                                         AnalysisConsumer.as_asgi(),
                                         name="analysis-consumer",
                                     ),
