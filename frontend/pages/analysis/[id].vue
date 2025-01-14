@@ -304,7 +304,7 @@
 
 <script setup>
 const route = useRoute()
-const wsUrl = `ws://localhost:8009/xplorecov/ws/analysis/${useCookie('session').value}/${route.params.id}/`
+const wsUrl = `ws://10.10.6.80/xplorecov/ws/analysis/${useCookie('session').value}/${route.params.id}/`
 const { analysis_steps, tools_version } = useWebSocket(wsUrl)
 // import { CustomerService } from '@/service/CustomerService'
 // import { FilterMatchMode, FilterOperator } from '@primevue/core/api'
