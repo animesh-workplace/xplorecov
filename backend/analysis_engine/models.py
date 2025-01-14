@@ -1,6 +1,6 @@
 import os
 from django.db import models
-from django.utils.timezone import now, timedelta
+from django.utils.timezone import now, timedelta, localtime
 
 
 def upload_file_location(instance, filename):
@@ -39,7 +39,8 @@ class ToolVersion(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Tool Versions - {self.created_at.strftime('%d-%m-%Y %I:%M %p')}"
+        ist_time = localtime(self.created_at)
+        return f"Tool Versions - {ist_time.strftime('%d-%m-%Y %I:%M %p')}"
     
 class UserAnalysis(models.Model):
     user_id = models.UUIDField()
