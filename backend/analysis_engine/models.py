@@ -1,5 +1,6 @@
 import os
 from django.db import models
+from django.utils.timezone import now, timedelta
 
 
 def upload_file_location(instance, filename):
@@ -14,21 +15,11 @@ def upload_file_location(instance, filename):
         filename,
     )
 
+def get_expiration_date():
+    return now() + timedelta(days=14)
+
 
 # Model
-class UserAnalysis(models.Model):
-    user_id = models.UUIDField()
-    analysis_id = models.CharField(max_length=21)
-    analysis_status = models.JSONField(default=dict)
-    submission_date = models.DateTimeField(auto_now_add=True)
-    metadata = models.FileField(upload_to=upload_file_location)
-    sequence = models.FileField(upload_to=upload_file_location)
-    celery_task_id = models.CharField(max_length=255, blank=True, null=True)
-
-    def __str__(self):
-        return f"Analysis {self.analysis_id} by User {self.user_id}"
-
-
 class WebSocketBackendUUID(models.Model):
     uuid = models.UUIDField(unique=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -48,4 +39,20 @@ class ToolVersion(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'Tool Versions - {self.created_at}'
+        return f"Tool Versions - {self.created_at.strftime('%d-%m-%Y %I:%M %p')}"
+    
+class UserAnalysis(models.Model):
+    user_id = models.UUIDField()
+    analysis_id = models.CharField(max_length=21)
+    analysis_status = models.JSONField(default=dict)
+    submission_date = models.DateTimeField(auto_now_add=True)
+    metadata = models.FileField(upload_to=upload_file_location)
+    sequence = models.FileField(upload_to=upload_file_location)
+    expiration_date = models.DateTimeField(default=get_expiration_date)
+    celery_task_id = models.CharField(max_length=255, blank=True, null=True)
+    tool_version = models.ForeignKey(
+        ToolVersion, on_delete=models.CASCADE, related_name="analyses", null=True, blank=True
+    )
+
+    def __str__(self):
+        return f"Analysis {self.analysis_id} by User {self.user_id}"
