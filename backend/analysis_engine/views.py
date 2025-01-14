@@ -1,4 +1,4 @@
-import os
+from .models import UserAnalysis
 from django.conf import settings
 from rest_framework import status
 from rest_framework.views import APIView
@@ -52,6 +52,28 @@ class UserAnalysisView(APIView):
                 status=status.HTTP_201_CREATED,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, *args, **kwargs):
+        user_id = request.query_params.get("user_id")
+
+        if not user_id:
+            return Response(
+                {"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Query all analyses for the given user_id
+        analyses = UserAnalysis.objects.filter(user_id=user_id)
+
+        if not analyses.exists():
+            return Response(
+                {"message": "No analyses found for this user."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Serialize the analyses data
+        serializer = UserAnalysisSerializer(analyses, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class ToolVersionCreateView(APIView):
