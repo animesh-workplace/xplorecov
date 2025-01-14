@@ -1,6 +1,21 @@
 from django.contrib import admin
-from .models import UserAnalysis, WebSocketBackendUUID
+from .models import UserAnalysis, WebSocketBackendUUID, ToolVersion
 
+@admin.register(ToolVersion)
+class ToolVersionAdmin(admin.ModelAdmin):
+    list_display = (
+        'nextclade_version',
+        'pangolin_version',
+        'constellations_version',
+        'scorpio_version',
+        'usher_version',
+        'gofasta_version',
+        'minimap2_version',
+        'faToVcf_version',
+        'created_at',
+    )
+    search_fields = ('nextclade_version', 'pangolin_version', 'created_at')
+    list_filter = ('created_at',)
 
 @admin.register(UserAnalysis)
 class UserAnalysisAdmin(admin.ModelAdmin):
