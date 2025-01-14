@@ -1,5 +1,3 @@
-import { ref, onMounted, onUnmounted } from 'vue'
-
 const activeConnections = new Map()
 
 export const useWebSocket = (url) => {
@@ -7,6 +5,7 @@ export const useWebSocket = (url) => {
 	const socket = ref(null)
 	const messages = ref([])
 	const isConnected = ref(false)
+	const proper_disconnection = ref(false)
 	const analysis_steps = ref({
 		// Status - Pending, Loading, Completed
 		step1: { index: 1, name: 'Analysis Queued', status: 'pending' },
@@ -76,7 +75,9 @@ export const useWebSocket = (url) => {
 			socket.value.onclose = () => {
 				isConnected.value = false
 				console.log('WebSocket disconnected')
-				setTimeout(connect, 5000)
+				if (!proper_disconnection) {
+					setTimeout(connect, 5000)
+				}
 			}
 
 			socket.value.onerror = (event) => {
@@ -89,24 +90,17 @@ export const useWebSocket = (url) => {
 		}
 	}
 
-	const sendMessage = (message) => {
-		if (socket.value?.readyState === WebSocket.OPEN) {
-			socket.value.send(JSON.stringify(message))
-		} else {
-			error.value = 'WebSocket is not connected'
-		}
-	}
-
 	const disconnect = () => {
 		if (socket.value) {
+			proper_disconnection.value = true
 			socket.value.close()
 			socket.value = null
 		}
 	}
 
-	// onMounted(() => {
-	// 	connect()
-	// })
+	onMounted(() => {
+		connect()
+	})
 
 	onUnmounted(() => {
 		disconnect()
@@ -116,7 +110,6 @@ export const useWebSocket = (url) => {
 		isConnected,
 		messages,
 		error,
-		sendMessage,
 		connect,
 		disconnect,
 		analysis_steps,
