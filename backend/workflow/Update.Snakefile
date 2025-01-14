@@ -2,8 +2,8 @@ import shutil
 from pathlib import Path
 
 # If the folder exists remove it to allow update of tools
-if Path("resources").is_dir():
-    shutil.rmtree("resources")
+if Path("workflow/resources").is_dir():
+    shutil.rmtree("workflow/resources")
 
 
 rule all:
