@@ -3,34 +3,22 @@ from django.conf import settings
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import UserAnalysisSerializer
-from .tasks.run_main_workflow import run_analysis_workflow
 from rest_framework.parsers import MultiPartParser, FormParser
+from .serializers import UserAnalysisSerializer, ToolVersionSerializer
+from .tasks.run_workflow import run_analysis_workflow, run_update_workflow
 
 
-class SnakemakeView(APIView):
+class ToolUpdateView(APIView):
     def post(self, request):
-        # Validate input
-        user_id = request.data.get("user_id")
-        analysis_id = request.data.get("analysis_id")
-
-        if not user_id or not analysis_id:
-            return Response(
-                {"error": "Both user_id and analysis_id are required"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        # Construct output directory path
-        output_dir = f"datalake/{user_id}/{analysis_id}"
 
         # Trigger Celery task
-        task = run_analysis_workflow.delay(output_dir)
+        task = run_update_workflow.delay()
 
         return Response(
             {
                 "task_id": task.id,
-                "message": "Snakemake task has been queued",
                 "status": "pending",
+                "message": "Update workflow task has been queued",
             }
         )
 
@@ -53,13 +41,39 @@ class UserAnalysisView(APIView):
                 )
 
             # Construct output directory path
-            output_dir = f"datalake/{user_id}/{analysis_id}"
+            output_dir = settings.MEDIA_ROOT / user_id / analysis_id
+
 
             # Trigger Celery task
-            task = run_analysis_workflow.delay(output_dir, user_id, analysis_id)
+            task = run_analysis_workflow.delay(str(output_dir), user_id, analysis_id)
 
             return Response(
                 {"message": "Analysis submitted successfully.", "id": analysis.id},
                 status=status.HTTP_201_CREATED,
             )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ToolVersionCreateView(APIView):
+    def post(self, request):
+        # Extract the tool version information from the request data
+        tool_versions = request.data
+
+        # Prepare the data to save in the model
+        data = {
+            "nextclade_version": tool_versions.get('nextclade'),
+            "pangolin_version": tool_versions.get('pangolin'),
+            "constellations_version": tool_versions.get('constellations'),
+            "scorpio_version": tool_versions.get('scorpio'),
+            "usher_version": tool_versions.get('usher'),
+            "gofasta_version": tool_versions.get('gofasta'),
+            "minimap2_version": tool_versions.get('minimap2'),
+            "faToVcf_version": tool_versions.get('fatovcf'),
+        }
+
+        # Use the serializer to validate and save the data
+        serializer = ToolVersionSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
