@@ -5,10 +5,9 @@ from django.db import models
 def upload_file_location(instance, filename):
     """
     Generate the file path for uploaded files.
-    Path: datalake/<user_id>/<analysis_id>/uploaded/<filename>
+    Path: MEDIA_ROOT/<user_id>/<analysis_id>/uploaded/<filename>
     """
     return os.path.join(
-        "datalake",
         str(instance.user_id),
         str(instance.analysis_id),
         "uploaded",
