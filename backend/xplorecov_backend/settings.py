@@ -102,9 +102,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 USE_TZ = True
 USE_I18N = True
-TIME_ZONE = "UTC"
-LANGUAGE_CODE = "en-us"
 STATIC_URL = "static/"
+LANGUAGE_CODE = "en-us"
+TIME_ZONE = "Asia/Kolkata"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Celery Config
