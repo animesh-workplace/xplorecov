@@ -33,7 +33,7 @@ class UserAnalysisAdmin(admin.ModelAdmin):
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == 'analysis_status':
             from django.forms import Textarea
-            kwargs['widget'] = Textarea(attrs={'rows': 4, 'cols': 40})
+            kwargs['widget'] = Textarea(attrs={'rows': 10, 'cols': 40})
         return super().formfield_for_dbfield(db_field, **kwargs)
 
 
