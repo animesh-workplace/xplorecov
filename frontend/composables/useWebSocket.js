@@ -2,6 +2,7 @@ import { map } from 'lodash'
 
 export const useWebSocket = (url) => {
 	const socket = ref(null)
+	const tools_version = ref({ tools: {} })
 	const proper_disconnection = ref(false)
 	const analysis_steps = ref({
 		// Status - Pending, Loading, Completed
@@ -23,6 +24,9 @@ export const useWebSocket = (url) => {
 
 			socket.value.onmessage = (event) => {
 				const message = JSON.parse(event.data)
+				if ('tools_used' in message) {
+					tools_version.value = message.tools_used
+				}
 				if ('current_status' in message) {
 					map(message.current_status, (d) => update_analysis_steps({ message: d }))
 				} else if (typeof message.message == 'object') {
@@ -88,5 +92,6 @@ export const useWebSocket = (url) => {
 
 	return {
 		analysis_steps,
+		tools_version,
 	}
 }
