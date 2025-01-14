@@ -23,7 +23,31 @@ export function useUserAnalysis() {
 		}
 	}
 
+	const getAnalysis = async () => {
+		try {
+			const csrfToken = useCookie('csrftoken')
+
+			const { data, error } = await useFetch(
+				`${BASEURL}/job/run-main-workflow/?user_id=${useCookie('session').value}`,
+				{
+					method: 'GET',
+					headers: { 'X-CSRFToken': csrfToken.value },
+				},
+			)
+
+			if (error.value) {
+				throw new Error(error.value || 'An error occurred')
+			}
+
+			return data.value
+		} catch (err) {
+			console.error(err)
+			throw err
+		}
+	}
+
 	return {
 		uploadAnalysis,
+		getAnalysis,
 	}
 }
