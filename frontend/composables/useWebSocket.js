@@ -1,3 +1,5 @@
+import { map } from 'lodash'
+
 export const useWebSocket = (url) => {
 	const socket = ref(null)
 	const proper_disconnection = ref(false)
@@ -21,27 +23,10 @@ export const useWebSocket = (url) => {
 
 			socket.value.onmessage = (event) => {
 				const message = JSON.parse(event.data)
-				let update_step = null
-				if (typeof message.message == 'object') {
-					if (message.message.type == 'nextclade-rule') {
-						update_step = 'step4'
-					} else if (message.message.type == 'pangolin-usher') {
-						update_step = 'step5'
-					} else if (message.message.type == 'combine') {
-						update_step = 'step6'
-					} else if (message.message.type == 'WORKFLOW') {
-						if (message.message.status == 'Started Workflow') {
-							analysis_steps.value.step1.status = 'completed'
-							analysis_steps.value.step2.status = 'completed'
-							analysis_steps.value.step3.status = 'completed'
-						}
-					}
-
-					if (message.message.status == 'start') {
-						analysis_steps.value[update_step].status = 'loading'
-					} else if (message.message.status == 'end') {
-						analysis_steps.value[update_step].status = 'completed'
-					}
+				if ('current_status' in message) {
+					map(message.current_status, (d) => update_analysis_steps({ message: d }))
+				} else if (typeof message.message == 'object') {
+					update_analysis_steps(message)
 				}
 			}
 
@@ -57,6 +42,31 @@ export const useWebSocket = (url) => {
 			}
 		} catch (err) {
 			console.error('Connection error:', err)
+		}
+	}
+
+	const update_analysis_steps = (message) => {
+		let update_step = null
+		if (typeof message.message == 'object') {
+			if (message.message.type == 'nextclade-rule') {
+				update_step = 'step4'
+			} else if (message.message.type == 'pangolin-usher') {
+				update_step = 'step5'
+			} else if (message.message.type == 'combine') {
+				update_step = 'step6'
+			} else if (message.message.type == 'WORKFLOW') {
+				if (message.message.status == 'Started Workflow') {
+					analysis_steps.value.step1.status = 'completed'
+					analysis_steps.value.step2.status = 'completed'
+					analysis_steps.value.step3.status = 'completed'
+				}
+			}
+
+			if (message.message.status == 'start') {
+				analysis_steps.value[update_step].status = 'loading'
+			} else if (message.message.status == 'end') {
+				analysis_steps.value[update_step].status = 'completed'
+			}
 		}
 	}
 
