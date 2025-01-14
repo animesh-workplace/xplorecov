@@ -1,10 +1,5 @@
-const activeConnections = new Map()
-
 export const useWebSocket = (url) => {
-	const error = ref(null)
 	const socket = ref(null)
-	const messages = ref([])
-	const isConnected = ref(false)
 	const proper_disconnection = ref(false)
 	const analysis_steps = ref({
 		// Status - Pending, Loading, Completed
@@ -17,31 +12,10 @@ export const useWebSocket = (url) => {
 	})
 
 	const connect = () => {
-		// Check if there's an existing active connection for this URL
-		if (activeConnections.has(url)) {
-			const existingSocket = activeConnections.get(url)
-			// Check if the existing connection is still open
-			if (
-				existingSocket.readyState === WebSocket.OPEN ||
-				existingSocket.readyState === WebSocket.CONNECTING
-			) {
-				console.log('Reusing existing WebSocket connection')
-				socket.value = existingSocket
-				isConnected.value = existingSocket.readyState === WebSocket.OPEN
-				return
-			} else {
-				// Clean up the dead connection
-				activeConnections.delete(url)
-			}
-		}
-
 		try {
 			socket.value = new WebSocket(url)
-			activeConnections.set(url, socket.value)
 
 			socket.value.onopen = () => {
-				isConnected.value = true
-				error.value = null
 				console.log('WebSocket connected')
 			}
 
@@ -69,30 +43,25 @@ export const useWebSocket = (url) => {
 						analysis_steps.value[update_step].status = 'completed'
 					}
 				}
-				messages.value.push(message)
 			}
 
 			socket.value.onclose = () => {
-				isConnected.value = false
 				console.log('WebSocket disconnected')
-				if (!proper_disconnection) {
+				if (!proper_disconnection.value) {
 					setTimeout(connect, 5000)
 				}
 			}
 
 			socket.value.onerror = (event) => {
-				error.value = 'WebSocket error occurred'
 				console.error('WebSocket error:', event)
 			}
 		} catch (err) {
-			error.value = 'Failed to connect to WebSocket'
 			console.error('Connection error:', err)
 		}
 	}
 
 	const disconnect = () => {
 		if (socket.value) {
-			proper_disconnection.value = true
 			socket.value.close()
 			socket.value = null
 		}
@@ -103,15 +72,11 @@ export const useWebSocket = (url) => {
 	})
 
 	onUnmounted(() => {
+		proper_disconnection.value = true
 		disconnect()
 	})
 
 	return {
-		isConnected,
-		messages,
-		error,
-		connect,
-		disconnect,
 		analysis_steps,
 	}
 }
