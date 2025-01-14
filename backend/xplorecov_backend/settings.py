@@ -7,8 +7,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 DEBUG = True
-ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
+ALLOWED_HOSTS = ["10.10.6.80", "localhost"]
+CSRF_TRUSTED_ORIGINS = ["http://10.10.6.80"]
 SECRET_KEY = "django-insecure-(b185(z0v7ur4j8(bw-9p8#pyumb5t&5b$w(3$iqt0&7d&rmxo"
 
 # Application definition
@@ -110,3 +111,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_RESULT_BACKEND = "redis://localhost:6379/0"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = f"{os.getenv('BASE_URL')}static/"
+STATIC_ROOT = BASE_DIR / "static"
+
+# Media files (CSS, JavaScript, Images)
+MEDIA_ROOT = BASE_DIR / "datalake"
+MEDIA_URL = f"{os.getenv('BASE_URL')}media/"
