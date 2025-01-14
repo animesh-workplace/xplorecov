@@ -1,7 +1,6 @@
 # admin.py
 from django.urls import reverse
 from django.contrib import admin
-from django.db.models import Count
 from django.utils.html import format_html
 from .models import (
     VirusStrain, Location, AAMutation, NucMutation,
@@ -181,18 +180,3 @@ class StructuralVariationAdmin(admin.ModelAdmin):
         url = reverse('admin:query_engine_virusstrain_change', args=[obj.strain.id])
         return format_html('<a href="{}">{}</a>', url, obj.strain)
     strain_link.short_description = 'Strain'
-
-# Custom Admin Site
-class VirusMetadataAdminSite(admin.AdminSite):
-    site_header = 'Virus Metadata Administration'
-    site_title = 'Virus Metadata Admin Portal'
-    index_title = 'Virus Metadata Management'
-
-# Register with custom admin site
-virus_admin_site = VirusMetadataAdminSite(name='virus_admin')
-virus_admin_site.register(VirusStrain, VirusStrainAdmin)
-virus_admin_site.register(Location, LocationAdmin)
-virus_admin_site.register(AAMutation, AAMutationAdmin)
-virus_admin_site.register(NucMutation, NucMutationAdmin)
-virus_admin_site.register(StructuralVariation, StructuralVariationAdmin)
-virus_admin_site.register(QualityMetrics, QualityMetricsAdmin)
