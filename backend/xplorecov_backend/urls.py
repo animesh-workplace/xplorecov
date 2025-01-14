@@ -15,18 +15,34 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+import os
+from dotenv import load_dotenv
 from django.contrib import admin
+from django.conf import settings
 from django.urls import path, include
 
+load_dotenv(settings.BASE_DIR / ".env")
+
+admin.site.site_title = "XPLORECoV"
+admin.site.index_title = "XPLORECoV Admin Panel"
+admin.site.site_header = "[ XPLORECoV Admin Panel ]"
+
 urlpatterns = [
-    path("admin/", admin.site.urls),
     path(
-        "api/",
+        f"{os.getenv('BASE_URL')}",
         include(
             [
-                path("query/", include("query_engine.urls")),
-                path("job/", include("analysis_engine.urls")),
+                path("admin/", admin.site.urls),
+                path(
+                    "api/",
+                    include(
+                        [
+                            path("query/", include("query_engine.urls")),
+                            path("job/", include("analysis_engine.urls")),
+                        ]
+                    ),
+                ),
             ]
         ),
-    ),
+    )
 ]
