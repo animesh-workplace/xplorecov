@@ -19,7 +19,7 @@
 			</ul>
 			<div class="flex items-start flex-col lg:justify-between lg:flex-row">
 				<div>
-					<div class="font-medium text-3xl text-surface-900 dark:text-surface-0">Customers</div>
+					<div class="font-medium text-3xl text-surface-900 dark:text-surface-0">Analysis Results</div>
 					<div class="flex items-center text-surface-700 dark:text-surface-100 flex-wrap">
 						<div class="mr-8 flex items-center mt-4">
 							<i class="pi pi-users mr-2" />
@@ -35,10 +35,6 @@
 						</div>
 					</div>
 				</div>
-				<!-- <div class="mt-4 lg:mt-0">
-					<Button label="Add" class="mr-2" outlined icon="pi pi-user-plus" />
-					<Button label="Save" icon="pi pi-check" />
-				</div> -->
 			</div>
 		</div>
 
@@ -67,6 +63,41 @@
 			</div>
 		</div>
 
+		<!-- <div class="px-2 py-8 md:px-12 lg:px-20">
+			<div class="w-full">
+				<Timeline :value="analysis_steps">
+					<template #marker="slotProps">
+						<span
+							class="flex w-8 h-8 items-center justify-center text-white rounded-full z-10 shadow-sm bg-neutral-50 drop-shadow dark:bg-slate-500"
+						>
+							<i
+								v-if="slotProps.item.status == 'pending'"
+								class="pi pi-pause-circle mx-4 text-slate-600"
+							/>
+							<i
+								v-if="slotProps.item.status == 'completed'"
+								class="pi pi-check-circle mx-4 text-green-600 dark:text-green-500"
+							/>
+							<svg
+								width="17"
+								height="17"
+								viewBox="0 0 24 24"
+								xmlns="http://www.w3.org/2000/svg"
+								v-if="slotProps.item.status == 'loading'"
+								class="text-gray-400 stroke-yellow-600 dark:stroke-yellow-300"
+							>
+								<g class="spinner">
+									<circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" />
+								</g>
+							</svg>
+						</span>
+					</template>
+
+					<template #content="slotProps"> {{ slotProps.item.name }} (Duration: 30secs) </template>
+				</Timeline>
+			</div>
+		</div> -->
+
 		<div class="px-6 py-8 md:px-12 lg:px-20 lg:max-w-screen-sm">
 			<div class="w-full bg-white shadow-lg rounded-xl dark:bg-neutral-500">
 				<p class="py-2 px-4 font-bold text-black text-md dark:text-white">Analysis Steps</p>
@@ -79,7 +110,8 @@
 					>
 						<div class="flex items-center justify-start text-sm">
 							<span class="mx-4"> {{ step.index }} </span>
-							<span> {{ step.name }} </span>
+							<span class="mr-4"> {{ step.name }} </span>
+							<span> (Took 10 secs) </span>
 						</div>
 						<i
 							v-if="step.status == 'pending'"
@@ -306,6 +338,26 @@
 const route = useRoute()
 const wsUrl = `ws://10.10.6.80/xplorecov/ws/analysis/${useCookie('session').value}/${route.params.id}/`
 const { analysis_steps, tools_version } = useWebSocket(wsUrl)
+const events = ref([
+	{
+		status: 'Ordered',
+		date: '15/10/2020 10:30',
+		icon: 'pi pi-shopping-cart',
+		color: '#9C27B0',
+		state: 'loading',
+	},
+	{ status: 'Processing', date: '15/10/2020 14:00', icon: 'pi pi-cog', color: '#673AB7', state: 'pending' },
+	{
+		status: 'Shipped',
+		date: '15/10/2020 16:15',
+		icon: 'pi pi-shopping-cart',
+		color: '#FF9800',
+		state: 'completed',
+	},
+	{ status: 'Delivered', date: '16/10/2020 10:00', icon: 'pi pi-check', color: '#607D8B', state: 'pending' },
+	{ status: 'Delivered', date: '16/10/2020 10:00', icon: 'pi pi-check', color: '#607D8B', state: 'pending' },
+	{ status: 'Delivered', date: '16/10/2020 10:00', icon: 'pi pi-check', color: '#607D8B', state: 'pending' },
+])
 // import { CustomerService } from '@/service/CustomerService'
 // import { FilterMatchMode, FilterOperator } from '@primevue/core/api'
 
