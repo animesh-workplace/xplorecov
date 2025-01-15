@@ -22,8 +22,8 @@ def default_analysis_status():
     return [
         {
             "status": "start",
-            "step_id": "step1",
-            "step_name": "Queue analysis",
+            "step_id": "step3",
+            "step_name": "Queuing Analysis",
             "timestamp": now().isoformat()
         }
     ]
