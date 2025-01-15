@@ -28,7 +28,7 @@ export function useUserAnalysis() {
 			const csrfToken = useCookie('csrftoken')
 
 			const { data, error } = await useFetch(
-				`${BASEURL}/job/run-main-workflow/?user_id=${useCookie('session').value}`,
+				`${BASEURL}/job/get-submitted-workflow/?user_id=${useCookie('session').value}`,
 				{
 					method: 'GET',
 					headers: { 'X-CSRFToken': csrfToken.value },
