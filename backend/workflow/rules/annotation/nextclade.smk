@@ -13,8 +13,7 @@ rule nextclade:
         f'{config["OutputDir"]}/log/nextclade.log',
     threads: 10
     run:
-        print("Started Nextclade")
-        run_websocket_message("nextclade-rule", "start")
+        run_websocket_message("Nextclade Analysis Execution", "step4", "start")
         shell(
             """
             time micromamba run -p "/home/nsm/Desktop/All_Development/Manuscript_Work/xplorecov/backend/.workflow-venv/envs/xplorecov" nextclade run \
@@ -23,26 +22,5 @@ rule nextclade:
             "{input.sequences}" > {log} 2>&1
             """
         )
-        run_websocket_message("nextclade-rule", "end")
-        print("Finished Nextclade")
-        # requests.post(
-        #     "http://localhost:5000/print",
-        #     data={
-        #         "task": "Qualimap BamQC",
-        #         "status": "Started",
-        #         "time": str(datetime.now()),
-        #         "db_loc": snakemake.config["db_loc"],
-        #         "sample": f"{snakemake.wildcards.sample}",
-        #     },
-        # )
-        # requests.post(
-        #     "http://localhost:5000/print",
-        #     data={
-        #         "task": "Qualimap BamQC",
-        #         "status": "Finished",
-        #         "time": str(datetime.now()),
-        #         "db_loc": snakemake.config["db_loc"],
-        #         "sample": f"{snakemake.wildcards.sample}",
-        #     },
-        # )
+        run_websocket_message("Nextclade Analysis Execution", "step4", "end")
 
