@@ -1,7 +1,8 @@
-import { map } from 'lodash'
+import { map, round } from 'lodash'
 
 export const useWebSocket = (url) => {
 	const socket = ref(null)
+	const dayjs = useDayjs()
 	const tools_version = ref({ tools: {} })
 	const proper_disconnection = ref(false)
 	const analysis_steps = ref({
@@ -54,11 +55,28 @@ export const useWebSocket = (url) => {
 			analysis_steps.value[message.message.step_id].status = 'loading'
 			if (message.message.status == 'start') {
 				analysis_steps.value[message.message.step_id].status = 'loading'
-				analysis_steps.value[message.message.step_id].duration = message.message.timestamp
+				analysis_steps.value[message.message.step_id].duration = dayjs(message.message.timestamp)
 			} else if (message.message.status == 'end') {
 				analysis_steps.value[message.message.step_id].status = 'completed'
+				const durationInSeconds = round(
+					dayjs(message.message.timestamp).diff(
+						analysis_steps.value[message.message.step_id].duration,
+						'seconds',
+						true,
+					),
+					2,
+				)
 				analysis_steps.value[message.message.step_id].duration =
-					message.message.timestamp - analysis_steps.value[message.message.step_id].duration
+					durationInSeconds < 60
+						? durationInSeconds
+						: round(
+								dayjs(message.message.timestamp).diff(
+									analysis_steps.value[message.message.step_id].duration,
+									'minutes',
+									true,
+								),
+								2,
+							)
 			}
 		}
 	}
