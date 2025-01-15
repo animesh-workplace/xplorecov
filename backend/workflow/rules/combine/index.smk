@@ -45,18 +45,7 @@ rule combine:
             inplace=True,
         )
 
-        combined_list = [
-            nextclade[
-                [
-                    "Name",
-                    "Nextclade-Clade",
-                    "Nextclade-Lineage",
-                    "Nextclade-QC-Score",
-                    "Nextclade-QC-Status",
-                ]
-            ],
-            pangousher[["Name", "Pangousher-Lineage", "Pangousher-QC-Status"]],
-        ]
+        combined_list = [nextclade, pangousher]
 
         combined_report = reduce(
             lambda left, right: pandas.merge(left, right, on="Name", how="inner"),
