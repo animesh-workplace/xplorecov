@@ -6,12 +6,12 @@ export const useWebSocket = (url) => {
 	const proper_disconnection = ref(false)
 	const analysis_steps = ref({
 		// Status - Pending, Loading, Completed
-		step1: { index: 1, name: 'Analysis Queued', status: 'pending' },
-		step2: { index: 2, name: 'Runnning QC Checks', status: 'pending' },
-		step3: { index: 3, name: 'Updating Tools', status: 'pending' },
-		step4: { index: 4, name: 'Runnning Nextclade Analysis', status: 'pending' },
-		step5: { index: 5, name: 'Running Pangolin Analysis', status: 'pending' },
-		step6: { index: 6, name: 'Summarizing Results', status: 'pending' },
+		step1: { index: 1, name: 'Quality Control Checks', status: 'pending' },
+		step2: { index: 2, name: 'Tool Updates', status: 'pending' },
+		step3: { index: 3, name: 'Queuing Analysis', status: 'pending' },
+		step4: { index: 4, name: 'Nextclade Analysis Execution', status: 'pending' },
+		step5: { index: 5, name: 'Pangolin Analysis Execution', status: 'pending' },
+		step6: { index: 6, name: 'Results Summarization', status: 'pending' },
 	})
 
 	const connect = () => {
