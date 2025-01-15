@@ -82,20 +82,18 @@ class ToolVersionCreateView(APIView):
         # Extract the tool version information from the request data
         tool_versions = request.data
 
-        print(tool_versions)
         # Prepare the data to save in the model
         data = {
-            "nextclade_version": tool_versions.get('nextclade'),
-            "pangolin_version": tool_versions.get('pangolin'),
-            "constellations_version": tool_versions.get('constellations'),
-            "scorpio_version": tool_versions.get('scorpio'),
             "usher_version": tool_versions.get('usher'),
             "gofasta_version": tool_versions.get('gofasta'),
-            "minimap2_version": tool_versions.get('minimap2'),
             "faToVcf_version": tool_versions.get('fatovcf'),
+            "scorpio_version": tool_versions.get('scorpio'),
+            "pangolin_version": tool_versions.get('pangolin'),
+            "minimap2_version": tool_versions.get('minimap2'),
+            "nextclade_version": tool_versions.get('nextclade'),
+            "constellations_version": tool_versions.get('constellations'),
             "BACKEND_WEBSOCKET_UUID": tool_versions.get('BACKEND_WEBSOCKET_UUID')
         }
-        print(data)
 
         # Use the serializer to validate and save the data
         serializer = ToolVersionSerializer(data=data)
