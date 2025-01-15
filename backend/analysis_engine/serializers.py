@@ -10,7 +10,7 @@ class ToolVersionSerializer(ModelSerializer):
 class UserAnalysisSerializer(ModelSerializer):
     class Meta:
         model = UserAnalysis
-        fields = ["user_id", "analysis_id", "metadata", "sequence", "tool_version"]
+        fields = ["user_id", "analysis_id", "metadata", "sequence", "tool_version", "overall_status", "total_sequences"]
 
     def create(self, validated_data):
         # Fetch the most recent ToolVersion
