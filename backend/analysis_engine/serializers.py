@@ -8,11 +8,9 @@ class ToolVersionSerializer(ModelSerializer):
                   'usher_version', 'gofasta_version', 'minimap2_version', 'faToVcf_version', 'created_at']
 
 class UserAnalysisSerializer(ModelSerializer):
-    # tool_version = ToolVersionSerializer()
-
     class Meta:
         model = UserAnalysis
-        fields = ["user_id", "analysis_id", "metadata", "sequence", "submission_date"]
+        fields = ["user_id", "analysis_id", "metadata", "sequence", "tool_version"]
 
     def create(self, validated_data):
         # Fetch the most recent ToolVersion
@@ -23,3 +21,11 @@ class UserAnalysisSerializer(ModelSerializer):
         
         # Create and return the UserAnalysis instance
         return super().create(validated_data)
+    
+
+class GetUserAnalysisSerializer(ModelSerializer):
+    tool_version = ToolVersionSerializer()
+
+    class Meta:
+        model = UserAnalysis
+        fields = ["user_id", "analysis_id", "metadata", "sequence", "tool_version", "submission_date"]
