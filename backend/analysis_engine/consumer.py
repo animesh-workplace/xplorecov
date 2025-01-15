@@ -32,19 +32,22 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
         # Validate the expected fields in the message
         user_id = self.scope["url_route"]["kwargs"]["user_id"]
         analysis_id = self.scope["url_route"]["kwargs"]["analysis_id"]
-        status_update = json.loads(event["text"])
+        message = json.loads(event["text"])
+        message_type = message["message_type"]
+        status_update = message["message"]
         task_id = f"{user_id}.{analysis_id}"
 
-        if not user_id or not analysis_id or not status_update:
+        if not user_id or not analysis_id or not status_update or not message_type:
             print("Missing required fields in the message")
             return
 
         # Update the UserAnalysis model
-        await self.update_analysis_status(user_id, analysis_id, status_update)
+        await self.update_analysis_status(user_id, analysis_id, status_update, message_type)
 
-        await self.channel_layer.group_send(
-            task_id, {"type": "task_message", "message": json.loads(event["text"])}
-        )
+        if message_type == 'analysis_update':
+            await self.channel_layer.group_send(
+                task_id, {"type": "task_message", "message": status_update}
+            )
 
     async def task_message(self, event):
         data = {"message": event["message"]}
@@ -63,15 +66,15 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
 
 
     @sync_to_async
-    def update_analysis_status(self, user_id, analysis_id, status_update):
+    def update_analysis_status(self, user_id, analysis_id, status_update, message_type):
         try:
             analysis = UserAnalysis.objects.get(user_id=user_id, analysis_id=analysis_id)
 
-            if not isinstance(analysis.analysis_status, list):
-                analysis.analysis_status = [status_update]
-            else:
+            if message_type == 'analysis_update':
                 # Append the new status to the existing `analysis_status`
                 analysis.analysis_status.append(status_update)
+            elif message_type == 'workflow_update':
+                analysis.overall_status = status_update["status"]
 
             # Save the changes
             analysis.save()
