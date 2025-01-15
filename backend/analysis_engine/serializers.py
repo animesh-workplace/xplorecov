@@ -8,7 +8,7 @@ class ToolVersionSerializer(ModelSerializer):
                   'usher_version', 'gofasta_version', 'minimap2_version', 'faToVcf_version']
 
     def validate(self, data):
-        # Check if the key 'BACKEND_WEBSOCKET_UUID' exists in the data
+        # Check if the key 'BACKEND_WEBSOCKET_UUID' exists in the initial data
         websocket_uuid = self.initial_data.get('BACKEND_WEBSOCKET_UUID')
         if websocket_uuid is None:
             raise ValidationError({"detail": "BACKEND_WEBSOCKET_UUID is required."})
