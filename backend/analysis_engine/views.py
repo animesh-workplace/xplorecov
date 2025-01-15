@@ -63,7 +63,7 @@ class GetUserAnalysisView(APIView):
             )
 
         # Query all analyses for the given user_id
-        analyses = UserAnalysis.objects.filter(user_id=user_id)
+        analyses = UserAnalysis.objects.filter(user_id=user_id).order_by('-submission_date')
 
         if not analyses.exists():
             return Response(
@@ -82,6 +82,7 @@ class ToolVersionCreateView(APIView):
         # Extract the tool version information from the request data
         tool_versions = request.data
 
+        print(tool_versions)
         # Prepare the data to save in the model
         data = {
             "nextclade_version": tool_versions.get('nextclade'),
@@ -92,7 +93,9 @@ class ToolVersionCreateView(APIView):
             "gofasta_version": tool_versions.get('gofasta'),
             "minimap2_version": tool_versions.get('minimap2'),
             "faToVcf_version": tool_versions.get('fatovcf'),
+            "BACKEND_WEBSOCKET_UUID": tool_versions.get('BACKEND_WEBSOCKET_UUID')
         }
+        print(data)
 
         # Use the serializer to validate and save the data
         serializer = ToolVersionSerializer(data=data)
