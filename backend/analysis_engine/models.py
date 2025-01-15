@@ -18,6 +18,15 @@ def upload_file_location(instance, filename):
 def get_expiration_date():
     return now() + timedelta(days=14)
 
+def default_analysis_status():
+    return [
+        {
+            "status": "start",
+            "step_id": "step1",
+            "step_name": "Queue analysis",
+            "timestamp": now().isoformat()
+        }
+    ]
 
 # Model
 class WebSocketBackendUUID(models.Model):
@@ -43,12 +52,27 @@ class ToolVersion(models.Model):
         return f"Tool Versions - {ist_time.strftime('%d-%m-%Y %I:%M %p')}"
     
 class UserAnalysis(models.Model):
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('ERROR', 'Error'),
+        ('SUCCESS', 'Success'),
+    ]
+
     user_id = models.UUIDField()
     analysis_id = models.CharField(max_length=21)
-    analysis_status = models.JSONField(default=dict)
+    # Overall Status will contain only these options 
+    overall_status = models.CharField(max_length=20, null=True, blank=True, choices=STATUS_CHOICES, default="PENDING")
+    # The JSON structure is an array of objects, where each object represents an analysis step.
+    # Each object contains the following keys:
+    # - "step_name": A string representing the name of the step.
+    # - "step_id": Identification for the step to be used in teh frontend
+    # - "status": Containing either "start" or "end"
+    # - "timestamp": A string indicating the timestamp when the step was last updated.
     submission_date = models.DateTimeField(auto_now_add=True)
     metadata = models.FileField(upload_to=upload_file_location)
     sequence = models.FileField(upload_to=upload_file_location)
+    total_sequences = models.IntegerField(null=True, blank=True)
+    analysis_status = models.JSONField(default=default_analysis_status)
     expiration_date = models.DateTimeField(default=get_expiration_date)
     celery_task_id = models.CharField(max_length=255, blank=True, null=True)
     tool_version = models.ForeignKey(
