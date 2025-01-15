@@ -37,7 +37,7 @@ def run_update_workflow():
             "UpdateDir=workflow",
         ]
         result = subprocess.run(cmd, capture_output=True, text=True)
-        print(result.stderr)
+        print(result.stderr, result.stdout)
         return {
             "success": result.returncode == 0,
             "stdout": result.stdout,
