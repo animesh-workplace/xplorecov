@@ -216,8 +216,8 @@ const UploadData = async () => {
 	const { session } = useSessionStore()
 	const { uploadAnalysis } = useUserAnalysis()
 
-	const qcPassedMetadata = filter(metadata.value, (d) => !uniq_errors.value.includes(d['Virus name']))
-	const qcPassedSequences = filter(sequence.value, (d) => !uniq_errors.value.includes(d['name']))
+	const qcPassedMetadata = filter(metadata.value, (d) => cleared_data.value.includes(d['Virus name']))
+	const qcPassedSequences = filter(sequence.value, (d) => cleared_data.value.includes(d['name']))
 
 	const qcPassedMetadataBlob = new Blob([json2csv(qcPassedMetadata, { delimiter: { field: '\t' } })], {
 		type: 'text/tab-separated-values',
@@ -227,12 +227,12 @@ const UploadData = async () => {
 	const form = new FormData()
 	form.append('user_id', session)
 	form.append('analysis_id', analysis_id)
+	form.append('total_sequences', cleared_data.value.length)
 	form.append('metadata', qcPassedMetadataBlob, 'metadata.tsv')
 	form.append('sequence', qcPassedSequencesBlob, 'sequences.fasta')
 
 	try {
-		const response = await uploadAnalysis(form)
-		console.log(response)
+		await uploadAnalysis(form)
 		push.success({
 			title: 'Successfully Uploaded',
 			message: 'Starting Analysis',
