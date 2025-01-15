@@ -13,32 +13,10 @@ rule pangolin_usher:
         f'{config["OutputDir"]}/log/pangolin-usher.log',
     threads: 10
     run:
-        print("Started Pangolin: Usher")
-        run_websocket_message("pangolin-usher", "start")
+        run_websocket_message("Pangolin Analysis Execution", "step5", "start")
         shell(
             """
                 time micromamba run -p ".workflow-venv/envs/xplorecov" pangolin {input.sequences} --outfile {output.lineage_report} -t {threads} > {log} 2>&1
             """
         )
-        run_websocket_message("pangolin-usher", "end")
-        print("Finished Pangolin: Usher")
-        # requests.post(
-        #     "http://localhost:5000/print",
-        #     data={
-        #         "task": "Qualimap BamQC",
-        #         "status": "Started",
-        #         "time": str(datetime.now()),
-        #         "db_loc": snakemake.config["db_loc"],
-        #         "sample": f"{snakemake.wildcards.sample}",
-        #     },
-        # )
-        # requests.post(
-        #     "http://localhost:5000/print",
-        #     data={
-        #         "task": "Qualimap BamQC",
-        #         "status": "Finished",
-        #         "time": str(datetime.now()),
-        #         "db_loc": snakemake.config["db_loc"],
-        #         "sample": f"{snakemake.wildcards.sample}",
-        #     },
-        # )
+        run_websocket_message("Pangolin Analysis Execution", "step5", "end")
