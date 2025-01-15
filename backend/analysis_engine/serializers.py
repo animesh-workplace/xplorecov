@@ -1,11 +1,24 @@
-from .models import UserAnalysis, ToolVersion
+from .models import UserAnalysis, ToolVersion, WebSocketBackendUUID
 from rest_framework.serializers import ModelSerializer, ValidationError
 
 class ToolVersionSerializer(ModelSerializer):
     class Meta:
         model = ToolVersion
         fields = ['nextclade_version', 'pangolin_version', 'constellations_version', 'scorpio_version', 
-                  'usher_version', 'gofasta_version', 'minimap2_version', 'faToVcf_version', 'created_at']
+                  'usher_version', 'gofasta_version', 'minimap2_version', 'faToVcf_version']
+
+    def validate(self, data):
+        # Check if the key 'BACKEND_WEBSOCKET_UUID' exists in the data
+        websocket_uuid = self.initial_data.get('BACKEND_WEBSOCKET_UUID')
+        if websocket_uuid is None:
+            raise ValidationError({"detail": "BACKEND_WEBSOCKET_UUID is required."})
+        
+        # Verify if the uuid exists in WebSocketBackendUUID model
+        if not WebSocketBackendUUID.objects.filter(uuid=websocket_uuid).exists():
+            raise ValidationError({"detail": "Invalid BACKEND_WEBSOCKET_UUID."})
+        
+        
+        return data
 
 class UserAnalysisSerializer(ModelSerializer):
     class Meta:
@@ -28,4 +41,4 @@ class GetUserAnalysisSerializer(ModelSerializer):
 
     class Meta:
         model = UserAnalysis
-        fields = ["user_id", "analysis_id", "metadata", "sequence", "tool_version", "submission_date"]
+        fields = ["user_id", "analysis_id", "metadata", "sequence", "tool_version", "submission_date", "total_sequences", "overall_status"]
