@@ -4,8 +4,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
-from .serializers import UserAnalysisSerializer, ToolVersionSerializer
 from .tasks.run_workflow import run_analysis_workflow, run_update_workflow
+from .serializers import UserAnalysisSerializer, ToolVersionSerializer, GetUserAnalysisSerializer
 
 
 class ToolUpdateView(APIView):
@@ -23,7 +23,7 @@ class ToolUpdateView(APIView):
         )
 
 
-class UserAnalysisView(APIView):
+class CreateUserAnalysisView(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, *args, **kwargs):
@@ -53,6 +53,7 @@ class UserAnalysisView(APIView):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class GetUserAnalysisView(APIView):
     def get(self, request, *args, **kwargs):
         user_id = request.query_params.get("user_id")
 
@@ -71,7 +72,7 @@ class UserAnalysisView(APIView):
             )
 
         # Serialize the analyses data
-        serializer = UserAnalysisSerializer(analyses, many=True)
+        serializer = GetUserAnalysisSerializer(analyses, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
