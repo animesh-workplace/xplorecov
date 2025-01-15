@@ -74,21 +74,26 @@
 <script setup>
 import { useUserAnalysis } from '@/api/analysis'
 
-const my_analysis = ref([])
+// const my_analysis = ref([])
 
-const FetchAnalysis = async () => {
+// const FetchAnalysis = async () => {
+// 	const { getAnalysis } = useUserAnalysis()
+// 	try {
+// 		const response = await getAnalysis()
+// 		my_analysis.value = response
+// 	} catch (err) {
+// 		console.log(err)
+// 	}
+// }
+
+const { data: my_analysis, error } = useAsyncData('analysis', async () => {
 	const { getAnalysis } = useUserAnalysis()
-	try {
-		const response = await getAnalysis()
-		my_analysis.value = response
-	} catch (err) {
-		console.log(err)
-	}
-}
-
-onMounted(() => {
-	FetchAnalysis()
+	return await getAnalysis()
 })
+
+// useAsyncData(() => {
+// 	FetchAnalysis()
+// })
 </script>
 
 <style scoped></style>
