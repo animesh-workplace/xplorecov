@@ -6,8 +6,8 @@ export const useWebSocket = (url) => {
 	const proper_disconnection = ref(false)
 	const analysis_steps = ref({
 		// Status - Pending, Loading, Completed
-		step1: { index: 1, name: 'Quality Control Checks', status: 'pending', duration: 0 },
-		step2: { index: 2, name: 'Tool Updates', status: 'pending', duration: 0 },
+		step1: { index: 1, name: 'Quality Control Checks', status: 'completed', duration: 0 },
+		step2: { index: 2, name: 'Tool Updates', status: 'completed', duration: 0 },
 		step3: { index: 3, name: 'Queuing Analysis', status: 'pending', duration: 0 },
 		step4: { index: 4, name: 'Nextclade Analysis Execution', status: 'pending', duration: 0 },
 		step5: { index: 5, name: 'Pangolin Analysis Execution', status: 'pending', duration: 0 },
@@ -50,26 +50,15 @@ export const useWebSocket = (url) => {
 	}
 
 	const update_analysis_steps = (message) => {
-		let update_step = null
 		if (typeof message.message == 'object') {
-			if (message.message.type == 'nextclade-rule') {
-				update_step = 'step4'
-			} else if (message.message.type == 'pangolin-usher') {
-				update_step = 'step5'
-			} else if (message.message.type == 'combine') {
-				update_step = 'step6'
-			} else if (message.message.type == 'WORKFLOW') {
-				if (message.message.status == 'Started Workflow') {
-					analysis_steps.value.step1.status = 'completed'
-					analysis_steps.value.step2.status = 'completed'
-					analysis_steps.value.step3.status = 'completed'
-				}
-			}
-
+			analysis_steps.value[message.message.step_id].status = 'loading'
 			if (message.message.status == 'start') {
-				analysis_steps.value[update_step].status = 'loading'
+				analysis_steps.value[message.message.step_id].status = 'loading'
+				analysis_steps.value[message.message.step_id].duration = message.message.timestamp
 			} else if (message.message.status == 'end') {
-				analysis_steps.value[update_step].status = 'completed'
+				analysis_steps.value[message.message.step_id].status = 'completed'
+				analysis_steps.value[message.message.step_id].duration =
+					message.message.timestamp - analysis_steps.value[message.message.step_id].duration
 			}
 		}
 	}
