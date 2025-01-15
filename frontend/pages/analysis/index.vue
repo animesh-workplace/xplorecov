@@ -20,7 +20,7 @@
 			<DataTable
 				rowHover
 				paginator
-				:rows="5"
+				:rows="10"
 				size="small"
 				:value="my_analysis"
 				:rowsPerPageOptions="[5, 10, 20, 50]"
@@ -33,25 +33,40 @@
 					:pt="{ columnHeaderContent: '!justify-center', headerCell: '!rounded-tl-lg !p-4' }"
 				/>
 				<Column
-					field="submission_date"
-					header="Submission Date"
+					header="Analysis ID"
 					class="!text-center"
+					field="analysis_id"
 					:pt="{ columnHeaderContent: '!justify-center' }"
 				/>
 				<Column
-					field="total_seq"
-					header="Total Sequences"
 					class="!text-center"
+					field="submission_date"
+					header="Submission Date"
+					:pt="{ columnHeaderContent: '!justify-center' }"
+				/>
+				<Column
+					class="!text-center"
+					field="total_sequences"
+					header="Total Sequences"
 					:pt="{ columnHeaderContent: '!justify-center' }"
 				/>
 				<Column
 					header="Status"
-					field="status"
 					class="!text-center"
+					field="overall_status"
 					:pt="{ columnHeaderContent: '!justify-center' }"
 				>
 					<template #body="{ data }">
-						<Tag :value="data.status" severity="danger" />
+						<Tag
+							:value="data.overall_status"
+							:severity="
+								data.overall_status == 'SUCCESS'
+									? 'success'
+									: data.overall_status == 'ERROR'
+										? 'danger'
+										: 'warn'
+							"
+						/>
 					</template>
 				</Column>
 				<Column class="w-44 !text-center" :pt="{ headerCell: '!rounded-tr-lg' }">
@@ -72,28 +87,20 @@
 </template>
 
 <script setup>
+import { map } from 'lodash'
 import { useUserAnalysis } from '@/api/analysis'
 
-// const my_analysis = ref([])
-
-// const FetchAnalysis = async () => {
-// 	const { getAnalysis } = useUserAnalysis()
-// 	try {
-// 		const response = await getAnalysis()
-// 		my_analysis.value = response
-// 	} catch (err) {
-// 		console.log(err)
-// 	}
-// }
-
 const { data: my_analysis, error } = useAsyncData('analysis', async () => {
+	const dayjs = useDayjs()
 	const { getAnalysis } = useUserAnalysis()
-	return await getAnalysis()
-})
+	const response = await getAnalysis()
 
-// useAsyncData(() => {
-// 	FetchAnalysis()
-// })
+	return map(response, (d, i) => ({
+		...d,
+		index: i + 1,
+		submission_date: dayjs(d.submission_date.replace(/\.\d{3}\d*/, '')).format('DD-MM-YYYY hh:mm a'),
+	}))
+})
 </script>
 
 <style scoped></style>
