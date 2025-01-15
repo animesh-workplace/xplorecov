@@ -12,8 +12,7 @@ rule combine:
         f'{config["OutputDir"]}/log/combined.log',
     threads: 1
     run:
-        print("Started Combined")
-        run_websocket_message("combine", "start")
+        run_websocket_message("Results Summarization", "step6", "start")
         nextclade = pandas.read_csv(
             input.nextclade,
             delimiter="\t",
@@ -64,5 +63,4 @@ rule combine:
             combined_list,
         )
         combined_report.to_csv(output.report, sep="\t", index=False)
-        run_websocket_message("combine", "end")
-        print("Finished Combined")
+        run_websocket_message("Results Summarization", "step6", "end")
