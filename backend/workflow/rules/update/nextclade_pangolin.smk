@@ -1,4 +1,4 @@
-import json, requests
+import json, requests, os
 
 def parse_version_output(output):
     version_dict = {}
@@ -28,11 +28,11 @@ rule update_nextclade_pangolin:
         )
         nextclade_version = parse_version_output(shell("""micromamba run -p ".workflow-venv/envs/xplorecov" nextclade --version""", read=True).strip())
         pangolin_version = parse_version_output(shell("""micromamba run -p ".workflow-venv/envs/xplorecov" pangolin --all-version""", read=True).strip())
-        tool_versions = {**nextclade_version, **pangolin_version}
+        tool_versions = {**nextclade_version, **pangolin_version, "BACKEND_WEBSOCKET_UUID": os.getenv('BACKEND_WEBSOCKET_UUID')}
 
         try:
             response = requests.post('http://10.10.6.80/xplorecov/api/job/update-tool-version/', data=json.dumps(tool_versions), headers={"Content-Type": "application/json"})
-            if response.status_code == 200:
+            if response.status_code == 200 || response.status_code == 201:
                 print("Versions sent successfully!")
             else:
                 print(f"Failed to send versions. Status code: {response.status_code}")
