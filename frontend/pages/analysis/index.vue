@@ -87,7 +87,7 @@
 </template>
 
 <script setup>
-import { map } from 'lodash'
+import { map } from 'lodash-es'
 import { useUserAnalysis } from '@/api/analysis'
 
 const { data: my_analysis, error } = useAsyncData('analysis', async () => {
