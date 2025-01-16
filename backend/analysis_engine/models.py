@@ -72,6 +72,7 @@ class UserAnalysis(models.Model):
     metadata = models.FileField(upload_to=upload_file_location)
     sequence = models.FileField(upload_to=upload_file_location)
     total_sequences = models.IntegerField(null=True, blank=True)
+    completion_date = models.DateTimeField(null=True, blank=True)
     analysis_status = models.JSONField(default=default_analysis_status)
     expiration_date = models.DateTimeField(default=get_expiration_date)
     celery_task_id = models.CharField(max_length=255, blank=True, null=True)
