@@ -77,6 +77,32 @@ class GetUserAnalysisView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class GetAnalysisDetailView(APIView):
+    def get(self, request, *args, **kwargs):
+        user_id = request.query_params.get("user_id")
+        analysis_id = request.query_params.get("analysis_id")
+
+        if not analysis_id or not user_id:
+            return Response(
+                {"error": "Both user_id and analysis_id are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            # Retrieve the specific analysis by ID
+            analysis = UserAnalysis.objects.get(user_id=user_id, analysis_id=analysis_id)
+        except UserAnalysis.DoesNotExist:
+            return Response(
+                {"error": "Analysis not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Serialize the analysis data
+        serializer = GetUserAnalysisSerializer(analysis)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class ToolVersionCreateView(APIView):
     def post(self, request):
         # Extract the tool version information from the request data
