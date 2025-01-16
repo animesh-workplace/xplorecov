@@ -6,7 +6,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
+    "preview": "PORT=3009 nuxt preview",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
@@ -19,7 +19,7 @@
     "fuzzyset": "^1.0.7",
     "json-2-csv": "^5.5.7",
     "jszip": "^3.10.1",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "nanoid": "^5.0.9",
     "notivue": "^2.4.5",
     "nuxt": "^3.14.1592",
