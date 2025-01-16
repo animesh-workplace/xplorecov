@@ -20,18 +20,47 @@
 			<div class="flex items-start flex-col lg:justify-between lg:flex-row">
 				<div>
 					<div class="font-medium text-3xl text-surface-900 dark:text-surface-0">Analysis Results</div>
-					<div class="flex items-center text-surface-700 dark:text-surface-100 flex-wrap">
-						<div class="mr-8 flex items-center mt-4">
-							<i class="pi pi-users mr-2" />
-							<span>332 Active Users</span>
+					<div class="flex gap-6 items-center text-surface-700 dark:text-surface-100 flex-wrap">
+						<div class="flex align-center items-center mt-4">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5 mr-2">
+								<g fill="none" stroke="currentColor" stroke-width="1.5">
+									<path
+										d="M5 8c0-2.828 0-4.243.879-5.121C6.757 2 8.172 2 11 2h2c2.828 0 4.243 0 5.121.879C19 3.757 19 5.172 19 8v8c0 2.828 0 4.243-.879 5.121C17.243 22 15.828 22 13 22h-2c-2.828 0-4.243 0-5.121-.879C5 20.243 5 18.828 5 16zm0-3.924c-.975.096-1.631.313-2.121.803C2 5.757 2 7.172 2 10v4c0 2.828 0 4.243.879 5.121c.49.49 1.146.707 2.121.803M19 4.076c.975.096 1.631.313 2.121.803C22 5.757 22 7.172 22 10v4c0 2.828 0 4.243-.879 5.121c-.49.49-1.146.707-2.121.803"
+									/>
+									<path stroke-linecap="round" d="M9 13h6M9 9h6m-6 8h3" />
+								</g>
+							</svg>
+
+							<span>{{ my_analysis?.total_sequences }} sequences</span>
 						</div>
-						<div class="mr-8 flex items-center mt-4">
-							<i class="pi pi-globe mr-2" />
-							<span>9402 Sessions</span>
+
+						<div class="flex align-center items-center mt-4">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-7 h-7 mr-2">
+								<path
+									fill="currentColor"
+									fill-rule="evenodd"
+									d="M1.25 7A.75.75 0 0 1 2 6.25h8a.75.75 0 0 1 0 1.5H2A.75.75 0 0 1 1.25 7M17 7.75a4.25 4.25 0 1 0 0 8.5a4.25 4.25 0 0 0 0-8.5M11.25 12a5.75 5.75 0 1 1 11.5 0a5.75 5.75 0 0 1-11.5 0M17 9.25a.75.75 0 0 1 .75.75v1.566l.817.943a.75.75 0 0 1-1.134.982l-1-1.154a.75.75 0 0 1-.183-.49V10a.75.75 0 0 1 .75-.75M1.25 12a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5H2a.75.75 0 0 1-.75-.75m0 5a.75.75 0 0 1 .75-.75h8a.75.75 0 0 1 0 1.5H2a.75.75 0 0 1-.75-.75"
+									clip-rule="evenodd"
+								/>
+							</svg>
+
+							<span>{{ analysis_duration }} mins duration</span>
 						</div>
-						<div class="flex items-center mt-4">
-							<i class="pi pi-clock mr-2" />
-							<span>2.32m Avg. Duration</span>
+
+						<div class="flex align-center items-center mt-4">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6 mr-2">
+								<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5">
+									<path
+										stroke-dasharray=".5 3.5"
+										d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12S6.477 2 12 2s10 4.477 10 10Z"
+										opacity="0.5"
+									/>
+									<path d="M22 12c0-5.523-4.477-10-10-10" />
+									<path stroke-linejoin="round" d="M12 9v4h4" />
+								</g>
+							</svg>
+
+							<span>Expires {{ expires_in }}</span>
 						</div>
 					</div>
 				</div>
@@ -65,7 +94,23 @@
 
 		<div class="px-6 py-8 md:px-12 lg:px-20 lg:max-w-screen-sm">
 			<div class="w-full bg-white shadow-lg rounded-xl dark:bg-neutral-500">
-				<p class="py-2 px-4 font-bold text-black text-md dark:text-white">Analysis Steps</p>
+				<div class="py-2 px-4 font-bold text-black text-md dark:text-white flex align-center">
+					<svg
+						viewBox="0 0 24 24"
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-6 w-6 mr-2 stroke-slate-500 dark:stroke-slate-400 fill-none"
+					>
+						<path
+							stroke-width="1.5"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M3 4c0-1.655.345-2 2-2h4c1.655 0 2 .345 2 2s-.345 2-2 2H5c-1.655 0-2-.345-2-2m10 9c0-1.655.345-2 2-2h4c1.655 0 2 .345 2 2s-.345 2-2 2h-4c-1.655 0-2-.345-2-2m-9 7c0-1.655.345-2 2-2h4c1.655 0 2 .345 2 2s-.345 2-2 2H6c-1.655 0-2-.345-2-2m13-9c0-.465 0-.697-.038-.89a2 2 0 0 0-1.572-1.572c-.193-.038-.425-.038-.89-.038h-5c-.465 0-.697 0-.89-.038A2 2 0 0 1 7.038 6.89C7 6.697 7 6.465 7 6m10 9v1c0 1.886 0 2.828-.586 3.414S14.886 20 13 20h-1"
+							color="currentColor"
+						/>
+					</svg>
+
+					<span> Workflow Steps </span>
+				</div>
 				<ul>
 					<li
 						:key="index"
@@ -77,7 +122,7 @@
 							<span class="mx-4"> {{ step.index }} </span>
 							<span class="mr-2"> {{ step.name }} </span>
 							<span v-if="step.status == 'completed' && step.duration" class="text-xs text-gray-300">
-								(Took {{ step.duration }} secs)
+								(Took {{ step.duration }})
 							</span>
 						</div>
 
@@ -111,12 +156,25 @@
 </template>
 
 <script setup>
-// import { useUserAnalysis } from '@/api/analysis'
+import { round } from 'lodash-es'
+import { useUserAnalysis } from '@/api/analysis'
 
-// const { data: my_analysis, error } = useAsyncData('analysis', async () => {
-// 	const { getAnalysis } = useUserAnalysis()
-// 	return await getAnalysis()
-// })
+const { data: my_analysis, error } = useAsyncData('specific_analysis', async () => {
+	const route = useRoute()
+	const { getSpecificAnalysis } = useUserAnalysis()
+	return await getSpecificAnalysis(route.params.id)
+})
+const dayjs = useDayjs()
+const analysis_duration = computed(() => {
+	const completionDate = my_analysis.value?.completion_date
+	const submissionDate = my_analysis.value?.submission_date
+	if (!completionDate || !submissionDate) return 0 // Return 0 if either is missing
+	return round(dayjs(completionDate).diff(dayjs(submissionDate), 'minutes', true), 2)
+})
+const expires_in = computed(() => {
+	const expirationDate = my_analysis.value?.expiration_date
+	return dayjs().to(dayjs(expirationDate))
+})
 
 const route = useRoute()
 const wsUrl = `ws://10.10.6.80/xplorecov/ws/analysis/${useCookie('session').value}/${route.params.id}/`
