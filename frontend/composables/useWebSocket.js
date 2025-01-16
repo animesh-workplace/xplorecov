@@ -1,4 +1,4 @@
-import { map, round } from 'lodash'
+import { map, round } from 'lodash-es'
 
 export const useWebSocket = (url) => {
 	const socket = ref(null)
