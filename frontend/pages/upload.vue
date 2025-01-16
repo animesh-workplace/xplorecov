@@ -131,7 +131,7 @@ import { nanoid } from 'nanoid'
 import { json2csv } from 'json-2-csv'
 import { useUserAnalysis } from '@/api/analysis'
 import { useSessionStore } from '@/stores/session'
-import { forEach, groupBy, filter, map, difference, keys, flatten, uniq } from 'lodash'
+import { forEach, groupBy, filter, map, difference, keys, flatten, uniq } from 'lodash-es'
 
 const dayjs = useDayjs()
 const metadata = ref(null)
