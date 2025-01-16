@@ -65,7 +65,7 @@ It uses the Vue FilePond library for an enhanced file upload experience, support
 import csv2json from 'csvjson-csv2json'
 import vueFilePond from 'vue-filepond'
 import { usePondFileError } from '@/composables/usePondFileError'
-import { map, cloneDeepWith, isString, difference, join, filter } from 'lodash'
+import { map, cloneDeepWith, isString, difference, join, filter } from 'lodash-es'
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.esm.js'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js'
 
