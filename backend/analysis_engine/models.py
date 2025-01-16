@@ -24,7 +24,7 @@ def default_analysis_status():
             "status": "start",
             "step_id": "step3",
             "step_name": "Queuing Analysis",
-            "timestamp": now().isoformat()
+            "timestamp": localtime().isoformat()
         }
     ]
 
