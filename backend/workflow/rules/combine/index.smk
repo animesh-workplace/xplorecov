@@ -45,11 +45,14 @@ rule combine:
             inplace=True,
         )
 
-        combined_list = [nextclade, pangousher]
-
         combined_report = reduce(
             lambda left, right: pandas.merge(left, right, on="Name", how="inner"),
-            combined_list,
+            [nextclade, pangousher],
         )
+
+        # Generate the data for top voc/vui/voi
+        # sequence distribution in country and state
+        # sequence count month wise and week wise
+        # Update the output to feather to be used 
         combined_report.to_csv(output.report, sep="\t", index=False)
         run_websocket_message("Results Summarization", "step6", "end")
