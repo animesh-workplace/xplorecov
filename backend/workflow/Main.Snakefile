@@ -1,7 +1,8 @@
 from datetime import datetime
-import websockets, asyncio, json, os
+import websockets, asyncio, json, os, pytz
 
 async def connect_and_send(step_name, step_id, status, message_type):
+    timezone = pytz.timezone('Asia/Kolkata')
     uri = f"ws://10.10.6.80/xplorecov/ws/analysis/{config['UserID']}/{config['AnalysisID']}/?BACKEND_WEBSOCKET_UUID={os.getenv('BACKEND_WEBSOCKET_UUID')}"
     try:
         async with websockets.connect(uri) as websocket:
@@ -12,10 +13,10 @@ async def connect_and_send(step_name, step_id, status, message_type):
                     "status": status,
                     "step_id": step_id,
                     "step_name": step_name,
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.now(timezone).isoformat()
                 } if message_type == "analysis_update" else {
                     "status": status,
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.now(timezone).isoformat()
                 }
             }
             await websocket.send(json.dumps(message))
