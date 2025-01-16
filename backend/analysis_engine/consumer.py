@@ -75,6 +75,7 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
                 analysis.analysis_status.append(status_update)
             elif message_type == 'workflow_update':
                 analysis.overall_status = status_update["status"]
+                analysis.completion_date = status_update["timestamp"]
 
             # Save the changes
             analysis.save()
