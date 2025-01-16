@@ -46,8 +46,32 @@ export function useUserAnalysis() {
 		}
 	}
 
+	const getSpecificAnalysis = async (analysis_id) => {
+		try {
+			const csrfToken = useCookie('csrftoken')
+
+			const { data, error } = await useFetch(
+				`${BASEURL}/job/get-specific-workflow/?user_id=${useCookie('session').value}&analysis_id=${analysis_id}`,
+				{
+					method: 'GET',
+					headers: { 'X-CSRFToken': csrfToken.value },
+				},
+			)
+
+			if (error.value) {
+				throw new Error(error.value || 'An error occurred')
+			}
+
+			return data.value
+		} catch (err) {
+			console.error(err)
+			throw err
+		}
+	}
+
 	return {
-		uploadAnalysis,
 		getAnalysis,
+		uploadAnalysis,
+		getSpecificAnalysis,
 	}
 }
