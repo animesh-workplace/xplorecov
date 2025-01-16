@@ -65,7 +65,7 @@ It leverages the Vue FilePond library to enable a drag-and-drop file upload expe
 */
 
 import vueFilePond from 'vue-filepond'
-import { map, cloneDeepWith, isString } from 'lodash'
+import { map, cloneDeepWith, isString } from 'lodash-es'
 import { usePondFileError } from '@/composables/usePondFileError'
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.esm.js'
 
