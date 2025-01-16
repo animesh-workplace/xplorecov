@@ -62,7 +62,7 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 	compatibilityDate: '2024-11-01',
 	notivue: { position: 'bottom-right' },
-	dayjs: { plugins: ['customParseFormat'] },
+	dayjs: { plugins: ['customParseFormat', 'relativeTime'] },
 	umami: { enabled: false, id: '12d666c0-d0bf-4271-ae3b-2ff52f81be58', host: 'https://research.nibmg.ac.in' },
 	primevue: { options: { ripple: true, theme: { preset: Xaura, options: { darkModeSelector: '.dark' } } } },
 	css: [
@@ -73,5 +73,4 @@ export default defineNuxtConfig({
 		'@/assets/css/fonts.css',
 		'@/assets/css/jquery.mCustomScrollbar.css',
 	],
-	// build: { transpile: ['lodash'] },
 })
