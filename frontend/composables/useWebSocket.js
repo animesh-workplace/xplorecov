@@ -68,15 +68,15 @@ export const useWebSocket = (url) => {
 				)
 				analysis_steps.value[message.message.step_id].duration =
 					durationInSeconds < 60
-						? durationInSeconds
-						: round(
+						? `${durationInSeconds} secs`
+						: `${round(
 								dayjs(message.message.timestamp).diff(
 									analysis_steps.value[message.message.step_id].duration,
 									'minutes',
 									true,
 								),
 								2,
-							)
+							)} mins`
 			}
 		}
 	}
