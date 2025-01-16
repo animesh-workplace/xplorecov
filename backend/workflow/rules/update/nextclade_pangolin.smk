@@ -32,7 +32,7 @@ rule update_nextclade_pangolin:
 
         try:
             response = requests.post('http://10.10.6.80/xplorecov/api/job/update-tool-version/', data=json.dumps(tool_versions), headers={"Content-Type": "application/json"})
-            if response.status_code == 200 || response.status_code == 201:
+            if response.status_code == 200 or response.status_code == 201:
                 print("Versions sent successfully!")
             else:
                 print(f"Failed to send versions. Status code: {response.status_code}")
