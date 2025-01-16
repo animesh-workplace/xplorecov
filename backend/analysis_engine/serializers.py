@@ -41,4 +41,5 @@ class GetUserAnalysisSerializer(ModelSerializer):
 
     class Meta:
         model = UserAnalysis
-        fields = ["user_id", "analysis_id", "metadata", "sequence", "tool_version", "submission_date", "total_sequences", "overall_status"]
+        fields = ["user_id", "analysis_id", "metadata", "sequence", "tool_version", "submission_date", 
+                  "total_sequences", "overall_status", "completion_date", "expiration_date"]
