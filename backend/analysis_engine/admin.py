@@ -25,7 +25,7 @@ class UserAnalysisAdmin(admin.ModelAdmin):
         'submission_date', 
         'celery_task_id'
     )
-    list_filter = ('submission_date', 'analysis_status')
+    list_filter = ('submission_date', 'overall_status')
     search_fields = ('analysis_id', 'user_id')
     readonly_fields = ('submission_date',)
     
@@ -33,7 +33,7 @@ class UserAnalysisAdmin(admin.ModelAdmin):
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name == 'analysis_status':
             from django.forms import Textarea
-            kwargs['widget'] = Textarea(attrs={'rows': 10, 'cols': 40})
+            kwargs['widget'] = Textarea(attrs={'rows': 10, 'cols': 80})
         return super().formfield_for_dbfield(db_field, **kwargs)
 
 
