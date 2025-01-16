@@ -2,7 +2,7 @@
 
 XPLORECoV is your gateway to advanced SARS-CoV-2 genomic analysis. Combining cutting-edge bioinformatics workflows with AI-driven intelligence, this free, no-login-required platform transforms raw genomic data into actionable epidemiological insights. Say goodbye to outdated filters! XPLORECoV’s powerful AI capabilities handle complex, multifactorial questions with ease, delivering intuitive results on mutation patterns, lineage trends, and spatiotemporal epidemiology. Whether you're an academic, a researcher, or a public health expert, XPLORECoV empowers you to dive deeper with high-throughput pipelines, global datasets, and detailed visual reports
 
-# XploreCoV Setup Guide
+# XPLORECoV Setup Guide
 
 This guide provides step-by-step instructions to set up both the backend and frontend of the XploreCoV application.
 
@@ -130,12 +130,3 @@ Follow these steps to set up the frontend of the project:
         ```
 
 ---
-
-## Summary
-
--   Set up the backend by installing dependencies, creating a `.env` file, applying migrations, and running services.
--   Generate a backend UUID and include it in the `.env` file.
--   Start Redis, Celery, and Gunicorn services.
--   Set up the frontend by installing dependencies and configuring the `.env` file.
-
-With everything set up, the application should be ready to run. Ensure all services and workflows are properly configured before starting the application.
