@@ -1,14 +1,18 @@
 import json, requests, os
 
+
 def parse_version_output(output):
     version_dict = {}
     for line in output.splitlines():
         # Split each line into the name and version
-        name, version = line.split(':') if ':' in line else line.split()
+        name, version = line.split(":") if ":" in line else line.split()
         name = name.strip().lower().replace(" ", "_")  # Normalize the key
-        version = version.strip() if ':' in line else version.strip()  # Normalize version string
+        version = (
+            version.strip() if ":" in line else version.strip()
+        )  # Normalize version string
         version_dict[name] = version
     return version_dict
+
 
 rule update_nextclade_pangolin:
     output:
@@ -26,17 +30,33 @@ rule update_nextclade_pangolin:
                 micromamba run -p ".workflow-venv/envs/xplorecov" nextclade dataset get --name 'sars-cov-2' --output-dir {output.resources}
             """
         )
-        nextclade_version = parse_version_output(shell("""micromamba run -p ".workflow-venv/envs/xplorecov" nextclade --version""", read=True).strip())
-        pangolin_version = parse_version_output(shell("""micromamba run -p ".workflow-venv/envs/xplorecov" pangolin --all-version""", read=True).strip())
-        tool_versions = {**nextclade_version, **pangolin_version, "BACKEND_WEBSOCKET_UUID": os.getenv('BACKEND_WEBSOCKET_UUID')}
+        nextclade_version = parse_version_output(
+            shell(
+                """micromamba run -p ".workflow-venv/envs/xplorecov" nextclade --version""",
+                read=True,
+            ).strip()
+        )
+        pangolin_version = parse_version_output(
+            shell(
+                """micromamba run -p ".workflow-venv/envs/xplorecov" pangolin --all-version""",
+                read=True,
+            ).strip()
+        )
+        tool_versions = {
+            **nextclade_version,
+            **pangolin_version,
+            "BACKEND_WEBSOCKET_UUID": os.getenv("BACKEND_WEBSOCKET_UUID"),
+        }
 
         try:
-            response = requests.post('http://10.10.6.80/xplorecov/api/job/update-tool-version/', data=json.dumps(tool_versions), headers={"Content-Type": "application/json"})
+            response = requests.post(
+                "http://10.10.6.80/xplorecov/api/job/update-tool-version/",
+                data=json.dumps(tool_versions),
+                headers={"Content-Type": "application/json"},
+            )
             if response.status_code == 200 or response.status_code == 201:
                 print("Versions sent successfully!")
             else:
                 print(f"Failed to send versions. Status code: {response.status_code}")
         except Exception as e:
             print(e)
-
-
