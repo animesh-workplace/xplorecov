@@ -1,4 +1,4 @@
-import os
+import os, uuid
 from django.db import models
 from django.utils.timezone import now, timedelta, localtime
 
@@ -94,6 +94,9 @@ class UserAnalysis(models.Model):
     def __str__(self):
         return f"Analysis {self.analysis_id} by User {self.user_id}"
 
+    class Meta:
+        ordering = ["-submission_date"]
+
 
 class Report(models.Model):
     GRAPH_TYPE_CHOICES = [
@@ -111,8 +114,8 @@ class Report(models.Model):
     user_analysis = models.ForeignKey(
         "UserAnalysis", on_delete=models.CASCADE, related_name="reports"
     )
+    data = models.JSONField(default=list)  # Only for data reports
     name = models.CharField(max_length=255)
-    data = models.JSONField(null=True, blank=True)  # Only for data reports
     created_at = models.DateTimeField(auto_now_add=True)
     text_summary = models.TextField(null=True, blank=True)  # Only for text summaries
     graph_type = models.CharField(
@@ -130,3 +133,30 @@ class Report(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.name}) - {self.user_analysis.analysis_id}"
+
+
+class ChatMessages(models.Model):
+    SENDER_CHOICES = [
+        ("human", "Human"),
+        ("assistant", "Assistant"),
+    ]
+
+    CONTENT_TYPE_CHOICES = [
+        ("text", "Text"),
+        ("rich", "Rich Content"),  # For messages containing images, charts, etc.
+    ]
+
+    content = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+    parent_message_uuid = models.UUIDField(null=True, blank=True)
+    sender = models.CharField(max_length=20, choices=SENDER_CHOICES)
+    content_type = models.CharField(
+        max_length=20, choices=CONTENT_TYPE_CHOICES, default="text"
+    )
+    user_analysis = models.ForeignKey(
+        "UserAnalysis", on_delete=models.CASCADE, related_name="chat_messages"
+    )
+
+    def __str__(self):
+        return f"Message {self.uuid} ({self.sender}) - {self.user_analysis.analysis_id}"
