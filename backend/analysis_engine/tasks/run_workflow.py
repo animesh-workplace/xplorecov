@@ -16,6 +16,7 @@ def run_analysis_workflow(output_dir, user_id, analysis_id):
             f"AnalysisID={analysis_id}",
         ]
         result = subprocess.run(cmd, capture_output=True, text=True)
+        print(result.stderr, result.stdout)
         return {
             "success": result.returncode == 0,
             "stdout": result.stdout,
