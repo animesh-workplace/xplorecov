@@ -85,6 +85,16 @@ rule combine:
                 "name": "Top WHO's Clade",
                 "data": combined_report["clade_who"].value_counts().to_dict(),
             },
+            {
+                "graph_type": "None",
+                "report_type": "text",
+                "name": "Failed to annotate",
+                "data": combined_report.loc[
+                    combined_report["Nextclade-QC-Status"].isna()
+                    & (combined_report["qc_notes"] == "failed to map"),
+                    "Name",
+                ].to_list(),
+            },
         ]
         # sequence distribution in country and state
         # sequence count month wise and week wise
