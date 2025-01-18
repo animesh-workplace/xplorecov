@@ -101,9 +101,10 @@ class UserAnalysis(models.Model):
 class Report(models.Model):
     GRAPH_TYPE_CHOICES = [
         ("Bar", "Bar"),
-        ("Line", "Line"),
         ("Pie", "Pie"),
+        ("Line", "Line"),
         ("None", "None"),  # For non-graph reports like text summaries
+        ("Stacked Bar", "Stacked Bar"),
     ]
 
     REPORT_TYPE_CHOICES = [
