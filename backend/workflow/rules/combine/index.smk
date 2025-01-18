@@ -3,6 +3,181 @@ import requests, os, json
 from functools import reduce
 
 
+def generate_reports(combined_report):
+    reports = [
+        {
+            "graph_type": "Bar",
+            "name": "Top Nextclade's Clade",
+            "data": combined_report["Nextclade-Clade"].value_counts().to_dict(),
+        },
+        {
+            "graph_type": "Bar",
+            "name": "Top Nextclade's Pangolineage",
+            "data": combined_report["Nextclade-Lineage"].value_counts().to_dict(),
+        },
+        {
+            "graph_type": "Bar",
+            "name": "Top Pangolin's Lineage",
+            "data": combined_report["Pangousher-Lineage"].value_counts().to_dict(),
+        },
+        {
+            "graph_type": "Bar",
+            "name": "Top Pangolin's Scorpio Call",
+            "data": combined_report["scorpio_call"].value_counts().to_dict(),
+        },
+        {
+            "graph_type": "Bar",
+            "name": "Top WHO's Clade",
+            "data": combined_report["clade_who"].value_counts().to_dict(),
+        },
+        {
+            "graph_type": "None",
+            "report_type": "text",
+            "name": "Sequences failed to annotate",
+            "data": combined_report.loc[
+                combined_report["Nextclade-QC-Status"].isna()
+                & (combined_report["qc_notes"] == "failed to map"),
+                "Name",
+            ].to_list(),
+        },
+        {
+            "graph_type": "Bar",
+            "name": "Country wise distribution",
+            "data": combined_report["Country"].value_counts().to_dict(),
+        },
+        {
+            "graph_type": "Bar",
+            "name": "State wise distribution",
+            "data": combined_report["State"].value_counts().to_dict(),
+        },
+        {
+            "graph_type": "Bar",
+            "name": "Gender distribution",
+            "data": combined_report["Gender"].value_counts().to_dict(),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "State wise distribution of Nextclade-Clade",
+            "data": pandas.crosstab(
+                index=combined_report["Nextclade-Clade"],
+                columns=combined_report["State"],
+            ).to_dict(),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "Country wise distribution of Nextclade-Clade",
+            "data": pandas.crosstab(
+                index=combined_report["Nextclade-Clade"],
+                columns=combined_report["Country"],
+            ).to_dict(),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "State wise distribution of Nextclade-Lineage",
+            "data": pandas.crosstab(
+                index=combined_report["Nextclade-Lineage"],
+                columns=combined_report["State"],
+            ).to_dict(),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "Country wise distribution of Nextclade-Lineage",
+            "data": pandas.crosstab(
+                index=combined_report["Nextclade-Lineage"],
+                columns=combined_report["Country"],
+            ).to_dict(),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "State wise distribution of Pangousher-Lineage",
+            "data": pandas.crosstab(
+                index=combined_report["Pangousher-Lineage"],
+                columns=combined_report["State"],
+            ).to_dict(),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "Country wise distribution of Pangousher-Lineage",
+            "data": pandas.crosstab(
+                index=combined_report["Pangousher-Lineage"],
+                columns=combined_report["Country"],
+            ).to_dict(),
+        },
+        {
+            "graph_type": "Bar",
+            "name": "Month wise distribution",
+            "data": combined_report["Collection month"]
+            .value_counts()
+            .sort_index(key=lambda x: pandas.to_datetime(x, format="%b-%Y"))
+            .to_dict(),
+        },
+        {
+            "graph_type": "Bar",
+            "name": "Week wise distribution",
+            "data": (
+                combined_report["Collection week"]
+                .value_counts()
+                .sort_index(
+                    key=lambda x: pandas.to_datetime(
+                        [i.replace("W", "") + " 1" for i in x], format="%V-%G %w"
+                    )
+                )
+                .to_dict()
+            ),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "Month wise distribution of Nextclade-Clade",
+            "data": pandas.crosstab(
+                index=combined_report["Nextclade-Clade"],
+                columns=combined_report["Collection month"],
+            ).to_dict(),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "Week wise distribution of Nextclade-Clade",
+            "data": pandas.crosstab(
+                index=combined_report["Nextclade-Clade"],
+                columns=combined_report["Collection week"],
+            ).to_dict(),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "Month wise distribution of Nextclade-Lineage",
+            "data": pandas.crosstab(
+                index=combined_report["Nextclade-Lineage"],
+                columns=combined_report["Collection month"],
+            ).to_dict(),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "Week wise distribution of Nextclade-Lineage",
+            "data": pandas.crosstab(
+                index=combined_report["Nextclade-Lineage"],
+                columns=combined_report["Collection week"],
+            ).to_dict(),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "Month wise distribution of Pangousher-Lineage",
+            "data": pandas.crosstab(
+                index=combined_report["Pangousher-Lineage"],
+                columns=combined_report["Collection month"],
+            ).to_dict(),
+        },
+        {
+            "graph_type": "Stacked Bar",
+            "name": "Week wise distribution of Pangousher-Lineage",
+            "data": pandas.crosstab(
+                index=combined_report["Pangousher-Lineage"],
+                columns=combined_report["Collection week"],
+            ).to_dict(),
+        },
+    ]
+
+    return reports
+
+
 rule combine:
     input:
         nextclade=rules.nextclade.output.clade_report,
@@ -10,6 +185,7 @@ rule combine:
         pangolin_usher=rules.pangolin_usher.output.lineage_report,
     output:
         report=f'{config["OutputDir"]}/result/combined_report.tsv',
+        report_feather=f'{config["OutputDir"]}/result/combined_report.feather',
     log:
         f'{config["OutputDir"]}/log/combined.log',
     run:
@@ -33,13 +209,13 @@ rule combine:
         nextclade.rename(
             columns={
                 "seqName": "Name",
-                        "clade": "Nextclade-Clade",
-                        "Nextclade_pango": "Nextclade-Lineage",
-                        "qc.overallScore": "Nextclade-QC-Score",
-                        "qc.overallStatus": "Nextclade-QC-Status",
-                    },
-                    inplace=True,
-                )
+                "clade": "Nextclade-Clade",
+                "Nextclade_pango": "Nextclade-Lineage",
+                "qc.overallScore": "Nextclade-QC-Score",
+                "qc.overallStatus": "Nextclade-QC-Status",
+            },
+            inplace=True,
+        )
 
         pangousher.rename(
             columns={
@@ -61,127 +237,7 @@ rule combine:
         )
 
         # Generate the data for top voc/vui/voi
-        reports = [
-            {
-                "graph_type": "Bar",
-                "name": "Top Nextclade's Clade",
-                "data": combined_report["Nextclade-Clade"].value_counts().to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "Top Nextclade's Pangolineage",
-                "data": combined_report["Nextclade-Lineage"].value_counts().to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "Top Pangolin's Lineage",
-                "data": combined_report["Pangousher-Lineage"].value_counts().to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "Top Pangolin's Scorpio Call",
-                "data": combined_report["scorpio_call"].value_counts().to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "Top WHO's Clade",
-                "data": combined_report["clade_who"].value_counts().to_dict(),
-            },
-            {
-                "graph_type": "None",
-                "report_type": "text",
-                "name": "Sequences failed to annotate",
-                "data": combined_report.loc[
-                    combined_report["Nextclade-QC-Status"].isna()
-                    & (combined_report["qc_notes"] == "failed to map"),
-                    "Name",
-                ].to_list(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "Country wise distribution",
-                "data": combined_report["Country"].value_counts().to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "State wise distribution",
-                "data": combined_report["State"].value_counts().to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "Gender distribution",
-                "data": combined_report["Gender"].value_counts().to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "State wise distribution of Nextclade-Clade",
-                "data": pandas.crosstab(
-                    index=combined_report["Nextclade-Clade"],
-                    columns=combined_report["State"],
-                ).to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "Country wise distribution of Nextclade-Clade",
-                "data": pandas.crosstab(
-                    index=combined_report["Nextclade-Clade"],
-                    columns=combined_report["Country"],
-                ).to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "State wise distribution of Nextclade-Lineage",
-                "data": pandas.crosstab(
-                    index=combined_report["Nextclade-Lineage"],
-                    columns=combined_report["State"],
-                ).to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "Country wise distribution of Nextclade-Lineage",
-                "data": pandas.crosstab(
-                    index=combined_report["Nextclade-Lineage"],
-                    columns=combined_report["Country"],
-                ).to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "State wise distribution of Pangousher-Lineage",
-                "data": pandas.crosstab(
-                    index=combined_report["Pangousher-Lineage"],
-                    columns=combined_report["State"],
-                ).to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "Country wise distribution of Pangousher-Lineage",
-                "data": pandas.crosstab(
-                    index=combined_report["Pangousher-Lineage"],
-                    columns=combined_report["Country"],
-                ).to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "Month wise distribution",
-                "data": combined_report["Collection month"]
-                .value_counts()
-                .sort_index(key=lambda x: pandas.to_datetime(x, format="%b-%Y"))
-                .to_dict(),
-            },
-            {
-                "graph_type": "Bar",
-                "name": "Week wise distribution",
-                "data": (
-                    combined_report["Collection week"]
-                    .value_counts()
-                    .sort_index(
-                        key=lambda x: pandas.to_datetime(
-                            [i.replace("W", "") + " 1" for i in x], format="%V-%G %w"
-                        )
-                    ).to_dict()
-                ),
-            },
-        ]
+        reports = generate_reports(combined_report)
 
         try:
             response = requests.post(
@@ -203,8 +259,7 @@ rule combine:
         except Exception as e:
             print(e)
 
-            # Distribution of the lineage over the country
-            # sequence count month wise and week wise
             # Update the output to feather to be used
         combined_report.to_csv(output.report, sep="\t", index=False)
+        combined_report.to_feather(output.report_feather)
         run_websocket_message("Results Summarization", "step6", "end")
