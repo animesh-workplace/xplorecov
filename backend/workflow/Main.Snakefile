@@ -1,23 +1,28 @@
 from datetime import datetime
 import websockets, asyncio, json, os, pytz
 
+
 async def connect_and_send(step_name, step_id, status, message_type):
-    timezone = pytz.timezone('Asia/Kolkata')
+    timezone = pytz.timezone("Asia/Kolkata")
     uri = f"ws://10.10.6.80/xplorecov/ws/analysis/{config['UserID']}/{config['AnalysisID']}/?BACKEND_WEBSOCKET_UUID={os.getenv('BACKEND_WEBSOCKET_UUID')}"
     try:
         async with websockets.connect(uri) as websocket:
             response = await websocket.recv()
             message = {
                 "message_type": message_type,
-                "message": {
-                    "status": status,
-                    "step_id": step_id,
-                    "step_name": step_name,
-                    "timestamp": datetime.now(timezone).isoformat()
-                } if message_type == "analysis_update" else {
-                    "status": status,
-                    "timestamp": datetime.now(timezone).isoformat()
-                }
+                "message": (
+                    {
+                        "status": status,
+                        "step_id": step_id,
+                        "step_name": step_name,
+                        "timestamp": datetime.now(timezone).isoformat(),
+                    }
+                    if message_type == "analysis_update"
+                    else {
+                        "status": status,
+                        "timestamp": datetime.now(timezone).isoformat(),
+                    }
+                ),
             }
             await websocket.send(json.dumps(message))
             await websocket.close()
@@ -31,7 +36,9 @@ def run_websocket_message(step_name, step_id, status, message_type="analysis_upd
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
-        loop.run_until_complete(connect_and_send(step_name, step_id, status, message_type))
+        loop.run_until_complete(
+            connect_and_send(step_name, step_id, status, message_type)
+        )
     finally:
         loop.close()
 
@@ -39,6 +46,7 @@ def run_websocket_message(step_name, step_id, status, message_type="analysis_upd
 rule all:
     input:
         f'{config["OutputDir"]}/result/combined_report.tsv',
+        f'{config["OutputDir"]}/result/combined_report.feather',
 
 
 include: "rules/annotation/nextclade.smk"
@@ -52,7 +60,9 @@ onstart:
 
 onsuccess:
     # SEND COMPLETE TO OVERALL STATUS
-    run_websocket_message("WORKFLOW", "Completed Workflow", "SUCCESS", "workflow_update")
+    run_websocket_message(
+        "WORKFLOW", "Completed Workflow", "SUCCESS", "workflow_update"
+    )
 
 
 onerror:
