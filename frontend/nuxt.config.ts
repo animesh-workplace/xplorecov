@@ -57,7 +57,13 @@ export default defineNuxtConfig({
 	echarts: {
 		ssr: true,
 		charts: ['BarChart'],
-		components: ['GridComponent', 'DatasetComponent', 'TooltipComponent', 'ToolboxComponent'],
+		components: [
+			'GridComponent',
+			'TitleComponent',
+			'DatasetComponent',
+			'TooltipComponent',
+			'ToolboxComponent',
+		],
 	},
 	devtools: { enabled: true },
 	compatibilityDate: '2024-11-01',
