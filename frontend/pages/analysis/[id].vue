@@ -153,6 +153,13 @@
 			</div>
 		</div>
 
+		<div class="grid grid-cols-4 gap-6 mb-12 px-6 md:px-12 lg:px-20">
+			<div v-for="(analysis, index) in my_analysis?.graph_reports" :key="index">
+				<GraphsBar :rawData="analysis" v-if="analysis?.graph_type == 'Bar'" />
+				<GraphsStackedBar :rawData="analysis" v-if="analysis?.graph_type == 'Stacked Bar'" />
+			</div>
+		</div>
+
 		<div class="px-6 md:px-12 lg:px-20 fixed w-full bottom-5">
 			<div class="relative">
 				<div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
