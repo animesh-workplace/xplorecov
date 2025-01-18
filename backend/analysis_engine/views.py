@@ -115,7 +115,11 @@ class GetAnalysisDetailView(APIView):
         )
 
         return Response(
-            {**analysis_serializer.data, "reports": reports_serializer.data},
+            {
+                **analysis_serializer.data,
+                "graph_reports": [report for report in reports_serializer.data if report["graph_type"] != "None"],
+                "summary_reports": [report for report in reports_serializer.data if report["graph_type"] == "None"],
+            },
             status=status.HTTP_200_OK,
         )
 
