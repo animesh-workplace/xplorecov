@@ -198,35 +198,46 @@ def generate_reports(combined_report):
         },
     ]
 
-    reports[0]["text_summary"] = (
-        client.chat.completions.create(
-            model="LLaMA_CPP",
-            messages=report_summary_messages
-            + [
-                {
-                    "role": "user",
-                    "content": f"Following is my data for {reports[0]['name']} {reports[0]['data']}",
-                }
-            ],
-        )
-        .choices[0]
-        .message.content
-    )
+    reports[0][
+        "text_summary"
+    ] = f"{len(reports[0]['data'])} sequences failed to be annotated as these sequences were unable to be mapped using aligner {', '.join(reports[0]['data'])}"
+    reports[1][
+        "text_summary"
+    ] = f"{len(reports[1]['data'])} sequences have differences in there annotation between Nextclade's Pangolin and Pangolin {', '.join(reports[1]['data'])}"
 
-    reports[1]["text_summary"] = (
-        client.chat.completions.create(
-            model="LLaMA_CPP",
-            messages=report_summary_messages
-            + [
-                {
-                    "role": "user",
-                    "content": f"Following is my data for {reports[1]['name']} {reports[1]['data']}",
-                }
-            ],
-        )
-        .choices[0]
-        .message.content
-    )
+    # my_messages = report_summary_messages + [
+    #     {
+    #         "role": "user",
+    #         "content": f"Following sequences failed to be annotated as these sequences were unable to be mapped using aligner {' ,'.join(reports[0]['data'])}",
+    #     }
+    # ]
+    # print(my_messages)
+
+    # try:
+    #     reports[0]["text_summary"] = (
+    #         client.chat.completions.create(model="LLaMA_CPP", messages=my_messages)
+    #         .choices[0]
+    #         .message.content.replace("</s>", "")
+    #     )
+    # except Exception as e:
+    #     print(e)
+
+    # my_messages = report_summary_messages + [
+    #     {
+    #         "role": "user",
+    #         "content": f"Following is my data for {reports[1]['name']} {reports[1]['data']}",
+    #     }
+    # ]
+    # print(my_messages)
+
+    # try:
+    #     reports[1]["text_summary"] = (
+    #         client.chat.completions.create(model="LLaMA_CPP", messages=my_messages)
+    #         .choices[0]
+    #         .message.content.replace("</s>", "")
+    #     )
+    # except Exception as e:
+    #     print(e)
 
     return reports
 
