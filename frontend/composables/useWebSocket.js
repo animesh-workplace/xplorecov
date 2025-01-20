@@ -3,6 +3,7 @@ import { map, round } from 'lodash-es'
 export const useWebSocket = (url) => {
 	const socket = ref(null)
 	const dayjs = useDayjs()
+	const analysis_complete = ref(false)
 	const tools_version = ref({ tools: {} })
 	const proper_disconnection = ref(false)
 	const analysis_steps = ref({
@@ -51,6 +52,10 @@ export const useWebSocket = (url) => {
 	}
 
 	const update_analysis_steps = (message) => {
+		console.log(message.message.step_name, message.message.status)
+		if (message.message.step_name == 'Results Summarization' && message.message.status == 'end') {
+			analysis_complete.value = true
+		}
 		if (typeof message.message == 'object') {
 			analysis_steps.value[message.message.step_id].status = 'loading'
 			if (message.message.status == 'start') {
@@ -98,7 +103,8 @@ export const useWebSocket = (url) => {
 	})
 
 	return {
-		analysis_steps,
 		tools_version,
+		analysis_steps,
+		analysis_complete,
 	}
 }
