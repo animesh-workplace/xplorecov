@@ -52,7 +52,6 @@ export const useWebSocket = (url) => {
 	}
 
 	const update_analysis_steps = (message) => {
-		console.log(message.message.step_name, message.message.status)
 		if (message.message.step_name == 'Results Summarization' && message.message.status == 'end') {
 			analysis_complete.value = true
 		}
