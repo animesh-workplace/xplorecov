@@ -30,6 +30,12 @@ const graph_options = ref({
 			overflow: 'break',
 		},
 	},
+	grid: {
+		left: '0%',
+		right: '0%',
+		bottom: '0%',
+		containLabel: true,
+	},
 	tooltip: {
 		trigger: 'axis',
 		position: 'right',
