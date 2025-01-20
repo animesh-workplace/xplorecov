@@ -17,6 +17,7 @@
 					<span class="text-surface-900 dark:text-surface-0 leading-normal">{{ route.params.id }}</span>
 				</li>
 			</ul>
+
 			<div class="flex items-start flex-col lg:justify-between lg:flex-row">
 				<div>
 					<div class="font-medium text-3xl text-surface-900 dark:text-surface-0">Analysis Results</div>
@@ -92,64 +93,76 @@
 			</div>
 		</div>
 
-		<div class="px-6 py-8 md:px-12 lg:px-20 lg:max-w-screen-sm">
-			<div class="w-full bg-white shadow-lg rounded-xl dark:bg-neutral-500">
-				<div class="py-2 px-4 font-bold text-black text-md dark:text-white flex align-center">
-					<svg
-						viewBox="0 0 24 24"
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-6 w-6 mr-2 stroke-slate-500 dark:stroke-slate-400 fill-none"
-					>
-						<path
-							stroke-width="1.5"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M3 4c0-1.655.345-2 2-2h4c1.655 0 2 .345 2 2s-.345 2-2 2H5c-1.655 0-2-.345-2-2m10 9c0-1.655.345-2 2-2h4c1.655 0 2 .345 2 2s-.345 2-2 2h-4c-1.655 0-2-.345-2-2m-9 7c0-1.655.345-2 2-2h4c1.655 0 2 .345 2 2s-.345 2-2 2H6c-1.655 0-2-.345-2-2m13-9c0-.465 0-.697-.038-.89a2 2 0 0 0-1.572-1.572c-.193-.038-.425-.038-.89-.038h-5c-.465 0-.697 0-.89-.038A2 2 0 0 1 7.038 6.89C7 6.697 7 6.465 7 6m10 9v1c0 1.886 0 2.828-.586 3.414S14.886 20 13 20h-1"
-							color="currentColor"
-						/>
-					</svg>
-
-					<span> Workflow Steps </span>
-				</div>
-				<ul>
-					<li
-						:key="index"
-						v-for="(step, index) in analysis_steps"
-						:class="{ 'border-b-2': step.index != 6, 'border-t-2': step.index == 1 }"
-						class="flex items-center justify-between py-2 text-gray-600 border-gray-100 dark:text-gray-100 dark:border-gray-800"
-					>
-						<div class="flex items-center justify-start text-sm">
-							<span class="mx-4"> {{ step.index }} </span>
-							<span class="mr-2"> {{ step.name }} </span>
-							<span v-if="step.status == 'completed' && step.duration" class="text-xs text-gray-300">
-								(Took {{ step.duration }})
-							</span>
-						</div>
-
-						<i
-							v-if="step.status == 'pending'"
-							class="pi pi-pause-circle mx-4 text-gray-400 dark:text-gray-300"
-						/>
-
-						<i
-							v-if="step.status == 'completed'"
-							class="pi pi-check-circle mx-4 text-green-400 dark:text-green-500"
-						/>
-
+		<div class="grid grid-cols-6 gap-8 px-6 py-8 md:px-12 lg:px-20">
+			<div class="col-span-2">
+				<div class="w-full bg-white shadow-lg rounded-xl dark:bg-neutral-500">
+					<div class="py-2 px-4 font-bold text-black text-md dark:text-white flex align-center">
 						<svg
-							width="17"
-							height="17"
 							viewBox="0 0 24 24"
-							v-if="step.status == 'loading'"
 							xmlns="http://www.w3.org/2000/svg"
-							class="mx-4 text-gray-400 dark:text-gray-300 stroke-yellow-700"
+							class="h-6 w-6 mr-2 stroke-slate-500 dark:stroke-slate-400 fill-none"
 						>
-							<g class="spinner">
-								<circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" />
-							</g>
+							<path
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M3 4c0-1.655.345-2 2-2h4c1.655 0 2 .345 2 2s-.345 2-2 2H5c-1.655 0-2-.345-2-2m10 9c0-1.655.345-2 2-2h4c1.655 0 2 .345 2 2s-.345 2-2 2h-4c-1.655 0-2-.345-2-2m-9 7c0-1.655.345-2 2-2h4c1.655 0 2 .345 2 2s-.345 2-2 2H6c-1.655 0-2-.345-2-2m13-9c0-.465 0-.697-.038-.89a2 2 0 0 0-1.572-1.572c-.193-.038-.425-.038-.89-.038h-5c-.465 0-.697 0-.89-.038A2 2 0 0 1 7.038 6.89C7 6.697 7 6.465 7 6m10 9v1c0 1.886 0 2.828-.586 3.414S14.886 20 13 20h-1"
+								color="currentColor"
+							/>
 						</svg>
-					</li>
-				</ul>
+
+						<span> Workflow Steps </span>
+					</div>
+					<ul>
+						<li
+							:key="index"
+							v-for="(step, index) in analysis_steps"
+							:class="{ 'border-b-2': step.index != 6, 'border-t-2': step.index == 1 }"
+							class="flex items-center justify-between py-2 text-gray-600 border-gray-100 dark:text-gray-100 dark:border-gray-800"
+						>
+							<div class="flex items-center justify-start text-sm">
+								<span class="mx-4"> {{ step.index }} </span>
+								<span class="mr-2"> {{ step.name }} </span>
+								<span
+									v-if="step.status == 'completed' && step.duration"
+									class="text-xs text-gray-300"
+								>
+									(Took {{ step.duration }})
+								</span>
+							</div>
+
+							<i
+								v-if="step.status == 'pending'"
+								class="pi pi-pause-circle mx-4 text-gray-400 dark:text-gray-300"
+							/>
+
+							<i
+								v-if="step.status == 'completed'"
+								class="pi pi-check-circle mx-4 text-green-400 dark:text-green-500"
+							/>
+
+							<svg
+								width="17"
+								height="17"
+								viewBox="0 0 24 24"
+								v-if="step.status == 'loading'"
+								xmlns="http://www.w3.org/2000/svg"
+								class="mx-4 text-gray-400 dark:text-gray-300 stroke-yellow-700"
+							>
+								<g class="spinner">
+									<circle cx="12" cy="12" r="9.5" fill="none" stroke-width="3" />
+								</g>
+							</svg>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="col-span-4" v-if="analysis_complete">
+				<div class="font-bold text-black text-md dark:text-white mt-2">Data Summary</div>
+				<p v-for="(analysis, index) in my_analysis?.summary_reports" :key="index">
+					{{ analysis.text_summary }}
+				</p>
 			</div>
 		</div>
 
@@ -160,7 +173,7 @@
 			</div>
 		</div>
 
-		<div class="px-6 md:px-12 lg:px-20 fixed w-full bottom-5">
+		<div class="px-6 md:px-12 lg:px-20 fixed w-full bottom-5" v-if="analysis_complete">
 			<div class="relative">
 				<div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
 					<svg
@@ -218,7 +231,26 @@ const expires_in = computed(() => {
 
 const route = useRoute()
 const wsUrl = `ws://10.10.6.80/xplorecov/ws/analysis/${useCookie('session').value}/${route.params.id}/`
-const { analysis_steps, tools_version } = useWebSocket(wsUrl)
+const { analysis_steps, tools_version, analysis_complete } = useWebSocket(wsUrl)
+
+const refreshAll = async () => {
+	try {
+		const { getSpecificAnalysis } = useUserAnalysis()
+		my_analysis.value = await getSpecificAnalysis(route.params.id)
+	} catch (err) {
+		console.log(err)
+	}
+}
+
+watch(
+	() => analysis_complete.value,
+	async (newValue) => {
+		if (newValue) {
+			refreshAll()
+		}
+	},
+	{ immediate: true },
+)
 </script>
 
 <style scoped></style>
