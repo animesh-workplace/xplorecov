@@ -77,6 +77,6 @@ export default defineNuxtConfig({
 		'notivue/animations.css',
 		'@/assets/css/main.css',
 		'@/assets/css/fonts.css',
-		'@/assets/css/jquery.mCustomScrollbar.css',
+		// '@/assets/css/jquery.mCustomScrollbar.css',
 	],
 })
