@@ -203,7 +203,7 @@ def generate_reports(combined_report):
     ] = f"{len(reports[0]['data'])} sequences failed to be annotated as these sequences were unable to be mapped using aligner {', '.join(reports[0]['data'])}"
     reports[1][
         "text_summary"
-    ] = f"{len(reports[1]['data'])} sequences have differences in there annotation between Nextclade's Pangolin and Pangolin {', '.join(reports[1]['data'])}"
+    ] = f"{len(reports[1]['data'])} sequences exhibit discrepancies in annotation between Nextclade and Pangolin, with differences observed across multiple variants {', '.join(reports[1]['data'])}"
 
     # my_messages = report_summary_messages + [
     #     {
