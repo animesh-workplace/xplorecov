@@ -166,10 +166,18 @@
 			</div>
 		</div>
 
-		<div class="grid grid-cols-4 gap-6 mb-12 px-6 md:px-12 lg:px-20">
+		<div class="grid grid-cols-4 gap-4 mb-24 px-6 md:px-12 lg:px-20" v-if="analysis_complete">
 			<div v-for="(analysis, index) in my_analysis?.graph_reports" :key="index">
 				<GraphsBar :rawData="analysis" v-if="analysis?.graph_type == 'Bar'" />
 				<GraphsStackedBar :rawData="analysis" v-if="analysis?.graph_type == 'Stacked Bar'" />
+			</div>
+		</div>
+
+		<div class="mb-24 px-6 md:px-12 lg:px-20">
+			<div class="bg-green-400 p-4 my-6 rounded-lg flex-1">
+				🔥🔥🔥🔥Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas
+				vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius
+				sed odit fugiat iusto fuga praesentium optio, eaque rerum!
 			</div>
 		</div>
 
