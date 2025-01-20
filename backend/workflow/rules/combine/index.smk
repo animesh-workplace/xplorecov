@@ -173,6 +173,15 @@ def generate_reports(combined_report):
                 columns=combined_report["Collection week"],
             ).to_dict(),
         },
+        {
+            "graph_type": "None",
+            "report_type": "text",
+            "name": "Conflicts between Nextclade and Pangolin lineage annotaters",
+            "data": combined_report[
+                combined_report["Nextclade-Lineage"]
+                != combined_report["Pangousher-Lineage"]
+            ]["Name"].to_list(),
+        },
     ]
 
     return reports
