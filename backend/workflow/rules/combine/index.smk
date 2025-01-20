@@ -1,10 +1,43 @@
 import pandas
+from openai import OpenAI
 import requests, os, json
 from functools import reduce
 
 
 def generate_reports(combined_report):
+    client = OpenAI(
+        base_url="http://10.10.6.80/xplorecov/ai/content/v1",
+        api_key="sk-no-key-required",
+    )
+    report_summary_messages = [
+        {
+            "role": "system",
+            "content": "You are an expert in understanding SARS-CoV-2 data based on the dataset provided. Give me a quick summary of this data in 1-2 lines and not more. This summary will be presented in front of serious academicians who are knowledgeable in the same field. Ensure the response provides a detailed breakdown of the data, excluding any concluding statements or generalizations.",
+        },
+    ]
+
     reports = [
+        {
+            "text_summary": "",
+            "graph_type": "None",
+            "report_type": "text",
+            "name": "Sequences failed to annotate",
+            "data": combined_report.loc[
+                combined_report["Nextclade-QC-Status"].isna()
+                & (combined_report["qc_notes"] == "failed to map"),
+                "Name",
+            ].to_list(),
+        },
+        {
+            "text_summary": "",
+            "graph_type": "None",
+            "report_type": "text",
+            "name": "Conflicts between Nextclade and Pangolin lineage annotaters",
+            "data": combined_report[
+                combined_report["Nextclade-Lineage"]
+                != combined_report["Pangousher-Lineage"]
+            ]["Name"].to_list(),
+        },
         {
             "graph_type": "Bar",
             "name": "Top Nextclade's Clade",
@@ -29,16 +62,6 @@ def generate_reports(combined_report):
             "graph_type": "Bar",
             "name": "Top WHO's Clade",
             "data": combined_report["clade_who"].value_counts().to_dict(),
-        },
-        {
-            "graph_type": "None",
-            "report_type": "text",
-            "name": "Sequences failed to annotate",
-            "data": combined_report.loc[
-                combined_report["Nextclade-QC-Status"].isna()
-                & (combined_report["qc_notes"] == "failed to map"),
-                "Name",
-            ].to_list(),
         },
         {
             "graph_type": "Bar",
@@ -173,16 +196,37 @@ def generate_reports(combined_report):
                 columns=combined_report["Collection week"],
             ).to_dict(),
         },
-        {
-            "graph_type": "None",
-            "report_type": "text",
-            "name": "Conflicts between Nextclade and Pangolin lineage annotaters",
-            "data": combined_report[
-                combined_report["Nextclade-Lineage"]
-                != combined_report["Pangousher-Lineage"]
-            ]["Name"].to_list(),
-        },
     ]
+
+    reports[0]["text_summary"] = (
+        client.chat.completions.create(
+            model="LLaMA_CPP",
+            messages=report_summary_messages
+            + [
+                {
+                    "role": "user",
+                    "content": f"Following is my data for {reports[0]['name']} {reports[0]['data']}",
+                }
+            ],
+        )
+        .choices[0]
+        .message.content
+    )
+
+    reports[1]["text_summary"] = (
+        client.chat.completions.create(
+            model="LLaMA_CPP",
+            messages=report_summary_messages
+            + [
+                {
+                    "role": "user",
+                    "content": f"Following is my data for {reports[1]['name']} {reports[1]['data']}",
+                }
+            ],
+        )
+        .choices[0]
+        .message.content
+    )
 
     return reports
 
