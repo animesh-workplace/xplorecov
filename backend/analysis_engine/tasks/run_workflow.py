@@ -1,4 +1,5 @@
 import subprocess
+from openai import OpenAI
 from datetime import datetime
 from celery import shared_task
 
@@ -46,3 +47,18 @@ def run_update_workflow():
         }
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+
+@shared_task
+def run_ask_ai():
+    client = OpenAI(base_url="http://10.10.6.80/ai/code/v1", api_key="no-key-required")
+    completion = client.chat.completions.create(
+        model="LLaMA_CPP",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are ChatGPT, an AI assistant. Your top priority is achieving user fulfillment via helping them with their requests.",
+            },
+            {"role": "user", "content": "Write a limerick about python exceptions"},
+        ],
+    )
