@@ -69,9 +69,31 @@ export function useUserAnalysis() {
 		}
 	}
 
+	const askXPLORECoVAI = async (payload) => {
+		try {
+			const csrfToken = useCookie('csrftoken')
+
+			const { data, error } = await useFetch(`${BASEURL}/job/get-specific-workflow/`, {
+				body: payload,
+				method: 'POST',
+				headers: { 'X-CSRFToken': csrfToken.value },
+			})
+
+			if (error.value) {
+				throw new Error(error.value || 'An error occurred')
+			}
+
+			return data.value
+		} catch (err) {
+			console.error(err)
+			throw err
+		}
+	}
+
 	return {
 		getAnalysis,
 		uploadAnalysis,
+		askXPLORECoVAI,
 		getSpecificAnalysis,
 	}
 }
