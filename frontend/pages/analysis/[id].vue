@@ -202,17 +202,43 @@
 				</div>
 				<input
 					type="search"
+					v-model="search_prompt"
 					class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
 					placeholder="Ask your question to XPLORECoV-AI"
 				/>
 				<button
-					type="submit"
+					@click="AISearchQuery"
+					disabled
 					class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700"
 				>
 					Search
 				</button>
 			</div>
 		</div>
+
+		<form name="form" method="get" action="result.php">
+			<div class="container">
+				<p class="text-dark">
+					Patient id:&nbsp;<a href="../dbgenvoc/result.php?name=NIBMG-F316-GB">NIBMG-F316-GB</a>,
+					&nbsp;<a href="../dbgenvoc/result.php?name=TCGA-BA-7269-01A-11D">TCGA-BA-7269-01A-11D</a>,
+					&nbsp;<a href="../dbgenvoc/result.php?name=OT54">OT54</a>
+				</p>
+
+				<div class="search-box2">
+					<input
+						class="form-control"
+						align="top"
+						autocomplete="off"
+						type="text"
+						name="name"
+						id="name"
+						placeholder="Enter patient id"
+					/>
+					<div class="result2"></div>
+				</div>
+				<button class="btn btn-secondary" height="25px" type="submit">Search</button>
+			</div>
+		</form>
 	</section>
 </template>
 
@@ -226,6 +252,7 @@ const { data: my_analysis, error } = useAsyncData('specific_analysis', async () 
 	return await getSpecificAnalysis(route.params.id)
 })
 const dayjs = useDayjs()
+const search_prompt = ref('')
 const analysis_duration = computed(() => {
 	const completionDate = my_analysis.value?.completion_date
 	const submissionDate = my_analysis.value?.submission_date
@@ -236,6 +263,15 @@ const expires_in = computed(() => {
 	const expirationDate = my_analysis.value?.expiration_date
 	return dayjs().to(dayjs(expirationDate))
 })
+
+const AISearchQuery = async () => {
+	try {
+		console.log('Clicked')
+		// const { getSpecificAnalysis } = useUserAnalysis()
+	} catch (err) {
+		console.log(err)
+	}
+}
 
 const route = useRoute()
 const wsUrl = `ws://10.10.6.80/xplorecov/ws/analysis/${useCookie('session').value}/${route.params.id}/`
