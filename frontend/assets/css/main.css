@@ -74,3 +74,6 @@ html.dark .filepond--drop-label {
 	border-radius: 0.375rem 0.375rem 0 0 !important;
 }
 
+input:focus-visible {
+    outline: none;
+}
