@@ -1,11 +1,17 @@
+import ollama
 from django.conf import settings
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import UserAnalysis, Report, ChatMessages
 from rest_framework.parsers import MultiPartParser, FormParser
-from .tasks.run_workflow import run_analysis_workflow, run_update_workflow
+from .tasks.run_workflow import (
+    ask_ai_for_code,
+    run_update_workflow,
+    run_analysis_workflow,
+)
 from .serializers import (
+    AIChatSerializer,
     ReportSerializer,
     ToolVersionSerializer,
     ChatMessagesSerializer,
@@ -117,8 +123,16 @@ class GetAnalysisDetailView(APIView):
         return Response(
             {
                 **analysis_serializer.data,
-                "graph_reports": [report for report in reports_serializer.data if report["graph_type"] != "None"],
-                "summary_reports": [report for report in reports_serializer.data if report["graph_type"] == "None"],
+                "graph_reports": [
+                    report
+                    for report in reports_serializer.data
+                    if report["graph_type"] != "None"
+                ],
+                "summary_reports": [
+                    report
+                    for report in reports_serializer.data
+                    if report["graph_type"] == "None"
+                ],
             },
             status=status.HTTP_200_OK,
         )
@@ -197,11 +211,11 @@ class AddChatMessagesView(APIView):
     def post(self, request, *args, **kwargs):
         user_id = request.data.get("user_id")
         analysis_id = request.data.get("analysis_id")
-        messages = request.data.get("messages", [])
+        message = request.data.get("message")
 
-        if not user_id or not analysis_id or not messages:
+        if not user_id or not analysis_id or not message:
             return Response(
-                {"error": "user_id, analysis_id, and messages are required."},
+                {"error": "user_id, analysis_id, and message are required."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -216,20 +230,45 @@ class AddChatMessagesView(APIView):
             )
 
         # Prepare ChatMessages objects for bulk creation
-        chat_message_objects = [
-            ChatMessages(
-                sender=message["sender"],
-                content=message["content"],
-                user_analysis=user_analysis,
-                content_type=message.get("content_type", "text"),
-                parent_message_uuid=message.get("parent_message_uuid"),
-            )
-            for message in messages
-        ]
+        chat_message_object = ChatMessages(
+            sender=message["sender"],
+            content=message["content"],
+            user_analysis=user_analysis,
+            content_type=message.get("content_type", "text"),
+            parent_message_uuid=message.get("parent_message_uuid"),
+        )
 
         # Bulk create the chat messages
-        ChatMessages.objects.bulk_create(chat_message_objects)
+        ChatMessages.objects.create(chat_message_object)
+
+        if message["sender"] == "human":
+            task = ask_ai_for_code().delay(message)
 
         return Response(
             {"message": "Messages added successfully."}, status=status.HTTP_201_CREATED
         )
+
+
+class GenerateAICodeView(APIView):
+    def post(self, request):
+        serializer = AIChatSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                response = ollama.chat(
+                    model="xplorecov-coder",
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": serializer.validated_data["content"],
+                        }
+                    ],
+                )
+                return Response(
+                    {"response": response["message"]["content"]},
+                    status=status.HTTP_200_OK,
+                )
+            except Exception as e:
+                return Response(
+                    {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
