@@ -1,4 +1,9 @@
-from rest_framework.serializers import ModelSerializer, ValidationError
+from rest_framework.serializers import (
+    CharField,
+    Serializer,
+    ValidationError,
+    ModelSerializer,
+)
 from .models import (
     Report,
     ToolVersion,
@@ -103,3 +108,7 @@ class ChatMessagesSerializer(ModelSerializer):
             "sender",
             "content_type",
         ]
+
+
+class AIChatSerializer(Serializer):
+    content = CharField(required=True)
