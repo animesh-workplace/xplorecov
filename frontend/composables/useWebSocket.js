@@ -85,10 +85,13 @@ export const useWebSocket = (url) => {
 		}
 	}
 
-	const disconnect = () => {
+	const disconnect = (value_for_disconnection) => {
 		if (socket.value) {
 			socket.value.close()
 			socket.value = null
+			if (value_for_disconnection) {
+				proper_disconnection.value = value_for_disconnection
+			}
 		}
 	}
 
@@ -102,6 +105,7 @@ export const useWebSocket = (url) => {
 	})
 
 	return {
+		disconnect,
 		tools_version,
 		analysis_steps,
 		analysis_complete,
