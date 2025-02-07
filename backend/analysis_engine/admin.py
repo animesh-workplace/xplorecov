@@ -1,5 +1,11 @@
 from django.contrib import admin
-from .models import UserAnalysis, WebSocketBackendUUID, ToolVersion, Report
+from .models import (
+    Report,
+    ToolVersion,
+    UserAnalysis,
+    ChatMessages,
+    WebSocketBackendUUID,
+)
 
 
 @admin.register(ToolVersion)
@@ -66,4 +72,21 @@ class ReportAdmin(admin.ModelAdmin):
         ("Content", {"fields": ("data", "text_summary")}),
         ("Relationships", {"fields": ("summary_sources",)}),
         ("Metadata", {"fields": ("created_at",)}),
+    )
+
+
+@admin.register(ChatMessages)
+class ChatMessagesAdmin(admin.ModelAdmin):
+    list_display = ("uuid", "sender", "content_type", "created_at", "user_analysis")
+    list_filter = ("sender", "content_type", "created_at")
+    search_fields = ("uuid", "user_analysis__analysis_id")
+    ordering = ("-created_at",)
+    readonly_fields = ("uuid", "created_at")
+
+    fieldsets = (
+        ("Message Info", {"fields": ("uuid", "content", "content_type", "created_at")}),
+        (
+            "Sender Details",
+            {"fields": ("sender", "user_analysis", "parent_message_uuid")},
+        ),
     )
