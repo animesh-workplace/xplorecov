@@ -34,11 +34,7 @@ urlpatterns = [
         name="get-specific-workflow",
     ),
     path("reports/create/", AddBulkReportsView.as_view(), name="bulk-create-reports"),
-    path(
-        "messages/create/",
-        AddChatMessagesView.as_view(),
-        name="bulk-create-messages",
-    ),
+    path("ask-ai/", AddChatMessagesView.as_view(), name="create-messages"),
 ]
 
 # urlpatterns = [
