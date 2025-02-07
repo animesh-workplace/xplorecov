@@ -174,10 +174,16 @@
 		</div>
 
 		<div class="mb-24 px-6 md:px-12 lg:px-20">
-			<div class="bg-green-400 p-4 my-6 rounded-lg flex-1">
-				🔥🔥🔥🔥Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas
-				vel sint commodi repudiandae consequuntur voluptatum laborum numquam blanditiis harum quisquam eius
-				sed odit fugiat iusto fuga praesentium optio, eaque rerum!
+			<div
+				:key="index"
+				class="p-4 my-6 flex-1"
+				:class="{
+					'bg-gray-500 text-right rounded-full': messages.sender == 'human',
+					'bg-stone-500 text-left rounded-lg': messages.sender == 'assistant',
+				}"
+				v-for="(messages, index) in my_analysis?.chat_messages"
+			>
+				{{ messages?.content }}
 			</div>
 		</div>
 
@@ -185,17 +191,17 @@
 			<div class="relative">
 				<div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
 					<svg
-						class="w-4 h-4 text-gray-500 dark:text-gray-400"
-						aria-hidden="true"
-						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
+						aria-hidden="true"
 						viewBox="0 0 20 20"
+						xmlns="http://www.w3.org/2000/svg"
+						class="w-4 h-4 text-gray-500 dark:text-gray-400"
 					>
 						<path
+							stroke-width="2"
 							stroke="currentColor"
 							stroke-linecap="round"
 							stroke-linejoin="round"
-							stroke-width="2"
 							d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
 						/>
 					</svg>
@@ -208,43 +214,19 @@
 				/>
 				<button
 					@click="AISearchQuery"
-					disabled
 					class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700"
 				>
 					Search
 				</button>
 			</div>
 		</div>
-
-		<form name="form" method="get" action="result.php">
-			<div class="container">
-				<p class="text-dark">
-					Patient id:&nbsp;<a href="../dbgenvoc/result.php?name=NIBMG-F316-GB">NIBMG-F316-GB</a>,
-					&nbsp;<a href="../dbgenvoc/result.php?name=TCGA-BA-7269-01A-11D">TCGA-BA-7269-01A-11D</a>,
-					&nbsp;<a href="../dbgenvoc/result.php?name=OT54">OT54</a>
-				</p>
-
-				<div class="search-box2">
-					<input
-						class="form-control"
-						align="top"
-						autocomplete="off"
-						type="text"
-						name="name"
-						id="name"
-						placeholder="Enter patient id"
-					/>
-					<div class="result2"></div>
-				</div>
-				<button class="btn btn-secondary" height="25px" type="submit">Search</button>
-			</div>
-		</form>
 	</section>
 </template>
 
 <script setup>
 import { round } from 'lodash-es'
 import { useUserAnalysis } from '@/api/analysis'
+import { useSessionStore } from '@/stores/session'
 
 const { data: my_analysis, error } = useAsyncData('specific_analysis', async () => {
 	const route = useRoute()
@@ -267,7 +249,23 @@ const expires_in = computed(() => {
 const AISearchQuery = async () => {
 	try {
 		console.log('Clicked')
-		// const { getSpecificAnalysis } = useUserAnalysis()
+
+		try {
+			const { session } = useSessionStore()
+			const { askXPLORECoVAI } = useUserAnalysis()
+			await askXPLORECoVAI({
+				user_id: session,
+				analysis_id: route.params.id,
+				message: {
+					sender: 'human',
+					content_type: 'text',
+					parent_message_uuid: null,
+					content: search_prompt.value,
+				},
+			})
+		} catch (err) {
+			console.log(err)
+		}
 	} catch (err) {
 		console.log(err)
 	}
@@ -275,12 +273,13 @@ const AISearchQuery = async () => {
 
 const route = useRoute()
 const wsUrl = `ws://10.10.6.80/xplorecov/ws/analysis/${useCookie('session').value}/${route.params.id}/`
-const { analysis_steps, tools_version, analysis_complete } = useWebSocket(wsUrl)
+const { analysis_steps, tools_version, analysis_complete, disconnect } = useWebSocket(wsUrl)
 
 const refreshAll = async () => {
 	try {
 		const { getSpecificAnalysis } = useUserAnalysis()
 		my_analysis.value = await getSpecificAnalysis(route.params.id)
+		disconnect(true)
 	} catch (err) {
 		console.log(err)
 	}
