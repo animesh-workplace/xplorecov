@@ -133,6 +133,7 @@ class GetAnalysisDetailView(APIView):
                     for report in reports_serializer.data
                     if report["graph_type"] == "None"
                 ],
+                "chat_messages": chat_messages_serializer.data,
             },
             status=status.HTTP_200_OK,
         )
@@ -229,20 +230,28 @@ class AddChatMessagesView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Prepare ChatMessages objects for bulk creation
-        chat_message_object = ChatMessages(
-            sender=message["sender"],
-            content=message["content"],
-            user_analysis=user_analysis,
-            content_type=message.get("content_type", "text"),
-            parent_message_uuid=message.get("parent_message_uuid"),
-        )
+        # Prepare ChatMessages objects for creation
+        chat_message_object = {
+            "user_analysis": user_analysis.id,
+            "content": message.get("content", ""),
+            "sender": message.get("sender", "human"),
+            "content_type": message.get("content_type", "text"),
+            "parent_message_uuid": message.get("parent_message_uuid", None),
+        }
 
-        # Bulk create the chat messages
-        ChatMessages.objects.create(chat_message_object)
+        # Use the serializer to validate and save the data
+        serializer = ChatMessagesSerializer(data=chat_message_object)
+
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if message["sender"] == "human":
-            task = ask_ai_for_code().delay(message)
+            ai_message = ask_ai_for_code.delay(
+                message.get("content", ""), user_analysis.id
+            )
+            print(ai_message)
 
         return Response(
             {"message": "Messages added successfully."}, status=status.HTTP_201_CREATED
