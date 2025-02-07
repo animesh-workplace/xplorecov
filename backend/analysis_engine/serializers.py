@@ -102,11 +102,12 @@ class ChatMessagesSerializer(ModelSerializer):
         model = ChatMessages
         fields = [
             "uuid",
+            "sender",
             "content",
             "created_at",
-            "parent_message_uuid",
-            "sender",
             "content_type",
+            "user_analysis",
+            "parent_message_uuid",
         ]
 
 
