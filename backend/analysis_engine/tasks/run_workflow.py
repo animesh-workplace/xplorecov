@@ -1,7 +1,9 @@
-import subprocess, requests
+import subprocess, json
+from openai import OpenAI
 from datetime import datetime
 from celery import shared_task
 from django.conf import settings
+from ..serializers import ChatMessagesSerializer
 
 
 @shared_task
@@ -50,15 +52,30 @@ def run_update_workflow():
 
 
 @shared_task
-def ask_ai_for_code(content):
-    try:
-        response = requests.post(
-            f"http://10.10.6.80/{settings.BASE_URL}/analysis/coderun/",
-            json={"content": content},
-            headers={"Content-Type": "application/json"},
-        )
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print("Exception occured", e)
-        return False
+def ask_ai_for_code(content, user_analysis_id):
+    client = OpenAI(
+        base_url="http://10.10.6.80/xplorecov/ai/code/v1", api_key="sk-no-key-required"
+    )
+    completion = client.chat.completions.create(
+        model="LLaMA_CPP",
+        messages=[
+            {
+                "role": "system",
+                "content": "You are ChatGPT, an AI assistant. Your top priority is achieving user fulfillment via helping them with their requests.",
+            },
+            {"role": "user", "content": content},
+        ],
+    )
+
+    chat_message_object = {
+        "sender": "assistant",
+        "content_type": "text",
+        "parent_message_uuid": None,
+        "user_analysis": user_analysis_id,
+        "content": json.dumps(completion.choices[0].message.content),
+    }
+    serializer = ChatMessagesSerializer(data=chat_message_object)
+    if serializer.is_valid():
+        serializer.save()
+    else:
+        print(serializer.errors)
