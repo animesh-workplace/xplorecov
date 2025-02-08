@@ -183,8 +183,12 @@
 				}"
 				v-for="(messages, index) in my_analysis?.chat_messages"
 			>
-				{{ messages?.content }}
+				<div v-html="messages?.content" />
 			</div>
+		</div>
+
+		<div class="mb-24 px-6 md:px-12 lg:px-20">
+			<p class="typing" v-html="displayedText" />
 		</div>
 
 		<div class="px-6 md:px-12 lg:px-20 fixed w-full bottom-5" v-if="analysis_complete">
@@ -206,6 +210,7 @@
 						/>
 					</svg>
 				</div>
+				<!-- eslint-disable-next-line vue/html-self-closing -->
 				<input
 					type="search"
 					v-model="search_prompt"
@@ -225,6 +230,7 @@
 
 <script setup>
 import { round } from 'lodash-es'
+import DOMPurify from 'dompurify'
 import { useUserAnalysis } from '@/api/analysis'
 import { useSessionStore } from '@/stores/session'
 
@@ -263,6 +269,7 @@ const AISearchQuery = async () => {
 					content: search_prompt.value,
 				},
 			})
+			refreshAll()
 		} catch (err) {
 			console.log(err)
 		}
@@ -294,6 +301,29 @@ watch(
 	},
 	{ immediate: true },
 )
+
+const wsChatUrl = `ws://10.10.6.80/xplorecov/ws/chat/${useCookie('session').value}/${route.params.id}/`
+const { message, Chatdisconnect } = useChatWebSocket(wsChatUrl)
+const { displayedText } = useTyping(message.value?.message, 30)
+
+watch(
+	() => message.value?.message,
+	async (newValue) => {
+		if (newValue) {
+			refreshAll()
+		}
+	},
+	{ immediate: true },
+)
 </script>
 
-<style scoped></style>
+<style scoped>
+.cursor {
+	animation: blink 0.8s infinite;
+}
+@keyframes blink {
+	50% {
+		opacity: 0;
+	}
+}
+</style>
