@@ -139,31 +139,14 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         try:
             await self.accept()
             await self.channel_layer.group_add(task_id, self.channel_name)
-            data = {
-                "message": "You have connected to LLM Real Time Updates",
-            }
+            data = {"message": "You have connected to LLM Real Time Updates"}
             await self.send_json(data)
         except Exception as e:
             raise
 
     async def websocket_receive(self, event):
-        # # Validate the expected fields in the message
-        # message = json.loads(event["text"])
-        # message_type = message["message_type"]
-        # status_update = message["message"]
+        return
 
-        # if not user_id or not analysis_id or not status_update or not message_type:
-        #     print("Missing required fields in the message")
-        #     return
-
-        user_id = self.scope["url_route"]["kwargs"]["user_id"]
-        analysis_id = self.scope["url_route"]["kwargs"]["analysis_id"]
-        task_id = f"{user_id}.{analysis_id}.chat.llm"
-
-        await self.channel_layer.group_send(
-            task_id, {"type": "task_message", "message": "status_update"}
-        )
-
-    async def task_message(self, event):
+    async def chat_message(self, event):
         data = {"message": event["message"]}
         await self.send_json(data)
