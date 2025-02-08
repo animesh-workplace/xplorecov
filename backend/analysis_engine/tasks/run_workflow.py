@@ -1,4 +1,4 @@
-import subprocess, json
+import subprocess, json, re
 from openai import OpenAI
 from datetime import datetime
 from celery import shared_task
@@ -56,25 +56,34 @@ def run_update_workflow():
 @shared_task
 def ask_ai_for_code(content, user_analysis_id, user_id, analysis_id):
     client = OpenAI(
-        base_url="http://10.10.6.80/xplorecov/ai/code/v1", api_key="sk-no-key-required"
+        base_url="http://10.10.6.80/xplorecov/ai/content/v1",
+        api_key="sk-no-key-required",
     )
     completion = client.chat.completions.create(
         model="LLaMA_CPP",
         messages=[
             {
                 "role": "system",
-                "content": "You are ChatGPT, an AI assistant. Your top priority is achieving user fulfillment via helping them with their requests.",
+                "content": """
+                    You are an AI assistant specifically validates if the request is safe and feasible to process. Returns TRUE/FALSE ONLY nothing else.
+                """,
             },
             {"role": "user", "content": content},
         ],
     )
+
+    print(completion.choices[0].message.content)
+
+    santized_message_content = re.sub(
+        r"\n+", " ", completion.choices[0].message.content
+    ).strip()
 
     chat_message_object = {
         "sender": "assistant",
         "content_type": "text",
         "parent_message_uuid": None,
         "user_analysis": user_analysis_id,
-        "content": json.dumps(completion.choices[0].message.content),
+        "content": json.dumps(santized_message_content),
     }
     serializer = ChatMessagesSerializer(data=chat_message_object)
     if serializer.is_valid():
@@ -83,8 +92,8 @@ def ask_ai_for_code(content, user_analysis_id, user_id, analysis_id):
         async_to_sync(channel_layer.group_send)(
             f"{user_id}.{analysis_id}.chat.llm",
             {
-                "type": "chat.message",
-                "message": completion.choices[0].message.content,
+                "type": "chat_message",
+                "message": santized_message_content,
             },
         )
     else:
