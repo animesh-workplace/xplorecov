@@ -18,7 +18,10 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
         try:
             await self.accept()
             await self.channel_layer.group_add(task_id, self.channel_name)
-            data = {"message": "You have connected to Analysis Real Time Updates", **existing_status}
+            data = {
+                "message": "You have connected to Analysis Real Time Updates",
+                **existing_status,
+            }
             await self.send_json(data)
         except Exception as e:
             raise
@@ -28,7 +31,7 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
         is_authenticated = await self.authenticate_backend_service()
         if not is_authenticated:
             return  # Connection closed during authentication
-        
+
         # Validate the expected fields in the message
         user_id = self.scope["url_route"]["kwargs"]["user_id"]
         analysis_id = self.scope["url_route"]["kwargs"]["analysis_id"]
@@ -42,9 +45,11 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
             return
 
         # Update the UserAnalysis model
-        await self.update_analysis_status(user_id, analysis_id, status_update, message_type)
+        await self.update_analysis_status(
+            user_id, analysis_id, status_update, message_type
+        )
 
-        if message_type == 'analysis_update':
+        if message_type == "analysis_update":
             await self.channel_layer.group_send(
                 task_id, {"type": "task_message", "message": status_update}
             )
@@ -56,24 +61,32 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
     @sync_to_async
     def get_analysis_status(self, user_id, analysis_id):
         try:
-            analysis = UserAnalysis.objects.get(user_id=user_id, analysis_id=analysis_id)
-            return {"current_status": analysis.analysis_status, "tools_used": {
-                "tools": model_to_dict(analysis.tool_version, exclude=['id']),
-                'updated_at': analysis.tool_version.created_at.strftime('%d-%m-%Y %I:%M %p')
-            }}
+            analysis = UserAnalysis.objects.get(
+                user_id=user_id, analysis_id=analysis_id
+            )
+            return {
+                "current_status": analysis.analysis_status,
+                "tools_used": {
+                    "tools": model_to_dict(analysis.tool_version, exclude=["id"]),
+                    "updated_at": analysis.tool_version.created_at.strftime(
+                        "%d-%m-%Y %I:%M %p"
+                    ),
+                },
+            }
         except UserAnalysis.DoesNotExist:
             return None
-
 
     @sync_to_async
     def update_analysis_status(self, user_id, analysis_id, status_update, message_type):
         try:
-            analysis = UserAnalysis.objects.get(user_id=user_id, analysis_id=analysis_id)
+            analysis = UserAnalysis.objects.get(
+                user_id=user_id, analysis_id=analysis_id
+            )
 
-            if message_type == 'analysis_update':
+            if message_type == "analysis_update":
                 # Append the new status to the existing `analysis_status`
                 analysis.analysis_status.append(status_update)
-            elif message_type == 'workflow_update':
+            elif message_type == "workflow_update":
                 analysis.overall_status = status_update["status"]
                 analysis.completion_date = status_update["timestamp"]
 
@@ -81,7 +94,9 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
             analysis.save()
 
         except UserAnalysis.DoesNotExist:
-            print(f"User Analysis with user_id = {user_id} and analysis_id = {analysis_id} not found")
+            print(
+                f"User Analysis with user_id = {user_id} and analysis_id = {analysis_id} not found"
+            )
         except Exception as e:
             print(f"Error updating analysis status: {e}")
 
@@ -112,3 +127,43 @@ class AnalysisConsumer(AsyncJsonWebsocketConsumer):
     def is_uuid_valid(self, uuid):
         # Check if the UUID exists in the WebSocketBackendUUID table
         return WebSocketBackendUUID.objects.filter(uuid=uuid).exists()
+
+
+class ChatConsumer(AsyncJsonWebsocketConsumer):
+    async def connect(self):
+        # Get user_id and analysis_id from the URL parameters
+        user_id = self.scope["url_route"]["kwargs"]["user_id"]
+        analysis_id = self.scope["url_route"]["kwargs"]["analysis_id"]
+
+        task_id = f"{user_id}.{analysis_id}.chat.llm"
+        try:
+            await self.accept()
+            await self.channel_layer.group_add(task_id, self.channel_name)
+            data = {
+                "message": "You have connected to LLM Real Time Updates",
+            }
+            await self.send_json(data)
+        except Exception as e:
+            raise
+
+    async def websocket_receive(self, event):
+        # # Validate the expected fields in the message
+        # message = json.loads(event["text"])
+        # message_type = message["message_type"]
+        # status_update = message["message"]
+
+        # if not user_id or not analysis_id or not status_update or not message_type:
+        #     print("Missing required fields in the message")
+        #     return
+
+        user_id = self.scope["url_route"]["kwargs"]["user_id"]
+        analysis_id = self.scope["url_route"]["kwargs"]["analysis_id"]
+        task_id = f"{user_id}.{analysis_id}.chat.llm"
+
+        await self.channel_layer.group_send(
+            task_id, {"type": "task_message", "message": "status_update"}
+        )
+
+    async def task_message(self, event):
+        data = {"message": event["message"]}
+        await self.send_json(data)
