@@ -249,7 +249,7 @@ class AddChatMessagesView(APIView):
 
         if message["sender"] == "human":
             ai_message = ask_ai_for_code.delay(
-                message.get("content", ""), user_analysis.id
+                message.get("content", ""), user_analysis.id, user_id, analysis_id
             )
             print(ai_message)
 
@@ -258,26 +258,26 @@ class AddChatMessagesView(APIView):
         )
 
 
-class GenerateAICodeView(APIView):
-    def post(self, request):
-        serializer = AIChatSerializer(data=request.data)
-        if serializer.is_valid():
-            try:
-                response = ollama.chat(
-                    model="xplorecov-coder",
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": serializer.validated_data["content"],
-                        }
-                    ],
-                )
-                return Response(
-                    {"response": response["message"]["content"]},
-                    status=status.HTTP_200_OK,
-                )
-            except Exception as e:
-                return Response(
-                    {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# class GenerateAICodeView(APIView):
+#     def post(self, request):
+#         serializer = AIChatSerializer(data=request.data)
+#         if serializer.is_valid():
+#             try:
+#                 response = ollama.chat(
+#                     model="xplorecov-coder",
+#                     messages=[
+#                         {
+#                             "role": "user",
+#                             "content": serializer.validated_data["content"],
+#                         }
+#                     ],
+#                 )
+#                 return Response(
+#                     {"response": response["message"]["content"]},
+#                     status=status.HTTP_200_OK,
+#                 )
+#             except Exception as e:
+#                 return Response(
+#                     {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+#                 )
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
