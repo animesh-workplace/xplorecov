@@ -24,7 +24,8 @@ from django.urls import path
 from dotenv import load_dotenv
 from django.conf import settings
 from channels.auth import AuthMiddlewareStack
-from analysis_engine.consumer import AnalysisConsumer, ChatConsumer
+from ai_engine.consumer import ChatConsumer
+from analysis_engine.consumer import AnalysisConsumer
 from channels.security.websocket import AllowedHostsOriginValidator
 
 load_dotenv(settings.BASE_DIR / ".env")
