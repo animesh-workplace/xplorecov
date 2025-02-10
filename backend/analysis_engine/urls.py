@@ -3,7 +3,6 @@ from .views import (
     ToolUpdateView,
     AddBulkReportsView,
     GetUserAnalysisView,
-    AddChatMessagesView,
     ToolVersionCreateView,
     GetAnalysisDetailView,
     CreateUserAnalysisView,
@@ -34,7 +33,7 @@ urlpatterns = [
         name="get-specific-workflow",
     ),
     path("reports/create/", AddBulkReportsView.as_view(), name="bulk-create-reports"),
-    path("ask-ai/", AddChatMessagesView.as_view(), name="create-messages"),
+    # path("ask-ai/", AddChatMessagesView.as_view(), name="create-messages"),
 ]
 
 # urlpatterns = [
