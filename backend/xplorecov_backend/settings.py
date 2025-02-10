@@ -28,7 +28,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
 ]
 
-SELF_APPS = ["query_engine", "analysis_engine", "report_engine"]
+SELF_APPS = ["analysis_engine", "ai_engine", "report_engine", "query_engine"]
 
 INSTALLED_APPS = DEFAULT_APPS + THIRD_PARTY_APPS + SELF_APPS
 
