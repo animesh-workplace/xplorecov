@@ -37,6 +37,7 @@ urlpatterns = [
                     "api/",
                     include(
                         [
+                            path("ai/", include("ai_engine.urls")),
                             path("query/", include("query_engine.urls")),
                             path("job/", include("analysis_engine.urls")),
                         ]
