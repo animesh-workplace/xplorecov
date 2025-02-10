@@ -73,7 +73,7 @@ export function useUserAnalysis() {
 		try {
 			const csrfToken = useCookie('csrftoken')
 
-			const { data, error } = await useFetch(`${BASEURL}/job/ask-ai/`, {
+			const { data, error } = await useFetch(`${BASEURL}/ai/ask-ai/`, {
 				body: payload,
 				method: 'POST',
 				headers: { 'X-CSRFToken': csrfToken.value },
