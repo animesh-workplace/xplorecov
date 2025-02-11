@@ -191,7 +191,7 @@
 			<p class="typing" v-html="displayedText" />
 		</div>
 
-		<div class="px-6 md:px-12 lg:px-20 fixed w-full bottom-5" v-if="analysis_complete">
+		<div class="px-6 md:px-12 lg:px-20 fixed w-full bottom-5 shadow-2xl" v-if="analysis_complete">
 			<div class="relative">
 				<div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
 					<svg
@@ -214,7 +214,7 @@
 				<input
 					type="search"
 					v-model="search_prompt"
-					class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+					class="block w-full p-4 pr-24 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
 					placeholder="Ask your question to XPLORECoV-AI"
 				/>
 				<button
