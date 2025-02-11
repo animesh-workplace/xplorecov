@@ -30,27 +30,27 @@ class AddChatMessagesView(APIView):
             )
 
         # Prepare ChatMessages objects for creation
-        chat_message_object = {
-            "user_analysis": user_analysis.id,
-            "content": message.get("content", ""),
-            "sender": message.get("sender", "human"),
-            "content_type": message.get("content_type", "text"),
-            "parent_message_uuid": message.get("parent_message_uuid", None),
-        }
+        # chat_message_object = {
+        #     "user_analysis": user_analysis.id,
+        #     "content": message.get("content", ""),
+        #     "sender": message.get("sender", "human"),
+        #     "content_type": message.get("content_type", "text"),
+        #     "parent_message_uuid": message.get("parent_message_uuid", None),
+        # }
 
-        # Use the serializer to validate and save the data
-        serializer = ChatMessagesSerializer(data=chat_message_object)
+        # # Use the serializer to validate and save the data
+        # serializer = ChatMessagesSerializer(data=chat_message_object)
 
-        if serializer.is_valid():
-            serializer.save()
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # if serializer.is_valid():
+        #     serializer.save()
+        # else:
+        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         if message["sender"] == "human":
             ai_message = ask_ai_for_code.delay(
                 message.get("content", ""), user_analysis.id, user_id, analysis_id
             )
-            print(ai_message)
+            print("Virewwww", ai_message)
 
         return Response(
             {"message": "Messages added successfully."}, status=status.HTTP_201_CREATED
