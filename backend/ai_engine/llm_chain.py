@@ -3,6 +3,7 @@ from openai import OpenAI
 from guardrails import Guard
 from dataclasses import dataclass
 from datetime import datetime, date
+from .cache_manager import LLMCacheManager
 from django.db.models import Model, QuerySet
 from guardrails.errors import ValidationError
 from django.core.serializers import serialize
@@ -216,6 +217,7 @@ class AgentChain:
         self.guard = GuardAgent()
         self.coder = CoderAgent()
         self.summarizer = SummarizerAgent()
+        self.cache_manager = LLMCacheManager()
         self.prompt_engineer = DBPromptEngineer()
 
     def process_request(self, user_request: str, db_schema: Dict) -> AgentResponse:
@@ -235,6 +237,8 @@ class AgentChain:
             # Step 2: Generate ORM code
             orm_code = self.coder.generate_orm_code(db_prompt, db_schema)
             print(orm_code)
+
+            self.cache_manager.store_response(user_request, db_prompt, orm_code)
 
             # Step 3: Execute ORM code
             query_results = self.coder.execute_query(orm_code)
