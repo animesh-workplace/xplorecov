@@ -1,8 +1,11 @@
+import json
 from openai import OpenAI
 from guardrails import Guard
 from dataclasses import dataclass
+from datetime import datetime, date
 from django.db.models import Model, QuerySet
 from guardrails.errors import ValidationError
+from django.core.serializers import serialize
 from typing import Dict, List, Optional, Union
 from guardrails.hub import NSFWText, WebSanitization, DetectJailbreak
 from query_engine.models import *
@@ -16,6 +19,9 @@ from django.db.models import (
     Count,
     StdDev,
     Variance,
+    Subquery,
+    OuterRef,
+    Exists,
 )
 
 
@@ -24,6 +30,13 @@ class AgentResponse:
     success: bool
     message: str
     data: Optional[Dict] = None
+
+
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (datetime, date)):
+            return obj.isoformat()
+        return super().default(obj)
 
 
 class GuardAgent:
@@ -166,12 +179,36 @@ class CoderAgent:
 
 
 class SummarizerAgent:
-    def summarize_data(self, data: QuerySet) -> str:
+    def summarize_data(self, data: List) -> str:
         """
         Summarizes the retrieved data into a user-friendly format.
         """
-        # Add your LLM call here for summarization
-        return "Your summarized response"
+        client = OpenAI(
+            base_url="http://10.10.6.80/xplorecov/ai/code/v1",
+            api_key="sk-no-key-required",
+        )
+
+        system_prompt = f"""
+            You are a expert data engineer of SARS-COV-2. You task is to summarize the data given to you and provide certain inference on it. 
+            Summarize the following dataset for the user and write the output in short paragraph.
+        """
+
+        completion = client.chat.completions.create(
+            temperature=1,
+            model="LLaMA_CPP",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {
+                    "role": "user",
+                    "content": json.dumps(
+                        list(data), cls=DateTimeEncoder, default=lambda o: float(o)
+                    ),
+                },
+            ],
+        )
+
+        response = completion.choices[0].message.content
+        return response
 
 
 class AgentChain:
@@ -190,46 +227,29 @@ class AgentChain:
         if not validation.success:
             return validation
 
-        # try:
-        #     # Step 2: Generate DB-specific prompt
-        db_prompt = self.prompt_engineer.generate_db_prompt(user_request, db_schema)
-        print(db_prompt)
-        orm_code = self.coder.generate_orm_code(db_prompt, db_schema)
-        print(orm_code)
-        query_results = self.coder.execute_query(orm_code)
-        print(query_results)
+        try:
+            # Step 1: Generate DB-specific prompt
+            db_prompt = self.prompt_engineer.generate_db_prompt(user_request, db_schema)
+            print(db_prompt)
 
-        #     # Step 3: Generate and execute ORM code
+            # Step 2: Generate ORM code
+            orm_code = self.coder.generate_orm_code(db_prompt, db_schema)
+            print(orm_code)
 
-        #     # Step 4: Summarize results
-        #     summary = self.summarizer.summarize_data(query_results)
+            # Step 3: Execute ORM code
+            query_results = self.coder.execute_query(orm_code)
+            print(query_results)
 
-        #     return AgentResponse(
-        #         success=True,
-        #         message="Request processed successfully",
-        #         data={"summary": summary, "raw_data": query_results},
-        #     )
+            # Step 4: Summarize results
+            summary = self.summarizer.summarize_data(query_results)
 
-        # except Exception as e:
-        #     return AgentResponse(
-        #         success=False, message=f"Error processing request: {str(e)}"
-        #     )
+            return AgentResponse(
+                success=True,
+                message="Request processed successfully",
+                data={"summary": summary, "raw_data": query_results},
+            )
 
-
-# Usage example:
-# def main():
-#     # Sample database schema
-#     db_schema = {
-#         "users": ["id", "name", "email"],
-#         "orders": ["id", "user_id", "amount", "date"],
-#     }
-
-#     chain = AgentChain()
-#     result = chain.process_request(
-#         "Show me total orders per user for the last month", db_schema
-#     )
-
-#     if result.success:
-#         print(result.data["summary"])
-#     else:
-#         print(f"Error: {result.message}")
+        except Exception as e:
+            return AgentResponse(
+                success=False, message=f"Error processing request: {str(e)}"
+            )
