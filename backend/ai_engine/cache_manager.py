@@ -102,13 +102,15 @@ class LLMCacheManager:
 
     def _generate_embedding(self, query: str) -> np.ndarray:
         """Generate embedding for a query."""
-        return self.sentence_transformer.encode([query], normalize_embeddings=True)[0]
+        print("Embeddings to be generated for::::", query)
+        return self.sentence_transformer.encode(query)[0]
 
     def _calculate_similarity(
         self, embedding1: np.ndarray, embedding2: np.ndarray
     ) -> float:
         """Calculate cosine similarity between two embeddings."""
-        print(embedding1, embedding2)
+        print(self.sentence_transformer.similarity(embedding1, embedding2))
+        print(1 - cosine(embedding1, embedding2))
         return 1 - cosine(embedding1, embedding2)
 
     def find_similar_query(self, user_query: str) -> Optional[Tuple[LLMCache, float]]:
@@ -120,9 +122,17 @@ class LLMCacheManager:
         max_similarity = 0
         most_similar_cache = None
 
+        print("Cached Quersiss", cached_queries)
+
         for cache_entry in cached_queries:
             cached_embedding = np.frombuffer(cache_entry.query_embedding)
-            similarity = self._calculate_similarity(query_embedding, cached_embedding)
+            cache_text_embedding = self._generate_embedding(cache_entry.user_query)
+            print(
+                "Length of embeddings", len(query_embedding), len(cache_text_embedding)
+            )
+            similarity = self._calculate_similarity(
+                query_embedding, cache_text_embedding
+            )
 
             if similarity > max_similarity and similarity >= self.similarity_threshold:
                 max_similarity = similarity
@@ -138,10 +148,10 @@ class LLMCacheManager:
         cache_key = self._generate_cache_key(user_query)
         redis_cache = self.redis_client.get(cache_key)
 
-        if redis_cache:
-            cache_data = json.loads(redis_cache)
-            self._update_hit_count(user_query)
-            return {**cache_data, "match_type": "exact"}
+        # if redis_cache:
+        #     cache_data = json.loads(redis_cache)
+        #     self._update_hit_count(user_query)
+        #     return {**cache_data, "match_type": "exact"}
 
         # Then try exact match in SQLite
         try:
@@ -176,6 +186,7 @@ class LLMCacheManager:
 
         # Generate and store embedding
         query_embedding = self._generate_embedding(user_query)
+        print(query_embedding, len(query_embedding))
 
         # Store in Redis
         self.redis_client.setex(cache_key, self.cache_timeout, json.dumps(cache_data))
