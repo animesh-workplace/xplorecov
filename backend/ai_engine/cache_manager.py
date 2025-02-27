@@ -127,9 +127,9 @@ class LLMCacheManager:
         for cache_entry in cached_queries:
             cached_embedding = np.frombuffer(cache_entry.query_embedding)
             cache_text_embedding = self._generate_embedding(cache_entry.user_query)
-            print(
-                "Length of embeddings", len(query_embedding), len(cache_text_embedding)
-            )
+            # print(
+            #     "Length of embeddings", len(query_embedding), len(cache_text_embedding)
+            # )
             similarity = self._calculate_similarity(
                 query_embedding, cache_text_embedding
             )
