@@ -34,32 +34,32 @@ class AddChatMessagesView(APIView):
             )
 
         # Try to get from cache (including similar queries)
-        cached_response = self.cache_manager.get_cached_response(
-            message.get("content", "")
-        )
-        if cached_response:
-            response_data = {
-                "modified_query": cached_response["modified_query"],
-                "generated_code": cached_response["generated_code"],
-                "cache_hit": True,
-                "match_type": cached_response["match_type"],
-            }
+        # cached_response = self.cache_manager.get_cached_response(
+        #     message.get("content", "")
+        # )
+        # if cached_response:
+        #     response_data = {
+        #         "modified_query": cached_response["modified_query"],
+        #         "generated_code": cached_response["generated_code"],
+        #         "cache_hit": True,
+        #         "match_type": cached_response["match_type"],
+        #     }
 
-            # Add similarity information if it was a similar match
-            if cached_response["match_type"] == "similar":
-                response_data.update(
-                    {
-                        "similarity_score": cached_response["similarity_score"],
-                        "original_query": cached_response["original_query"],
-                    }
-                )
+        #     # Add similarity information if it was a similar match
+        #     if cached_response["match_type"] == "similar":
+        #         response_data.update(
+        #             {
+        #                 "similarity_score": cached_response["similarity_score"],
+        #                 "original_query": cached_response["original_query"],
+        #             }
+        #         )
 
-            print(response_data)
+        #     print(response_data)
 
-            return Response(
-                {"message": "Messages found in cache successfully."},
-                status=status.HTTP_201_CREATED,
-            )
+        #     return Response(
+        #         {"message": "Messages found in cache successfully."},
+        #         status=status.HTTP_201_CREATED,
+        #     )
         # # If not in cache, process normally
         # modified_query = self.process_query_with_llm(message)
         # generated_code = self.generate_code(modified_query)
