@@ -28,7 +28,7 @@
 		<div
 			class="shadow-md rounded-md bg-white dark:bg-[#393939] z-40 -mt-24 relative pt-4 mx-4 md:mx-12 lg:mx-24 xl:mx-48"
 		>
-			<div class="mx-4 grid lg:grid-cols-2 md:grid-cols-2 md:gap-4 lg:gap-4 grid-cols-1">
+			<div class="mx-4 grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 md:gap-4 lg:gap-4 grid-cols-1">
 				<MetadataUpload @verification_status="verifyMetadata" />
 				<SequenceUpload @verification_status="verifySequence" />
 			</div>
