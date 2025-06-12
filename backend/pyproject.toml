@@ -18,6 +18,7 @@ dependencies = [
     "guardrails-ai>=0.5.15",
     "gunicorn>=23.0.0",
     "huggingface-hub>=0.33.0",
+    "kaleido==0.2.1",
     "langfuse>=3.0.1",
     "mpire>=2.10.2",
     "numpy>=2.3.0",
@@ -32,5 +33,6 @@ dependencies = [
     "tqdm>=4.67.1",
     "uvicorn>=0.34.3",
     "uvicorn-worker>=0.3.0",
+    "vanna[chromadb,ollama]>=0.7.9",
     "websockets>=15.0.1",
 ]
