@@ -1,5 +1,6 @@
-import Aura from '@primevue/themes/aura'
-import { definePreset } from '@primevue/themes'
+import Aura from '@primeuix/themes/aura'
+import tailwindcss from '@tailwindcss/vite'
+import { definePreset } from '@primeuix/themes'
 
 const Xaura = definePreset(Aura, {
 	semantic: {
@@ -54,9 +55,12 @@ export default defineNuxtConfig({
 		'@nuxtjs/tailwindcss',
 		'@primevue/nuxt-module',
 	],
+	build: { transpile: ['echarts', 'zrender'] },
 	echarts: {
 		ssr: true,
+		renderer: ['canvas'],
 		charts: ['BarChart'],
+		features: ['UniversalTransition'],
 		components: [
 			'GridComponent',
 			'TitleComponent',
@@ -64,6 +68,9 @@ export default defineNuxtConfig({
 			'TooltipComponent',
 			'ToolboxComponent',
 		],
+	},
+	vite: {
+		plugins: [tailwindcss()],
 	},
 	devtools: { enabled: true },
 	compatibilityDate: '2024-11-01',
@@ -77,6 +84,5 @@ export default defineNuxtConfig({
 		'notivue/animations.css',
 		'@/assets/css/main.css',
 		'@/assets/css/fonts.css',
-		// '@/assets/css/jquery.mCustomScrollbar.css',
 	],
 })
