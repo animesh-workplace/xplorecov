@@ -1,7 +1,13 @@
 <template>
 	<div>
 		<Skeleton class="mb-2" height="24rem" v-if="isLoading" />
-		<VChart ref="chart" class="w-[22rem] h-96" :option="graph_options" :class="{ hidden: isLoading }" />
+		<VChart
+			autoresize
+			ref="chart"
+			:option="graph_options"
+			class="w-[22rem] h-[22rem]"
+			:class="{ hidden: isLoading }"
+		/>
 	</div>
 </template>
 
