@@ -286,7 +286,7 @@ const refreshAll = async () => {
 	try {
 		const { getSpecificAnalysis } = useUserAnalysis()
 		my_analysis.value = await getSpecificAnalysis(route.params.id)
-		disconnect(true)
+		disconnect(my_analysis.value?.overall_status == 'SUCCESS')
 	} catch (err) {
 		console.log(err)
 	}
