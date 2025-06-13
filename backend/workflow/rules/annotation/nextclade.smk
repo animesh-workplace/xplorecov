@@ -16,11 +16,10 @@ rule nextclade:
         run_websocket_message("Nextclade Analysis Execution", "step4", "start")
         shell(
             """
-            time micromamba run -p "/home/nsm/Desktop/All_Development/Manuscript_Work/xplorecov/backend/.workflow-venv/envs/xplorecov" nextclade run \
+            time micromamba run -p ".workflow-venv/envs/xplorecov" nextclade run \
             -D "{input.dataset}" -j {threads} \
             --output-tsv "{output.clade_report}" --output-all "{output.clade_folder}" \
             "{input.sequences}" > {log} 2>&1
             """
         )
         run_websocket_message("Nextclade Analysis Execution", "step4", "end")
-
