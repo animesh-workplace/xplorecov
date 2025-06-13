@@ -1,35 +1,47 @@
 <template>
 	<div>
 		<Skeleton class="mb-2" height="24rem" v-if="isLoading" />
-		<VChart
-			autoresize
-			ref="chart"
-			:option="graph_options"
-			class="w-[22rem] h-[22rem]"
-			:class="{ hidden: isLoading }"
-		/>
+		<div v-show="!isLoading" class="h-[25rem] w-full">
+			<VChart autoresize ref="chart" :option="graph_options" class="w-full h-full" />
+		</div>
 	</div>
 </template>
 
 <script setup>
 const props = defineProps({
-	rawData: { type: Object, required: true, default: {} },
+	rawData: { type: Object, required: true, default: () => ({}) },
 })
 
+const isLoading = ref(true)
 const chart = templateRef('chart')
-const categories = Object.keys(props.rawData?.data)
-const types = Object.keys(props.rawData?.data[categories[0]])
-const seriesData = types.map((type) => ({
-	name: type,
-	type: 'bar',
-	stack: 'total',
-	data: categories.map((state) => props.rawData?.data[state][type]),
-}))
 
-const graph_options = ref({
+// Make data processing reactive
+const categories = computed(() => {
+	return props.rawData?.data ? Object.keys(props.rawData.data) : []
+})
+
+const types = computed(() => {
+	if (!props.rawData?.data || categories.value.length === 0) return []
+	return Object.keys(props.rawData.data[categories.value[0]] || {})
+})
+
+const seriesData = computed(() => {
+	if (!props.rawData?.data || categories.value.length === 0 || types.value.length === 0) {
+		return []
+	}
+
+	return types.value.map((type) => ({
+		name: type,
+		type: 'bar',
+		stack: 'total',
+		data: categories.value.map((state) => props.rawData.data[state]?.[type] || 0),
+	}))
+})
+
+const graph_options = computed(() => ({
 	animation: true,
 	title: {
-		text: props.rawData?.name,
+		text: props.rawData?.name || '',
 		textStyle: {
 			width: 350,
 			lineHeight: 20,
@@ -37,8 +49,9 @@ const graph_options = ref({
 		},
 	},
 	grid: {
+		top: '15%', // Give space for title
 		left: '0%',
-		right: '0%',
+		right: '4%',
 		bottom: '0%',
 		containLabel: true,
 	},
@@ -64,19 +77,36 @@ const graph_options = ref({
 	},
 	xAxis: {
 		type: 'category',
-		data: categories,
+		data: categories.value,
 	},
 	yAxis: { type: 'value' },
-	series: seriesData,
-})
+	series: seriesData.value,
+}))
 
-const isLoading = ref(true)
+// Watch for data changes and update loading state
+watch(
+	() => props.rawData,
+	(newData) => {
+		if (newData && newData.data && Object.keys(newData.data).length > 0) {
+			isLoading.value = false
+		}
+	},
+	{ immediate: true, deep: true },
+)
 
 onMounted(() => {
 	nextTick(() => {
-		setTimeout(() => {
+		// Check if data is already available
+		if (props.rawData && props.rawData.data && Object.keys(props.rawData.data).length > 0) {
 			isLoading.value = false
-		}, 2000)
+		}
+
+		// Ensure chart resizes properly after loading state changes
+		setTimeout(() => {
+			if (chart.value && chart.value.resize) {
+				chart.value.resize()
+			}
+		}, 100)
 	})
 })
 </script>
