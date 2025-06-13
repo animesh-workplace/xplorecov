@@ -20,6 +20,8 @@ def run_analysis_workflow(output_dir, user_id, analysis_id):
             f"UserID={user_id}",
             f"OutputDir={output_dir}",
             f"AnalysisID={analysis_id}",
+            "--cores",
+            "all"
         ]
         result = subprocess.run(cmd, capture_output=True, text=True)
         print(result.stderr, result.stdout)
@@ -42,6 +44,8 @@ def run_update_workflow():
             "--config",
             f"Date={datetime.now().strftime('%d-%m-%Y')}",
             "UpdateDir=workflow",
+            "--cores",
+            "all"
         ]
         result = subprocess.run(cmd, capture_output=True, text=True)
         print(result.stderr, result.stdout)
