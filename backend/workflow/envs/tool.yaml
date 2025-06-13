@@ -1,7 +1,8 @@
 name: xplorecov
 channels:
-  - bioconda
-  - conda-forge
+    - bioconda
+    - conda-forge
 dependencies:
-  - nextclade>=2.2.0
-  - pangolin>=4.3.1
+    - nextclade>=2.2.0
+    - pangolin>=4.3.1
+    - snpeff>=5.2
