@@ -1,12 +1,6 @@
-import subprocess, json, re
-from openai import OpenAI
+import subprocess
 from datetime import datetime
 from celery import shared_task
-from django.conf import settings
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
-
-# from ..serializers import ChatMessagesSerializer
 
 
 @shared_task
@@ -21,7 +15,7 @@ def run_analysis_workflow(output_dir, user_id, analysis_id):
             f"OutputDir={output_dir}",
             f"AnalysisID={analysis_id}",
             "--cores",
-            "all"
+            "all",
         ]
         result = subprocess.run(cmd, capture_output=True, text=True)
         print(result.stderr, result.stdout)
@@ -45,7 +39,7 @@ def run_update_workflow():
             f"Date={datetime.now().strftime('%d-%m-%Y')}",
             "UpdateDir=workflow",
             "--cores",
-            "all"
+            "all",
         ]
         result = subprocess.run(cmd, capture_output=True, text=True)
         print(result.stderr, result.stdout)
