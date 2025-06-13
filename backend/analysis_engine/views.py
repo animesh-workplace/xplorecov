@@ -1,14 +1,10 @@
-import ollama
 from django.conf import settings
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import UserAnalysis, Report
 from rest_framework.parsers import MultiPartParser, FormParser
-from .tasks.run_workflow import (
-    run_update_workflow,
-    run_analysis_workflow,
-)
+from .tasks.run_workflow import run_update_workflow, run_analysis_workflow
 from .serializers import (
     AIChatSerializer,
     ReportSerializer,
@@ -21,7 +17,6 @@ from .serializers import (
 
 class ToolUpdateView(APIView):
     def post(self, request):
-
         # Trigger Celery task
         task = run_update_workflow.delay()
 
