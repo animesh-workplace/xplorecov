@@ -71,7 +71,8 @@ Follow these steps to set up the backend of the project:
 
     - Run the following command to install the workflow tools:
         ```bash
-        micromamba install -r .workflow-venv -n xplorecov
+        micromamba create -n xplorecov -f workflow/envs/tool.yaml -r <Complete path>/xplorecov/backend/.workflow-venv
+        micromamba run -p .workflow-venv/envs/xplorecov snpEff download NC_045512.2
         ```
 
 7. **Run Required Services**:
