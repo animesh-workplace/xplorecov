@@ -1,7 +1,7 @@
-import pandas
 from openai import OpenAI
 import requests, os, json
 from functools import reduce
+import fireducks.pandas as pandas
 
 
 def generate_reports(combined_report):
