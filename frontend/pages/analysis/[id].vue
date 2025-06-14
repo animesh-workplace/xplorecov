@@ -11,7 +11,8 @@
 					</NuxtLink>
 				</li>
 				<li class="px-2">
-					<i class="pi pi-angle-right text-surface-500 dark:text-surface-300 leading-normal" />
+					<Icon name="tabler:chevron-right" class="w-5 h-5" />
+					<!-- <i class="pi pi-angle-right text-surface-500 dark:text-surface-300 leading-normal" /> -->
 				</li>
 				<li>
 					<span class="text-surface-900 dark:text-surface-0 leading-normal">{{ route.params.id }}</span>
@@ -169,7 +170,10 @@
 		<div class="mb-8 px-6 md:px-12 lg:px-20" v-if="analysis_complete">
 			<Accordion value="">
 				<AccordionPanel value="0" :pt="{ root: '!border-0' }">
-					<AccordionHeader>Combined analysis report</AccordionHeader>
+					<AccordionHeader :pt="{ root: '!rounded-xl' }">
+						<Icon name="" class="w-5 h-5" />
+						Combined analysis report
+					</AccordionHeader>
 					<AccordionContent :pt="{ content: '!pt-4 !bg-[#121212]' }">
 						<MyDataTable />
 					</AccordionContent>
@@ -216,47 +220,6 @@
 			</div>
 		</div>
 
-		<!-- Messages -->
-		<!-- <div class="mb-24 px-6 md:px-12 lg:px-20">
-			<div v-for="(messages, index) in my_analysis?.chat_messages" :key="index" class="min-h-screen">
-				<div
-					class="p-4 my-6"
-					:class="{
-						'bg-gray-500 text-right rounded-tl-2xl rounded-tr-sm rounded-br-2xl rounded-bl-2xl':
-							messages.sender == 'human',
-						'bg-slate-700 text-white rounded-tr-2xl rounded-tl-sm rounded-bl-2xl rounded-br-2xl':
-							messages.sender == 'assistant',
-					}"
-				>
-					<div v-html="messages?.content" />
-				</div>
-			</div>
-		</div> -->
-
-		<!-- <div
-			ref="chatContainer"
-			class="flex-1 overflow-y-auto mb-24 px-6 md:px-12 lg:px-20 flex flex-col-reverse pb-20"
-		>
-			<div
-				v-for="(message, index) in my_analysis.chat_messages"
-				:key="index"
-				class="my-3 p-4 shadow-md rounded-lg transition-all duration-300 ease-in-out"
-				:class="{
-					'bg-blue-600 text-white rounded-tl-2xl rounded-tr-sm rounded-br-2xl rounded-bl-2xl self-end':
-						message.sender === 'human',
-					'bg-gray-700 text-white rounded-tr-2xl rounded-tl-sm rounded-bl-2xl rounded-br-2xl self-start':
-						message.sender === 'assistant',
-					'max-w-[calc(100%-60px)] md:max-w-xl': true,
-				}"
-			>
-				<div v-html="message.content" class="text-base leading-relaxed" />
-			</div>
-		</div> -->
-
-		<!-- <div class="mb-24 px-6 md:px-12 lg:px-20">
-			<p class="typing" v-html="displayedText" />
-		</div> -->
-
 		<div class="px-6 md:px-12 lg:px-20 fixed w-full bottom-5 shadow-2xl" v-if="analysis_complete">
 			<div class="relative">
 				<div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -279,6 +242,7 @@
 				<input
 					type="search"
 					v-model="search_prompt"
+					@keypress.enter="AISearchQuery"
 					class="block w-full p-4 pr-24 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
 					placeholder="Ask your question to XPLORECoV-AI"
 				/>
@@ -296,12 +260,12 @@
 						class="inline w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600"
 					>
 						<path
-							d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
 							fill="currentColor"
+							d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
 						/>
 						<path
-							d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
 							fill="#1C64F2"
+							d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
 						/>
 					</svg>
 					Loading...
@@ -472,13 +436,6 @@ const AISearchQuery = async () => {
 // 	search_loading.value = false
 // }
 
-// const scrollToBottom = () => {
-// 	const container = this.$refs.chatContainer
-// 	if (container) {
-// 		container.scrollTop = container.scrollHeight
-// 	}
-// }
-
 const route = useRoute()
 const wsUrl = `ws://10.10.6.80/xplorecov/ws/analysis/${useCookie('session').value}/${route.params.id}/`
 const { analysis_steps, tools_version, analysis_complete, disconnect } = useWebSocket(wsUrl)
@@ -540,29 +497,5 @@ watch(
 	to {
 		transform: rotate(360deg);
 	}
-}
-
-/* Custom scrollbar for chat container */
-.chatContainer::-webkit-scrollbar {
-	width: 6px;
-}
-
-.chatContainer::-webkit-scrollbar-track {
-	background: #f1f1f1;
-	border-radius: 10px;
-}
-
-.chatContainer::-webkit-scrollbar-thumb {
-	background: #c1c1c1;
-	border-radius: 10px;
-}
-
-.chatContainer::-webkit-scrollbar-thumb:hover {
-	background: #a8a8a8;
-}
-
-/* Smooth scrolling */
-.chatContainer {
-	scroll-behavior: smooth;
 }
 </style>
