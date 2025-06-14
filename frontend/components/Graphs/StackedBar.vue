@@ -45,7 +45,9 @@ const graph_options = computed(() => ({
 		textStyle: {
 			width: 350,
 			lineHeight: 20,
+			fontWeight: 500,
 			overflow: 'break',
+			fontFamily: 'Averta',
 		},
 	},
 	grid: {
