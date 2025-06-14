@@ -48,7 +48,9 @@ const graph_options = ref({
 		textStyle: {
 			width: 400,
 			lineHeight: 20,
+			fontWeight: 500,
 			overflow: 'break',
+			fontFamily: 'Averta',
 		},
 	},
 	grid: {
