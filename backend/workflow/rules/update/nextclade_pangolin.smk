@@ -17,10 +17,12 @@ def parse_version_output(output):
 rule update_nextclade_pangolin:
     output:
         resources=directory("workflow/resources/nextclade/data"),
+        snpeff_resources=directory("workflow/resources/snpeff"),
     threads: 1
     log:
         pangolin=f'{config["UpdateDir"]}/update_log/{config["Date"]}/update_pangolin.log',
         nextclade=f'{config["UpdateDir"]}/update_log/{config["Date"]}/update_nextclade.log',
+        snpeff=f'{config["UpdateDir"]}/update_log/{config["Date"]}/update_snpeff.log',
     run:
         shell(
             """
@@ -28,6 +30,8 @@ rule update_nextclade_pangolin:
                 micromamba run -p ".workflow-venv/envs/xplorecov" pangolin --update-data >> {log.pangolin} 2>&1
                 micromamba update -y nextclade -r ".workflow-venv/" -n xplorecov >> {log.nextclade} 2>&1
                 micromamba run -p ".workflow-venv/envs/xplorecov" nextclade dataset get --name 'sars-cov-2' --output-dir {output.resources}
+                mkdir -p {output.snpeff_resources}
+                wget -P {output.snpeff_resources} "https://raw.githubusercontent.com/W-L/ProblematicSites_SARS-CoV2/master/problematic_sites_sarsCov2.vcf" >> {log.snpeff} 2>&1
             """
         )
         nextclade_version = parse_version_output(
