@@ -117,7 +117,7 @@
 						<li
 							:key="index"
 							v-for="(step, index) in analysis_steps"
-							:class="{ 'border-b-2': step.index != 6, 'border-t-2': step.index == 1 }"
+							:class="{ 'border-b-2': step.index != 7, 'border-t-2': step.index == 1 }"
 							class="flex items-center justify-between py-2 text-gray-600 border-gray-100 dark:text-gray-100 dark:border-gray-800"
 						>
 							<div class="flex items-center justify-start text-sm">
@@ -166,6 +166,18 @@
 			</div>
 		</div>
 
+		<div class="mb-8 px-6 md:px-12 lg:px-20" v-if="analysis_complete">
+			<Accordion value="" :pt="{ accordionPanel: '!border-0' }">
+				<AccordionPanel value="0">
+					<AccordionHeader>Combined analysis report</AccordionHeader>
+					<AccordionContent>
+						<MyDataTable />
+					</AccordionContent>
+				</AccordionPanel>
+			</Accordion>
+		</div>
+
+		<!-- Graphs -->
 		<div class="grid grid-cols-4 gap-4 mb-24 px-6 md:px-12 lg:px-20" v-if="analysis_complete">
 			<div v-for="(analysis, index) in my_analysis?.graph_reports" :key="index">
 				<GraphsBar :rawData="analysis" v-if="analysis?.graph_type == 'Bar'" />
@@ -173,6 +185,7 @@
 			</div>
 		</div>
 
+		<!-- Messages -->
 		<div class="mb-24 px-6 md:px-12 lg:px-20">
 			<div
 				:key="index"
@@ -210,7 +223,6 @@
 						/>
 					</svg>
 				</div>
-				<!-- eslint-disable-next-line vue/html-self-closing -->
 				<input
 					type="search"
 					v-model="search_prompt"
@@ -230,7 +242,6 @@
 
 <script setup>
 import { round } from 'lodash-es'
-import DOMPurify from 'dompurify'
 import { useUserAnalysis } from '@/api/analysis'
 import { useSessionStore } from '@/stores/session'
 
