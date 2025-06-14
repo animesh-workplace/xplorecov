@@ -167,10 +167,10 @@
 		</div>
 
 		<div class="mb-8 px-6 md:px-12 lg:px-20" v-if="analysis_complete">
-			<Accordion value="" :pt="{ accordionPanel: '!border-0' }">
-				<AccordionPanel value="0">
+			<Accordion value="">
+				<AccordionPanel value="0" :pt="{ root: '!border-0' }">
 					<AccordionHeader>Combined analysis report</AccordionHeader>
-					<AccordionContent>
+					<AccordionContent :pt="{ content: '!pt-4 !bg-[#121212]' }">
 						<MyDataTable />
 					</AccordionContent>
 				</AccordionPanel>
@@ -185,24 +185,77 @@
 			</div>
 		</div>
 
-		<!-- Messages -->
-		<div class="mb-24 px-6 md:px-12 lg:px-20">
+		<!-- Chat Messages Container with proper scrolling -->
+		<div
+			ref="chatContainer"
+			class="h-96 mb-8 px-6 md:px-12 lg:px-20"
+			v-if="analysis_complete && my_analysis?.chat_messages?.length > 0"
+		>
 			<div
 				:key="index"
-				class="p-4 my-6 flex-1"
+				:id="message.uuid"
+				class="my-4 flex"
+				v-for="(message, index) in my_analysis?.chat_messages"
 				:class="{
-					'bg-gray-500 text-right rounded-full': messages.sender == 'human',
-					'bg-stone-500 text-left rounded-lg': messages.sender == 'assistant',
+					'justify-end': message.sender === 'human',
+					'justify-start': message.sender === 'assistant',
+					'pb-[calc(100vh-10rem)]': index === my_analysis.chat_messages.length - 1, // Only last message gets padding
 				}"
-				v-for="(messages, index) in my_analysis?.chat_messages"
 			>
-				<div v-html="messages?.content" />
+				<div
+					class="max-w-[70%] p-4 rounded-lg shadow-sm"
+					:class="{
+						'bg-blue-600 text-white rounded-tl-2xl rounded-tr-sm rounded-br-2xl rounded-bl-2xl':
+							message.sender === 'human',
+						'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-tr-2xl rounded-tl-sm rounded-bl-2xl rounded-br-2xl':
+							message.sender === 'assistant',
+					}"
+				>
+					<div v-html="message?.content" class="leading-relaxed" />
+				</div>
 			</div>
 		</div>
 
-		<div class="mb-24 px-6 md:px-12 lg:px-20">
+		<!-- Messages -->
+		<!-- <div class="mb-24 px-6 md:px-12 lg:px-20">
+			<div v-for="(messages, index) in my_analysis?.chat_messages" :key="index" class="min-h-screen">
+				<div
+					class="p-4 my-6"
+					:class="{
+						'bg-gray-500 text-right rounded-tl-2xl rounded-tr-sm rounded-br-2xl rounded-bl-2xl':
+							messages.sender == 'human',
+						'bg-slate-700 text-white rounded-tr-2xl rounded-tl-sm rounded-bl-2xl rounded-br-2xl':
+							messages.sender == 'assistant',
+					}"
+				>
+					<div v-html="messages?.content" />
+				</div>
+			</div>
+		</div> -->
+
+		<!-- <div
+			ref="chatContainer"
+			class="flex-1 overflow-y-auto mb-24 px-6 md:px-12 lg:px-20 flex flex-col-reverse pb-20"
+		>
+			<div
+				v-for="(message, index) in my_analysis.chat_messages"
+				:key="index"
+				class="my-3 p-4 shadow-md rounded-lg transition-all duration-300 ease-in-out"
+				:class="{
+					'bg-blue-600 text-white rounded-tl-2xl rounded-tr-sm rounded-br-2xl rounded-bl-2xl self-end':
+						message.sender === 'human',
+					'bg-gray-700 text-white rounded-tr-2xl rounded-tl-sm rounded-bl-2xl rounded-br-2xl self-start':
+						message.sender === 'assistant',
+					'max-w-[calc(100%-60px)] md:max-w-xl': true,
+				}"
+			>
+				<div v-html="message.content" class="text-base leading-relaxed" />
+			</div>
+		</div> -->
+
+		<!-- <div class="mb-24 px-6 md:px-12 lg:px-20">
 			<p class="typing" v-html="displayedText" />
-		</div>
+		</div> -->
 
 		<div class="px-6 md:px-12 lg:px-20 fixed w-full bottom-5 shadow-2xl" v-if="analysis_complete">
 			<div class="relative">
@@ -230,6 +283,32 @@
 					placeholder="Ask your question to XPLORECoV-AI"
 				/>
 				<button
+					disabled
+					v-if="search_loading"
+					class="absolute end-0 bottom-2 py-2 px-2.5 me-2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:outline-none focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700 inline-flex items-center"
+				>
+					<svg
+						fill="none"
+						role="status"
+						aria-hidden="true"
+						viewBox="0 0 100 101"
+						xmlns="http://www.w3.org/2000/svg"
+						class="inline w-4 h-4 mr-2 text-gray-200 animate-spin dark:text-gray-600"
+					>
+						<path
+							d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+							fill="currentColor"
+						/>
+						<path
+							d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+							fill="#1C64F2"
+						/>
+					</svg>
+					Loading...
+				</button>
+
+				<button
+					v-else
 					@click="AISearchQuery"
 					class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700"
 				>
@@ -242,6 +321,7 @@
 
 <script setup>
 import { round } from 'lodash-es'
+import { v4 as uuidv4 } from 'uuid'
 import { useUserAnalysis } from '@/api/analysis'
 import { useSessionStore } from '@/stores/session'
 
@@ -250,8 +330,10 @@ const { data: my_analysis, error } = useAsyncData('specific_analysis', async () 
 	const { getSpecificAnalysis } = useUserAnalysis()
 	return await getSpecificAnalysis(route.params.id)
 })
+const chatContainer = ref(null)
 const dayjs = useDayjs()
 const search_prompt = ref('')
+const search_loading = ref(false)
 const analysis_duration = computed(() => {
 	const completionDate = my_analysis.value?.completion_date
 	const submissionDate = my_analysis.value?.submission_date
@@ -263,31 +345,139 @@ const expires_in = computed(() => {
 	return dayjs().to(dayjs(expirationDate))
 })
 
-const AISearchQuery = async () => {
-	try {
-		console.log('Clicked')
-
-		try {
-			const { session } = useSessionStore()
-			const { askXPLORECoVAI } = useUserAnalysis()
-			await askXPLORECoVAI({
-				user_id: session,
-				analysis_id: route.params.id,
-				message: {
-					sender: 'human',
-					content_type: 'text',
-					parent_message_uuid: null,
-					content: search_prompt.value,
-				},
-			})
-			refreshAll()
-		} catch (err) {
-			console.log(err)
+const scrollToId = (id) => {
+	if (import.meta.client) {
+		const element = document.getElementById(id)
+		if (element) {
+			const top = element.offsetTop
+			window.scrollTo({ top, behavior: 'smooth' })
 		}
-	} catch (err) {
-		console.log(err)
 	}
 }
+
+const AISearchQuery = async () => {
+	if (!search_prompt.value.trim()) return
+
+	search_loading.value = true
+
+	console.log(chatContainer.value)
+	try {
+		// Add user message
+		if (!my_analysis.value.chat_messages) {
+			my_analysis.value.chat_messages = []
+		}
+
+		const scroll_id = uuidv4()
+		my_analysis.value.chat_messages.push({
+			content: search_prompt.value,
+			content_type: 'text',
+			created_at: new Date().toISOString(),
+			parent_message_uuid: '',
+			sender: 'human',
+			uuid: scroll_id,
+		})
+
+		await new Promise((resolve) => setTimeout(resolve, 200))
+		scrollToId(scroll_id)
+		search_prompt.value = ''
+
+		// Add assistant loading message
+		my_analysis.value.chat_messages.push({
+			content: 'Searching for result...',
+			content_type: 'text',
+			created_at: new Date().toISOString(),
+			parent_message_uuid: '',
+			sender: 'assistant',
+			uuid: uuidv4(),
+		})
+
+		// Simulate API call
+		await new Promise((resolve) => setTimeout(resolve, 2000))
+
+		// Replace loading message with actual response
+		const lastMessageIndex = my_analysis.value.chat_messages.length - 1
+		my_analysis.value.chat_messages[lastMessageIndex] = {
+			...my_analysis.value.chat_messages[lastMessageIndex],
+			content:
+				'Here is the search result based on your query. This is a sample response that demonstrates the chat functionality.',
+		}
+
+		// Uncomment and modify this section for real API integration
+		// try {
+		// 	const { session } = useSessionStore()
+		// 	const { askXPLORECoVAI } = useUserAnalysis()
+		// 	await askXPLORECoVAI({
+		// 		user_id: session,
+		// 		analysis_id: route.params.id,
+		// 		message: {
+		// 			sender: 'human',
+		// 			content_type: 'text',
+		// 			parent_message_uuid: null,
+		// 			content: search_prompt.value,
+		// 		},
+		// 	})
+		// 	refreshAll()
+		// } catch (err) {
+		// 	console.log(err)
+		// }
+	} catch (err) {
+		console.log(err)
+	} finally {
+		search_loading.value = false
+	}
+}
+
+// const AISearchQuery = async () => {
+// 	search_loading.value = true
+// 	try {
+// 		my_analysis.value.chat_messages.push({
+// 			content: search_prompt.value,
+// 			content_type: '',
+// 			created_at: '',
+// 			parent_message_uuid: '',
+// 			sender: 'human',
+// 			uuid: '',
+// 		})
+// 		my_analysis.value.chat_messages.push({
+// 			content: 'searching for result',
+// 			content_type: '',
+// 			created_at: '',
+// 			parent_message_uuid: '',
+// 			sender: 'assistant',
+// 			uuid: '',
+// 		})
+// 		await new Promise((resolve) => setTimeout(resolve, 2000))
+// 		scrollToBottom()
+// 		// try {
+// 		// 	const { session } = useSessionStore()
+// 		// 	const { askXPLORECoVAI } = useUserAnalysis()
+// 		// 	await askXPLORECoVAI({
+// 		// 		user_id: session,
+// 		// 		analysis_id: route.params.id,
+// 		// 		message: {
+// 		// 			sender: 'human',
+// 		// 			content_type: 'text',
+// 		// 			parent_message_uuid: null,
+// 		// 			content: search_prompt.value,
+// 		// 		},
+// 		// 	})
+// 		// 	refreshAll()
+// 		// } catch (err) {
+// 		// 	console.log(err)
+// 		// }
+// 	} catch (err) {
+// 		console.log(err)
+// 	}
+// 	search_prompt.value = ''
+// 	search_loading.value = false
+// }
+
+// const scrollToBottom = () => {
+// 	const container = this.$refs.chatContainer
+// 	if (container) {
+// 		container.scrollTop = container.scrollHeight
+// 	}
+// }
 
 const route = useRoute()
 const wsUrl = `ws://10.10.6.80/xplorecov/ws/analysis/${useCookie('session').value}/${route.params.id}/`
@@ -332,9 +522,47 @@ watch(
 .cursor {
 	animation: blink 0.8s infinite;
 }
+
 @keyframes blink {
 	50% {
 		opacity: 0;
 	}
+}
+
+.spinner {
+	animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* Custom scrollbar for chat container */
+.chatContainer::-webkit-scrollbar {
+	width: 6px;
+}
+
+.chatContainer::-webkit-scrollbar-track {
+	background: #f1f1f1;
+	border-radius: 10px;
+}
+
+.chatContainer::-webkit-scrollbar-thumb {
+	background: #c1c1c1;
+	border-radius: 10px;
+}
+
+.chatContainer::-webkit-scrollbar-thumb:hover {
+	background: #a8a8a8;
+}
+
+/* Smooth scrolling */
+.chatContainer {
+	scroll-behavior: smooth;
 }
 </style>
