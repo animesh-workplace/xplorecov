@@ -186,7 +186,7 @@
 		</div>
 
 		<!-- Graphs -->
-		<div class="grid grid-cols-4 gap-4 mb-24 px-6 md:px-12 lg:px-20" v-if="analysis_complete">
+		<div class="grid grid-cols-4 gap-4 mb-8 px-6 md:px-12 lg:px-20" v-if="analysis_complete">
 			<div v-for="(analysis, index) in my_analysis?.graph_reports" :key="index">
 				<GraphsBar :rawData="analysis" v-if="analysis?.graph_type == 'Bar'" />
 				<GraphsStackedBar :rawData="analysis" v-if="analysis?.graph_type == 'Stacked Bar'" />
@@ -194,11 +194,30 @@
 		</div>
 
 		<!-- Chat Messages Container with proper scrolling -->
+
+		<div
+			class="space-y-3 text-center mt-24 mb-32"
+			v-if="analysis_complete && my_analysis?.chat_messages?.length == 0"
+		>
+			<h3 class="text-gray-200 text-4xl font-semibold sm:text-5xl">Craving Deeper Insights?</h3>
+			<p class="text-gray-400">
+				Dive into your data with <strong>XPLORECoV-AI</strong> — ask complex questions, uncover hidden
+				patterns, and instantly generate insightful visualizations.
+			</p>
+		</div>
+
 		<div
 			ref="chatContainer"
 			class="h-96 mb-8 px-6 md:px-12 lg:px-20"
 			v-if="analysis_complete && my_analysis?.chat_messages?.length > 0"
 		>
+			<div class="mt-24">
+				<h3 class="text-gray-200 text-4xl font-semibold sm:text-5xl">Welcome to XPLORECoV-AI!</h3>
+				<p class="text-gray-400">
+					Unleash the power of AI to explore SARS-CoV-2 data. Ask anything about the virus, mutations, or
+					sequences, and get instant insights and visualizations. Let’s get started!
+				</p>
+			</div>
 			<div
 				:key="index"
 				:id="message.uuid"
