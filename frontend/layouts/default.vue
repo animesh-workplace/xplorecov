@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="font-[Averta]">
 		<NavBar />
 		<div class="mt-16">
 			<slot />
