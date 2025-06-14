@@ -55,7 +55,6 @@ export default defineNuxtConfig({
 		'@nuxtjs/tailwindcss',
 		'@primevue/nuxt-module',
 	],
-	build: { transpile: ['echarts', 'zrender'] },
 	echarts: {
 		ssr: true,
 		renderer: ['canvas'],
@@ -69,15 +68,6 @@ export default defineNuxtConfig({
 			'ToolboxComponent',
 		],
 	},
-	vite: {
-		plugins: [tailwindcss()],
-	},
-	devtools: { enabled: true },
-	compatibilityDate: '2024-11-01',
-	notivue: { position: 'bottom-right' },
-	dayjs: { plugins: ['customParseFormat', 'relativeTime'] },
-	umami: { enabled: false, id: '12d666c0-d0bf-4271-ae3b-2ff52f81be58', host: 'https://research.nibmg.ac.in' },
-	primevue: { options: { ripple: true, theme: { preset: Xaura, options: { darkModeSelector: '.dark' } } } },
 	css: [
 		'primeicons/primeicons.css',
 		'notivue/notification.css',
@@ -85,4 +75,32 @@ export default defineNuxtConfig({
 		'@/assets/css/main.css',
 		'@/assets/css/fonts.css',
 	],
+	devtools: { enabled: true },
+	compatibilityDate: '2024-11-01',
+	vite: { plugins: [tailwindcss()] },
+	notivue: { position: 'bottom-right' },
+	build: { transpile: ['echarts', 'zrender'] },
+	dayjs: { plugins: ['customParseFormat', 'relativeTime'] },
+	icon: { clientBundle: { scan: true }, serverBundle: { collections: ['tabler', 'solar'] } },
+	primevue: {
+		options: {
+			ripple: true,
+			theme: { preset: Xaura, options: { darkModeSelector: '.dark' } },
+		},
+		components: {
+			include: [
+				'Tag',
+				'Column',
+				'Skeleton',
+				'DataTable',
+				'Accordion',
+				'SelectButton',
+				'AccordionPanel',
+				'AccordionHeader',
+				'AccordionContent',
+			],
+		},
+	},
+
+	umami: { enabled: false, id: '12d666c0-d0bf-4271-ae3b-2ff52f81be58', host: 'https://research.nibmg.ac.in' },
 })
