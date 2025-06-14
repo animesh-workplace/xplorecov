@@ -13,7 +13,8 @@ export const useWebSocket = (url) => {
 		step3: { index: 3, name: 'Queuing Analysis', status: 'pending', duration: 0 },
 		step4: { index: 4, name: 'Nextclade Analysis Execution', status: 'pending', duration: 0 },
 		step5: { index: 5, name: 'Pangolin Analysis Execution', status: 'pending', duration: 0 },
-		step6: { index: 6, name: 'Results Summarization', status: 'pending', duration: 0 },
+		step6: { index: 6, name: 'Deep Analysis Execution', status: 'pending', duration: 0 },
+		step7: { index: 7, name: 'Results Summarization', status: 'pending', duration: 0 },
 	})
 
 	const connect = () => {
