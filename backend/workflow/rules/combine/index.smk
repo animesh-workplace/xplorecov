@@ -247,13 +247,14 @@ rule combine:
         nextclade=rules.nextclade.output.clade_report,
         metadata=f'{config["OutputDir"]}/uploaded/metadata.tsv',
         pangolin_usher=rules.pangolin_usher.output.lineage_report,
+        snpeff=rules.snpeff.output.annotated_vcf_report,
     output:
         report=f'{config["OutputDir"]}/result/combined_report.tsv',
         report_feather=f'{config["OutputDir"]}/result/combined_report.feather',
     log:
         f'{config["OutputDir"]}/log/combined.log',
     run:
-        run_websocket_message("Results Summarization", "step6", "start")
+        run_websocket_message("Results Summarization", "step7", "start")
         nextclade = pandas.read_csv(
             input.nextclade,
             delimiter="\t",
@@ -326,4 +327,4 @@ rule combine:
             # Update the output to feather to be used
         combined_report.to_csv(output.report, sep="\t", index=False)
         combined_report.to_feather(output.report_feather)
-        run_websocket_message("Results Summarization", "step6", "end")
+        run_websocket_message("Results Summarization", "step7", "end")
