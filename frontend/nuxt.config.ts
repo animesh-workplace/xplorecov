@@ -90,8 +90,14 @@ export default defineNuxtConfig({
 		components: {
 			include: [
 				'Tag',
+				'Tab',
+				'Tabs',
+				'Button',
 				'Column',
+				'TabsList',
+				'TabPanel',
 				'Skeleton',
+				'TabPanels',
 				'DataTable',
 				'Accordion',
 				'SelectButton',
