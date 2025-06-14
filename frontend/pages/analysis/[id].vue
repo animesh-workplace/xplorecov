@@ -11,8 +11,7 @@
 					</NuxtLink>
 				</li>
 				<li class="px-2">
-					<Icon name="tabler:chevron-right" class="w-5 h-5" />
-					<!-- <i class="pi pi-angle-right text-surface-500 dark:text-surface-300 leading-normal" /> -->
+					<Icon name="tabler:chevron-right" class="w-4 h-4 mt-2" />
 				</li>
 				<li>
 					<span class="text-surface-900 dark:text-surface-0 leading-normal">{{ route.params.id }}</span>
@@ -170,9 +169,14 @@
 		<div class="mb-8 px-6 md:px-12 lg:px-20" v-if="analysis_complete">
 			<Accordion value="">
 				<AccordionPanel value="0" :pt="{ root: '!border-0' }">
-					<AccordionHeader :pt="{ root: '!rounded-xl' }">
-						<Icon name="" class="w-5 h-5" />
-						Combined analysis report
+					<AccordionHeader :pt="{ root: '!rounded-xl group/accordion' }">
+						<div class="flex items-center gap-2">
+							<Icon
+								name="tabler:file-report"
+								class="w-5 h-5 text-gray-400 group-hover/accordion:text-white"
+							/>
+							Combined analysis report
+						</div>
 					</AccordionHeader>
 					<AccordionContent :pt="{ content: '!pt-4 !bg-[#121212]' }">
 						<MyDataTable />
