@@ -14,10 +14,10 @@
 					@removefile="RemoveFile"
 					v-model:files="metadata_file"
 					label-idle="
-                        <span class='cursor-pointer font-bold'>
+                        <span class='cursor-pointer font-bold font-[Averta]'>
                             Drag & Drop your Metadata or
                         </span>
-                        <span class='cursor-pointer underline font-bold'>
+                        <span class='cursor-pointer underline font-bold font-[Averta]'>
                             Browse
                         </span>
                     "
