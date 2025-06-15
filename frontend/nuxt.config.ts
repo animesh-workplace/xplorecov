@@ -103,6 +103,7 @@ export default defineNuxtConfig({
 				'SelectButton',
 				'AccordionPanel',
 				'AccordionHeader',
+				'ProgressSpinner',
 				'AccordionContent',
 			],
 		},
