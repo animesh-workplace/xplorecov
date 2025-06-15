@@ -238,7 +238,20 @@
 							message.sender === 'assistant',
 					}"
 				>
-					<div v-html="message?.content" class="leading-relaxed" />
+					<div v-if="message?.content == 'Loading'">
+						<ProgressSpinner :pt="{ root: '!h-10 !w-10' }" stroke-width="4" />
+					</div>
+					<div v-else>
+						<div
+							v-if="message.sender === 'assistant'"
+							v-typing="{
+								typeSpeed: 50,
+								hasCaret: false,
+								text: message?.content,
+							}"
+						/>
+						<div v-else v-html="message?.content" class="leading-relaxed" />
+					</div>
 				</div>
 			</div>
 		</div>
@@ -343,74 +356,73 @@ const scrollToId = (id) => {
 }
 
 const AISearchQuery = async () => {
-	if (!search_prompt.value.trim()) return
+	if (!search_loading.value) {
+		if (!search_prompt.value.trim()) return
+		search_loading.value = true
+		try {
+			// Add user message
+			if (!my_analysis.value.chat_messages) {
+				my_analysis.value.chat_messages = []
+			}
 
-	search_loading.value = true
+			const scroll_id = uuidv4()
+			my_analysis.value.chat_messages.push({
+				content: search_prompt.value,
+				content_type: 'text',
+				created_at: new Date().toISOString(),
+				parent_message_uuid: '',
+				sender: 'human',
+				uuid: scroll_id,
+			})
 
-	console.log(chatContainer.value)
-	try {
-		// Add user message
-		if (!my_analysis.value.chat_messages) {
-			my_analysis.value.chat_messages = []
+			await new Promise((resolve) => setTimeout(resolve, 200))
+			scrollToId(scroll_id)
+			search_prompt.value = ''
+
+			// Add assistant loading message
+			my_analysis.value.chat_messages.push({
+				content: 'Loading',
+				content_type: 'text',
+				created_at: new Date().toISOString(),
+				parent_message_uuid: '',
+				sender: 'assistant',
+				uuid: uuidv4(),
+			})
+
+			// Simulate API call
+			await new Promise((resolve) => setTimeout(resolve, 5000))
+
+			// Replace loading message with actual response
+			const lastMessageIndex = my_analysis.value.chat_messages.length - 1
+			my_analysis.value.chat_messages[lastMessageIndex] = {
+				...my_analysis.value.chat_messages[lastMessageIndex],
+				content:
+					'Here is the search result based on your query. This is a sample response that demonstrates the chat functionality.',
+			}
+
+			// Uncomment and modify this section for real API integration
+			// try {
+			// 	const { session } = useSessionStore()
+			// 	const { askXPLORECoVAI } = useUserAnalysis()
+			// 	await askXPLORECoVAI({
+			// 		user_id: session,
+			// 		analysis_id: route.params.id,
+			// 		message: {
+			// 			sender: 'human',
+			// 			content_type: 'text',
+			// 			parent_message_uuid: null,
+			// 			content: search_prompt.value,
+			// 		},
+			// 	})
+			// 	refreshAll()
+			// } catch (err) {
+			// 	console.log(err)
+			// }
+		} catch (err) {
+			console.log(err)
+		} finally {
+			search_loading.value = false
 		}
-
-		const scroll_id = uuidv4()
-		my_analysis.value.chat_messages.push({
-			content: search_prompt.value,
-			content_type: 'text',
-			created_at: new Date().toISOString(),
-			parent_message_uuid: '',
-			sender: 'human',
-			uuid: scroll_id,
-		})
-
-		await new Promise((resolve) => setTimeout(resolve, 200))
-		scrollToId(scroll_id)
-		search_prompt.value = ''
-
-		// Add assistant loading message
-		my_analysis.value.chat_messages.push({
-			content: 'Searching for result...',
-			content_type: 'text',
-			created_at: new Date().toISOString(),
-			parent_message_uuid: '',
-			sender: 'assistant',
-			uuid: uuidv4(),
-		})
-
-		// Simulate API call
-		await new Promise((resolve) => setTimeout(resolve, 2000))
-
-		// Replace loading message with actual response
-		const lastMessageIndex = my_analysis.value.chat_messages.length - 1
-		my_analysis.value.chat_messages[lastMessageIndex] = {
-			...my_analysis.value.chat_messages[lastMessageIndex],
-			content:
-				'Here is the search result based on your query. This is a sample response that demonstrates the chat functionality.',
-		}
-
-		// Uncomment and modify this section for real API integration
-		// try {
-		// 	const { session } = useSessionStore()
-		// 	const { askXPLORECoVAI } = useUserAnalysis()
-		// 	await askXPLORECoVAI({
-		// 		user_id: session,
-		// 		analysis_id: route.params.id,
-		// 		message: {
-		// 			sender: 'human',
-		// 			content_type: 'text',
-		// 			parent_message_uuid: null,
-		// 			content: search_prompt.value,
-		// 		},
-		// 	})
-		// 	refreshAll()
-		// } catch (err) {
-		// 	console.log(err)
-		// }
-	} catch (err) {
-		console.log(err)
-	} finally {
-		search_loading.value = false
 	}
 }
 
