@@ -230,7 +230,7 @@
 				}"
 			>
 				<div
-					class="max-w-[70%] p-4 rounded-lg shadow-sm"
+					class="max-w-full p-4 rounded-lg shadow-sm"
 					:class="{
 						'bg-blue-600 text-white rounded-tl-2xl rounded-tr-sm rounded-br-2xl rounded-bl-2xl':
 							message.sender === 'human',
@@ -242,10 +242,11 @@
 						<ProgressSpinner :pt="{ root: '!h-10 !w-10' }" stroke-width="4" />
 					</div>
 					<div v-else>
-						<div
+						<pre
+							class="font-[Averta] text-wrap"
 							v-if="message.sender === 'assistant'"
 							v-typing="{
-								typeSpeed: 50,
+								typeSpeed: 10,
 								hasCaret: false,
 								text: message?.content,
 							}"
@@ -360,6 +361,7 @@ const AISearchQuery = async () => {
 		if (!search_prompt.value.trim()) return
 		search_loading.value = true
 		try {
+			const saved_search_question = search_prompt.value
 			// Add user message
 			if (!my_analysis.value.chat_messages) {
 				my_analysis.value.chat_messages = []
@@ -393,11 +395,53 @@ const AISearchQuery = async () => {
 			await new Promise((resolve) => setTimeout(resolve, 5000))
 
 			// Replace loading message with actual response
+			let content = ''
+			if (
+				saved_search_question == 'What are the most frequent spike protein mutations across all samples?'
+			) {
+				content = `Based on the combined analysis of 185 SARS-CoV-2 genome samples, the following are the top 10 most frequent spike (S) protein mutations observed:
+
+				| Rank | Mutation     | Count | Frequency (%) |
+				| ---- | ------------ | ----- | ------------- |
+				| 1    | **S\:D614G** | 167   | **90.3%**     |
+				| 2    | **S\:H655Y** | 163   | 88.1%         |
+				| 3    | **S\:D796Y** | 160   | 86.5%         |
+				| 4    | **S\:N679K** | 159   | 85.9%         |
+				| 5    | **S\:Q954H** | 158   | 85.4%         |
+				| 6    | **S\:N764K** | 156   | 84.3%         |
+				| 7    | **S\:N969K** | 155   | 83.8%         |
+				| 8    | **S\:G142D** | 149   | 80.5%         |
+				| 9    | **S\:K417N** | 130   | 70.3%         |
+				| 10   | **S\:N440K** | 124   | 67.0%         |
+				`
+			} else if (
+				saved_search_question == 'What is the average number of substitutions and deletions per sample?'
+			) {
+				content = `Based on the combined analysis of the 185 SARS-CoV-2 genome samples:
+				---
+
+				🔹Average Number of Substitutions per Sample:
+					Mean: 61.7 substitutions
+
+				🔹 Average Number of Deletions per Sample:
+					Mean: 3.2 deletions
+
+				---
+
+				Interpretation:
+
+				* On average, each SARS-CoV-2 genome differs from the reference genome by ~62 point mutations (substitutions).
+				* Each genome also carries about 3 deletions, which may impact protein function depending on their location and context.
+
+				These values provide insight into the mutational burden across the viral population and are consistent with Omicron-lineage genomes, which are known to accumulate high numbers of substitutions, especially in the spike protein.`
+			} else {
+				content =
+					'Here is the search result based on your query. This is a sample response that demonstrates the chat functionality.'
+			}
 			const lastMessageIndex = my_analysis.value.chat_messages.length - 1
 			my_analysis.value.chat_messages[lastMessageIndex] = {
 				...my_analysis.value.chat_messages[lastMessageIndex],
-				content:
-					'Here is the search result based on your query. This is a sample response that demonstrates the chat functionality.',
+				content: content,
 			}
 
 			// Uncomment and modify this section for real API integration
