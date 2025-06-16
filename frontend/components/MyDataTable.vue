@@ -8,37 +8,23 @@
 			:loading="loading"
 			v-model:filters="filters"
 			:pt="{
-				header: 'rounded-xl mb-1',
 				headerRow: '!py-4',
+				header: 'rounded-xl mb-1',
 				tableContainer: 'rounded-xl',
 				column: { headerCell: '!py-4' },
 				pcPaginator: { paginatorContainer: '!border-0 pt-1', root: '!rounded-xl' },
 			}"
 		>
-			<template #header>
-				<div class="flex justify-end">
-					<IconField>
-						<InputIcon>
-							<i class="pi pi-search" />
-						</InputIcon>
-						<InputText
-							class="!rounded-xl w-96"
-							placeholder="Keyword Search"
-							v-model="filters['global'].value"
-						/>
-					</IconField>
-				</div>
-			</template>
-			<template #empty> No customers found. </template>
-			<template #loading> Loading customers data. Please wait. </template>
+			<template #empty> No data found. </template>
+			<template #loading> Loading data. Please wait. </template>
 
-			<Column field="name" header="Name" style="min-width: 12rem">
+			<Column field="name" header="Name">
 				<template #body="{ data }">
 					{{ data.name }}
 				</template>
 			</Column>
 
-			<Column header="Country" filterField="country.name" style="min-width: 12rem">
+			<Column header="Country" filterField="country.name">
 				<template #body="{ data }">
 					<div class="flex items-center gap-2">
 						<img
@@ -52,7 +38,7 @@
 				</template>
 			</Column>
 
-			<Column header="Agent" filterField="representative" :showFilterMenu="false" style="min-width: 14rem">
+			<Column header="Agent" filterField="representative" :showFilterMenu="false">
 				<template #body="{ data }">
 					<div class="flex items-center gap-2">
 						<img
@@ -65,13 +51,13 @@
 				</template>
 			</Column>
 
-			<Column field="status" header="Status" :showFilterMenu="false" style="min-width: 12rem">
+			<Column field="status" header="Status" :showFilterMenu="false">
 				<template #body="{ data }">
 					<Tag :value="data.status" :severity="getSeverity(data.status)" />
 				</template>
 			</Column>
 
-			<Column field="verified" header="Verified" dataType="boolean" style="min-width: 6rem">
+			<Column field="verified" header="Verified" dataType="boolean">
 				<!-- <template #body="{ data }">
 					<i
 						class="pi"
