@@ -47,6 +47,7 @@ export default defineNuxtConfig({
 		'@pinia/nuxt',
 		'@nuxt/fonts',
 		'@nuxt/image',
+		'@nuxtjs/mdc',
 		'nuxt-echarts',
 		'@nuxt/eslint',
 		'@vueuse/nuxt',
