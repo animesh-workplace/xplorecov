@@ -5,6 +5,9 @@ import fireducks.pandas as pandas
 
 
 def generate_reports(combined_report):
+    for col in combined_report.select_dtypes(include=["datetime64[ns]"]):
+        combined_report[col] = combined_report[col].dt.strftime("%Y-%m-%d")
+
     client = OpenAI(
         base_url="http://10.10.6.80/xplorecov/ai/content/v1",
         api_key="sk-no-key-required",
@@ -37,6 +40,12 @@ def generate_reports(combined_report):
                 combined_report["Nextclade-Lineage"]
                 != combined_report["Pangousher-Lineage"]
             ]["Name"].to_list(),
+        },
+        {
+            "text_summary": "",
+            "report_type": "table",
+            "name": "Combined analysis report",
+            "data": combined_report.to_dict(orient="records"),
         },
         {
             "graph_type": "Bar",
