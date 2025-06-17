@@ -5,8 +5,10 @@ import fireducks.pandas as pandas
 
 
 def generate_reports(combined_report):
-    for col in combined_report.select_dtypes(include=["datetime64[ns]"]):
-        combined_report[col] = combined_report[col].dt.strftime("%Y-%m-%d")
+    safe_report = combined_report.where(pandas.notnull(combined_report), None)
+
+    for col in safe_report.select_dtypes(include=["datetime64[ns]"]):
+        safe_report[col] = safe_report[col].dt.strftime("%Y-%m-%d")
 
     client = OpenAI(
         base_url="http://10.10.6.80/xplorecov/ai/content/v1",
@@ -45,7 +47,7 @@ def generate_reports(combined_report):
             "text_summary": "",
             "report_type": "table",
             "name": "Combined analysis report",
-            "data": combined_report.to_dict(orient="records"),
+            "data": safe_report.to_dict(orient="records"),
         },
         {
             "graph_type": "Bar",
@@ -329,7 +331,7 @@ rule combine:
             if response.status_code == 200 or response.status_code == 201:
                 print("Reports sent successfully!")
             else:
-                print(f"Failed to send reports. Status code: {response.status_code}")
+                print(f"Failed to send reports. Status code: {response.text}")
         except Exception as e:
             print(e)
 
