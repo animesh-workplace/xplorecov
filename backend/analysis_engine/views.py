@@ -1,8 +1,10 @@
 from django.conf import settings
+import fireducks.pandas as pandas
+from django.db import transaction
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.response import Response
 from .models import UserAnalysis, Report
+from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from .tasks.run_workflow import run_update_workflow, run_analysis_workflow
 from .serializers import (
@@ -200,6 +202,54 @@ class AddBulkReportsView(APIView):
         return Response(
             {"message": "Reports added successfully."}, status=status.HTTP_201_CREATED
         )
+
+
+# class UploadFeatherView(APIView):
+#     def post(self, request):
+#         file_path = request.data.get("file_path")
+#         if not file_path:
+#             return Response(
+#                 {"error": "Missing 'file_path' parameter."},
+#                 status=status.HTTP_400_BAD_REQUEST,
+#             )
+
+#         try:
+#             df = pandas.read_feather(file_path)
+
+#             required_columns = {
+#                 "igsl_id",
+#                 "name",
+#                 "virus_type",
+#                 "collection_date",
+#                 "country",
+#                 "host",
+#             }  # adjust as needed
+#             missing_cols = required_columns - set(df.columns)
+#             if missing_cols:
+#                 return Response(
+#                     {"error": f"Missing required columns: {missing_cols}"},
+#                     status=status.HTTP_400_BAD_REQUEST,
+#                 )
+
+#             records = df.to_dict(orient="records")
+
+#             with transaction.atomic():
+#                 objects = [CombinedAnalysisReport(**record) for record in records]
+#                 CombinedAnalysisReport.objects.bulk_create(objects, batch_size=500)
+
+#             return Response(
+#                 {"status": f"{len(objects)} records inserted successfully."},
+#                 status=status.HTTP_201_CREATED,
+#             )
+
+#         except FileNotFoundError:
+#             return Response(
+#                 {"error": "File not found."}, status=status.HTTP_404_NOT_FOUND
+#             )
+#         except Exception as e:
+#             return Response(
+#                 {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+#             )
 
 
 # class AddChatMessagesView(APIView):
