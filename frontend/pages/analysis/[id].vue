@@ -456,7 +456,7 @@ Any lineages displaying E484K with a different L452 mutation likely belong to kn
 
 {outputs_dict['seq_table']}
 
-Both samples—INCOV293907 and INCOV293910a—were collected within the same week and sit in an Omicron-derived clade (XBB family).  Their shared signature (E484K + L452W) is unusual among West Bengal submissions, suggesting a common ancestor or a very recent local transmission chain rather than separate importations.
+Both samples—INCOV293907 and INCOV293910a—were collected within the same week and sit in an Omicron-derived clade (XBB family).  Their shared signature (E484K + L452W) is unusual among West Bengal submissions, suggesting a common ancestor or a very recent local transmission chain rather than separate importations. They share the characteristic Spike mutations $$S:E484K$$ and $$S:L452W$$—a rare combination in West Bengal—alongside the typical XBB “backbone” (e.g.\ $$S:G142D$$, $$ORF9b:P10S$$, $$ORF1b:P314L$$).
 
 Key points  
 - Lineage calls: both are assigned to XBB.1.16-like sub-lineage bearing characteristic ORF1a:P3593F, ORF9b:P10S, etc.  
