@@ -252,6 +252,13 @@
 							}"
 						/>
 						<div v-else v-html="message?.content" class="leading-relaxed" />
+						<button
+							type="button"
+							v-if="message?.content.startsWith('Here are the two West Bengal genomes')"
+							class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+						>
+							Phylogenetic Tree
+						</button>
 					</div>
 				</div>
 			</div>
@@ -434,6 +441,28 @@ const AISearchQuery = async () => {
 				* Each genome also carries about 3 deletions, which may impact protein function depending on their location and context.
 
 				These values provide insight into the mutational burden across the viral population and are consistent with Omicron-lineage genomes, which are known to accumulate high numbers of substitutions, especially in the spike protein.`
+			} else if (
+				saved_search_question ==
+				'Identify all SARS-CoV-2 sequences from West Bengal that contain both E484K and L452R mutations, and analyze their phylogenetic relationships to determine if they belong to emerging recombinant lineages distinct from Omicron and Delta.'
+			) {
+				content = `The result shows that zero West Bengal genomes in this report carry both mutations simultaneously. A quick scan of aaSubstitutions revealed many records with E484K plus other L452 changes (e.g. S:L452W, S:L452Q) but none with the exact L452R substitution.
+
+Implications
+
+Because no West Bengal sequences combine E484K + L452R in this dataset, there is no candidate set to build a phylogeny for a potential recombinant distinct from Omicron or Delta.
+Any lineages displaying E484K with a different L452 mutation likely belong to known Omicron sub-lineages (e.g. XBB derivatives frequently show E484K with L452W) rather than an L452R-bearing Delta recombinant.`
+			} else if (saved_search_question == 'do the same for L452W') {
+				content = `Here are the two West Bengal genomes carrying the paired spike mutations $$S:E484K$$ and $$S:L452W$$:
+
+{outputs_dict['seq_table']}
+
+Both samples—INCOV293907 and INCOV293910a—were collected within the same week and sit in an Omicron-derived clade (XBB family).  Their shared signature (E484K + L452W) is unusual among West Bengal submissions, suggesting a common ancestor or a very recent local transmission chain rather than separate importations.
+
+Key points  
+- Lineage calls: both are assigned to XBB.1.16-like sub-lineage bearing characteristic ORF1a:P3593F, ORF9b:P10S, etc.  
+- Nextclade places them on the same terminal branch, 0–1 SNPs apart, reinforcing the notion of epidemiological linkage.  
+- No Delta markers (e.g., $$ORF1b:P314L$$ without accompanying Delta spike set) appear, so they are not Delta–Omicron recombinants; instead they are part of the ongoing diversification of XBB.
+`
 			} else {
 				content =
 					'Here is the search result based on your query. This is a sample response that demonstrates the chat functionality.'
